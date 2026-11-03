@@ -25,10 +25,12 @@ The plan records its source, checksum and relationship to the revised documents.
 
 ## Roadmap in OMP
 
-The [canonical state](.omp/roadmap/roadmap.json) contains 27 tasks with dependencies and acceptance criteria.
+The [canonical state](.omp/roadmap/roadmap.json) contains 28 tasks with dependencies and acceptance criteria.
 Use `/roadmap status` or `/roadmap view` in OMP; the offline canvas is generated automatically. Do not edit its HTML.
 Current status and acceptance criteria live in JSON; the [English portable view](docs/ROADMAP.md) uses the same state with a hash-bound [display translation](docs/roadmap.en.json). Do not edit generated Markdown manually.
 This roadmap covers the simulation scope; it is neither an estimate of effort percentages nor flight certification.
+
+The [unarmed sensor-recording/replay plan](docs/SENSOR_REPLAY_PLAN.md) is a pending preparation branch after the completed environment and G0 demo, not permission to start flight or claim G2 acceptance.
 
 ## Run G0 now
 

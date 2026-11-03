@@ -49,13 +49,15 @@ Routing examples:
 - Offline canvas: `.omp/roadmap/index.html`, generated automatically; do not edit manually or commit the generated view.
 - `/roadmap status` shows the focus; `/roadmap view` returns the canvas path. These are native OMP commands, not shell commands.
 - Update through `project_roadmap`: `read`, `start`, `arm`, actual tool verification and `complete` with a receipt. Read and reconcile revision conflicts.
-- 27 tasks cover preparation, G0–G4, simulation handoff and decision gate G5. JSON is the only status source.
+- 28 tasks cover preparation, G0–G4, an unarmed sensor-preparation branch, simulation handoff and decision gate G5. JSON is the only status source.
 - Generate the portable `docs/ROADMAP.md` using `python scripts/check_project.py --export-roadmap`; CI rejects stale views. Do not edit progress in Markdown.
 - State contains project-root binding and workspace receipt metadata. When cloning or moving the root, do not edit bindings/receipts to fake resume; use native reads and handle actual errors.
 
 Do not automatically index with Graphify, install MCP, add watchers/daemons or run another model to maintain the roadmap. The canvas is a progress view, not certification that the simulator works.
 
 Native roadmap titles, phases and acceptance text retain their original language because the current native API has no metadata-edit action. The public portable view translates display text through `docs/roadmap.en.json`, keyed by stable task ID. Each entry binds to a SHA-256 of the native title/phase/acceptance; changed source criteria require a reviewed translation before export. Status, dependencies and evidence remain native-owned; the catalog cannot override them. Do not edit canonical JSON or generated HTML to change their language. Original source documents, historical evidence and verbatim diagnostics remain unchanged.
+
+The pending `prep-sensor-replay` branch depends on completed `g1-environment` and `g0-demo`. Its [review plan](SENSOR_REPLAY_PLAN.md) covers unarmed recording and offline geometry only. Existing flight/calibration/G2 dependencies remain unchanged; reusable artifacts must be revalidated at those gates. Follow the plan-to-roadmap alignment rules in `.omp/AGENTS.md` before starting implementation.
 
 ## Selected limits
 

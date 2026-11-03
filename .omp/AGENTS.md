@@ -44,6 +44,15 @@
 - Stop an unproductive repair loop after three attempts without new causal evidence; report the blocker.
 - Keep the original PDF unchanged. Update readable docs rather than rewriting source provenance.
 
+## Plan-to-roadmap alignment
+
+- Before proposing implementation, map the requested work to stable native task IDs, current status, acceptance and dependency readiness. Do not treat the default focus as authority for unrelated work.
+- Every implementation plan must state its task IDs, prerequisites, scope/non-goals, verification, and which existing gates remain unmet. For a new branch, show its dependency edges explicitly; use a small diagram when it clarifies the branch.
+- If a useful experiment is outside the current DAG, propose an explicit bounded preparation task and obtain user agreement before adding it through the native API. Never silently skip, remove, reopen or complete prerequisites to make a plan appear ready.
+- Distinguish unarmed recording/offline analysis from armed tests, flight, calibration and navigation acceptance. Reusing preparation artifacts does not complete later gates or waive fresh verification.
+- When the user requests a plan for review, leave implementation tasks pending until that review is resolved. A ready task or a published plan does not itself authorize simulator execution, installation, arming or other operational effects.
+- After an approved roadmap change, update `docs/roadmap.en.json` and regenerate `docs/ROADMAP.md` using the exporter. Preserve canonical IDs, evidence and unrelated dependencies; never hand-edit native state or generated HTML.
+
 ## Git and authority
 
 - The user authorizes commit, push and merge for requested work in `minhtri-bi/drone-CV` when relevant gates pass.
