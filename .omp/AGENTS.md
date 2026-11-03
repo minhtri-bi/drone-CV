@@ -7,6 +7,12 @@
 - G0 now has a NumPy core, behavioral tests and synthetic CLI demo. There is still no flight stack, ROS node or SITL evaluator in this repository.
 - Do not claim a phase passed without evidence from that phase's real execution path.
 
+## Language
+
+- Communicate with the user in Vietnamese.
+- Write project documentation, plans, comments, docstrings, commit messages, pull requests, reviews and other persisted authored text in English unless the user explicitly requests another language.
+- Translate existing Vietnamese-authored text when editing it; preserve technical meaning, literal identifiers, source provenance, raw logs and historical evidence.
+
 ## Architecture invariants
 
 - Pure NumPy geometry first; ROS adapters stay outside the offline core.

@@ -1,117 +1,117 @@
-# Contract an toàn và acceptance đã sửa
+# Revised safety and acceptance contracts
 
-**Đây là sửa thiết kế, chưa phải vá runtime:** repo chưa có flight code. Mọi kiểm chứng bay vẫn pending trong native roadmap. Không được dùng việc merge tài liệu để đánh dấu G0–G4 đạt.
+**This is a design correction, not a runtime patch:** the repo has no flight code yet. All flight verification remains pending in the native roadmap. Merging documentation must not be used to mark G0–G4 as passed.
 
-Tài liệu này là contract bổ sung cho [PLAN](PLAN.md), [HARNESS](HARNESS.md) và [scenario](SCENARIOS.md). Các deadline/bounds cần đo được lưu cùng effective config khi triển khai; thiếu bound thì không cấp quyền autonomous motion.
+This document supplements the contracts in [PLAN](PLAN.md), [HARNESS](HARNESS.md), and the [scenarios](SCENARIOS.md). Deadlines/bounds that require measurement are stored with the effective config during implementation; missing bounds mean no authorization for autonomous motion.
 
-## S01. Contact và clearance theo phase
+## S01. Phase-specific contact and clearance
 
-Quy tắc “clearance ≥0.5 m cả chuyến bay, mọi contact là fail” không thể cùng đúng với cất/hạ cánh trên sàn.
+The rule “clearance ≥0.5 m throughout the flight, every contact fails” cannot coexist with taking off from/landing on a floor.
 
-- **Contact ledger theo toàn bộ run**, từ preflight tới disarmed và flush log. Không bỏ collision sau goal hoặc lúc shutdown.
-- Landing support contact được phép chỉ giữa **landing gear được chỉ định** và **support surface đã khai báo**. Pair allowlist, surface bounds và phase phải có trong manifest trước trial.
-- Chỉ cho phép support pair lúc đứng trên mặt đỡ, chuyển tiếp takeoff, hoặc landing có chủ đích. Contact thân, propeller envelope, tường, trần, đồ vật và mặt ngoài landing zone luôn unsafe.
-- Lật hoặc clearance violation không được miễn trừ vì có một support pair hợp lệ đồng thời.
-- **Navigation clearance ≥0.5 m** tính từ envelope vật lý thân/propellers đến mọi surface liên quan trong `NAVIGATE`, `RECOVER`, `GOAL_HOLD`. Floor/ceiling cũng tính nếu gần envelope.
-- Takeoff/landing có envelope, known-clear volume và giới hạn riêng đã đóng băng; không áp 0.5 m xuống support surface mà chân đang chạm. Không vì thế miễn trừ vật cản khác.
-- Lấy minimum clearance riêng theo phase. G3 không pass nếu thiếu phase/contact telemetry.
+- **Maintain a contact ledger for the entire run**, from preflight through disarming and log flushing. Do not omit collisions after the goal or during shutdown.
+- Landing support contact is allowed only between **designated landing gear** and a **declared support surface**. The pair allowlist, surface bounds, and phase must be in the manifest before the trial.
+- Allow support pairs only while resting on the support, during the takeoff transition, or during intentional landing. Contact involving the body, propeller envelope, walls, ceilings, objects, or surfaces outside the landing zone is always unsafe.
+- Rollover or clearance violations are not exempt merely because a valid support pair exists simultaneously.
+- **Navigation clearance ≥0.5 m** is measured from the physical body/propeller envelope to every relevant surface in `NAVIGATE`, `RECOVER`, and `GOAL_HOLD`. Include floor/ceiling when near the envelope.
+- Takeoff/landing have separate frozen envelopes, known-clear volumes, and limits; do not apply 0.5 m to the support surface touched by the landing gear. This does not exempt other obstacles.
+- Record minimum clearance separately by phase. G3 cannot pass without phase/contact telemetry.
 
-Oracle dùng hình học vật lý chưa inflate để đo surface clearance. Planner có thể inflate thêm tracking/localization margins; **không trừ cùng margin hai lần trong evaluator**. Propeller collision meshes không đầy đủ thì bổ sung oracle geometry envelope, không mặc định contact sensor sẽ nhìn thấy cánh quạt.
+The oracle uses uninflated physical geometry to measure surface clearance. The planner may add tracking/localization margins through inflation; **do not subtract the same margin twice in the evaluator**. If propeller collision meshes are incomplete, add an oracle geometry envelope; do not assume the contact sensor will detect propellers.
 
-**Chứng minh khi triển khai:** D01/F04 nhận support contact hợp lệ, đồng thời phát hiện body-wall contact; C06/E14 kiểm tra takeoff envelope. Task `g1-oracle`, `g1-flight`.
+**Proof required during implementation:** D01/F04 accept valid support contact while also detecting body-wall contact; C06/E14 check the takeoff envelope. Tasks `g1-oracle`, `g1-flight`.
 
-## S02. Không còn dependency vòng
+## S02. No circular dependency
 
-Thứ tự bắt buộc trước navigation:
+Required order before navigation:
 
-1. G0: geometry, validity, braking/freshness core offline.
-2. G1 environment: simulator/camera/odom/clock/QoS, **chưa arm**.
-3. G1 oracle/logger và supervisor/bridge tối thiểu. Kiểm tra contact/ownership/freshness tĩnh trước flight.
-4. Mission thăm dò tốc độ thấp trong known-clear test volume, có supervisor, observer và operator stop.
-5. Calibration braking/delay/tracking, cấu hình deadlines/bounds, fault handoff.
-6. G2 perception replay, rồi wall-stop **qua supervisor đã có**.
-7. G3 planner/recovery/runner/batch; không xây oracle lần đầu sau khi đã dùng nó chấm G2.
+1. G0: offline geometry, validity, and braking/freshness core.
+2. G1 environment: simulator/camera/odom/clock/QoS, **not armed yet**.
+3. G1 minimal oracle/logger and supervisor/bridge. Check static contact/ownership/freshness before flight.
+4. A low-speed exploratory mission in a known-clear test volume, with supervisor, observer, and operator stop.
+5. Braking/delay/tracking calibration, deadline/bound configuration, and fault handoff.
+6. G2 perception replay, then wall-stop **through the existing supervisor**.
+7. G3 planner/recovery/runner/batch; do not build the oracle for the first time after already using it to grade G2.
 
-Biết trước volume trống chỉ là **fixture thăm dò của harness**, được ghi `bootstrap` trong manifest; không đưa bản đồ thật vào planner, không cộng run đó vào navigation acceptance. Trước calibration, chỉ cho phép kịch bản thăm dò bị chặn bởi volume/low-speed/operator stop riêng, không tuyên bố đã có stopping guarantee.
+Prior knowledge that a volume is clear is only an **exploratory harness fixture**, recorded as `bootstrap` in the manifest; do not give the planner the true map or count that run toward navigation acceptance. Before calibration, allow only exploratory scenarios constrained by their own volume/low-speed/operator-stop limits, without claiming a stopping guarantee.
 
-**Chứng minh khi triển khai:** H1 có oracle/supervisor trước mission; G2 phụ thuộc `g1-calibration`. Roadmap DAG thể hiện dependencies này.
+**Proof required during implementation:** H1 has an oracle/supervisor before the mission; G2 depends on `g1-calibration`. The roadmap DAG expresses these dependencies.
 
-## S03. Lỗi an toàn không bị infra error ghi đè
+## S03. Infrastructure errors do not overwrite safety failures
 
-Kết quả gồm hai trục độc lập:
+Results have two independent axes:
 
-- `safety_outcome`: `NO_VIOLATION_OBSERVED`, `UNSAFE_OBSERVED`, hoặc `UNKNOWN` khi bằng chứng không đủ.
-- `execution_outcome`: `COMPLETED`, `SAFE_ABORT`, `TASK_FAIL`, `INFRA_ERROR`, hoặc `INVALID_WORLD` trước trial.
+- `safety_outcome`: `NO_VIOLATION_OBSERVED`, `UNSAFE_OBSERVED`, or `UNKNOWN` when evidence is insufficient.
+- `execution_outcome`: `COMPLETED`, `SAFE_ABORT`, `TASK_FAIL`, `INFRA_ERROR`, or `INVALID_WORLD` before the trial.
 
-`UNSAFE_OBSERVED` được latch vĩnh viễn cho attempt. Ví dụ đã va tường rồi Gazebo crash: giữ collision và infra error; không đổi thành một infra run có thể bỏ khỏi mẫu số.
+`UNSAFE_OBSERVED` is permanently latched for the attempt. For example, if the drone hits a wall and Gazebo then crashes, retain both the collision and infrastructure error; do not convert it into an infrastructure run that can be excluded from the denominator.
 
-- SUCCESS cần execution completed, goal/termination đúng, observer đủ và không unsafe event; “không thấy” không đủ nếu observer chết.
-- `SAFE_ABORT` cần đủ bằng chứng không vi phạm và handoff/dừng đúng contract. Mất oracle không đủ điều kiện gán safe.
-- Một event có thể sinh nhiều reason codes; primary report không xoá reason khác.
-- Mọi nhánh terminal, kể cả start/health/infra lỗi, đều đi qua **best-effort bounded collect**, sau đó cleanup process của run. Collect lỗi được lưu riêng, không nuốt lỗi ban đầu.
-- Exit `1` khi đã quan sát safety/task failure; `2` khi không có failure đã biết nhưng evidence invalid/incomplete; `0` chỉ khi gate đầy đủ đạt.
+- SUCCESS requires completed execution, correct goal/termination, sufficient observer coverage, and no unsafe event; “not seen” is insufficient if the observer died.
+- `SAFE_ABORT` requires sufficient evidence of no violation and handoff/stopping according to the contract. Losing the oracle does not justify assigning safe status.
+- One event may produce multiple reason codes; the primary report does not erase other reasons.
+- Every terminal branch, including start/health/infrastructure failures, goes through **best-effort bounded collection**, followed by cleanup of the run's processes. Collection failures are recorded separately, without swallowing the original error.
+- Exit `1` when a safety/task failure has been observed; `2` when no known failure exists but evidence is invalid/incomplete; `0` only when the full gate passes.
 
-**Chứng minh khi triển khai:** D01/D03/F02/F03/F04 kiểm tra collision rồi crash, telemetry mất và flush failure. Tasks `g1-oracle`, `g3-runner`, `g3-batch`.
+**Proof required during implementation:** D01/D03/F02/F03/F04 check collision followed by crash, telemetry loss, and flush failure. Tasks `g1-oracle`, `g3-runner`, `g3-batch`.
 
-## S04. Tách navigation, negative safety và stress
+## S04. Separate navigation, safety-negative, and stress suites
 
-Suite membership, expected outcome, geometry, fault timing và deadlines phải đóng băng **trước** attempt.
+Suite membership, expected outcome, geometry, fault timing, and deadlines must be frozen **before** an attempt.
 
-| Suite | Mục tiêu | Acceptance |
+| Suite | Purpose | Acceptance |
 | --- | --- | --- |
-| `navigation` | Vật tĩnh, route/start/goal hợp lệ, không inject fault bất khả thi | 50 frozen test worlds; G3 ≥45 success, zero unsafe, đủ telemetry và navigation clearance gate |
-| `safety-negative` | Từ chối arm, stale input, crash, unreachable goal, mất quyền | PASS theo oracle lỗi/handoff; không cộng numerator navigation, unsafe không được gọi safe abort |
-| `stress-diagnostic` | Vật động spawn không thể phanh, giới hạn sensor kính/dây dưới pixel | Ghi cả unsafe/unknown; chấm detector/classifier đúng, không yêu cầu tránh tình huống vật lý bất khả thi |
+| `navigation` | Static obstacles, valid route/start/goal, no injection of impossible-to-handle faults | 50 frozen test worlds; G3 ≥45 successes, zero unsafe events, complete telemetry, and the navigation clearance gate |
+| `safety-negative` | Arm refusal, stale input, crash, unreachable goal, loss of authority | PASS according to the fault/handoff oracle; do not add to the navigation numerator, and do not call unsafe outcomes safe aborts |
+| `stress-diagnostic` | Moving obstacles spawned too close to brake, glass sensor limitations/subpixel wires | Record unsafe/unknown outcomes; grade correct detector/classifier behavior, without requiring avoidance of physically impossible situations |
 
-F10 có thể pass **test phân loại** khi evaluator ghi đúng unavoidable collision. Collision đó vẫn hiện trong report stress, nhưng không làm giả rằng navigation suite đã crash hoặc đã tránh được vật. Không được chuyển một navigation run fail sang stress sau khi thấy kết quả.
+F10 may pass the **classification test** when the evaluator correctly records an unavoidable collision. That collision remains visible in the stress report, without falsely implying that the navigation suite crashed or that the obstacle was avoided. Do not move a failed navigation run into stress after seeing the result.
 
-**Chứng minh khi triển khai:** B03/B06/F08/F10; task `g3-faults` và frozen manifest.
+**Proof required during implementation:** B03/B06/F08/F10; task `g3-faults` and the frozen manifest.
 
-## S05. Freshness và latency có clock domain rõ
+## S05. Freshness and latency with explicit clock domains
 
-- Giữ capture stamp/epoch theo sim clock; receive/processing/progress theo monotonic wall clock. Không trừ hai timestamp khác domain.
-- `sim_age` kiểm tra thế giới mô phỏng đã thay đổi bao lâu; `wall_age`/progress watchdog phát hiện compute/transport bị kẹt. Báo hai giá trị riêng.
-- Pause sim chỉ hợp lệ khi runner đã xác nhận pause. Không giả frame mới bằng timer heartbeat; resume phải tái xác minh epoch/pose/coverage và command ownership.
-- Deadline cho observation, pose, proposal, supervisor result, handoff và logger phải finite, explicit trong effective config. Không đặt mặc định “vô hạn”.
-- Dùng measured conservative delay/braking/jerk bound cho safety; latency p95 là metric, không làm bound.
-- Không cộng hai lần cùng khoảng delay: capture-to-safe-publish trace và publish-to-tracking trace có endpoints riêng. Nếu cộng margin, ghi rõ margin ngoài phần đã đo.
-- Calibrate ở workload/RTF/config xác định. Load/latency vượt bound làm giảm quyền motion hoặc abort theo policy, không tiếp tục dựa vào calibration cũ.
-- Command freshness dựa trên nguồn sequence/epoch và expiry gốc. Bridge không được gia hạn lệnh chỉ bằng đóng dấu publish mới.
+- Keep capture stamp/epoch on the sim clock; receive/processing/progress use the monotonic wall clock. Do not subtract timestamps from different domains.
+- `sim_age` checks how long the simulated world has had to change; `wall_age`/the progress watchdog detect stalled compute/transport. Report the two values separately.
+- A sim pause is valid only after the runner has confirmed it. Do not fabricate fresh frames with a timer heartbeat; resuming requires revalidation of epoch/pose/coverage and command ownership.
+- Deadlines for observation, pose, proposal, supervisor result, handoff, and logger must be finite and explicit in the effective config. Do not default to “infinite”.
+- Use measured conservative delay/braking/jerk bounds for safety; latency p95 is a metric, not a bound.
+- Do not count the same delay interval twice: capture-to-safe-publish and publish-to-tracking traces have separate endpoints. If adding a margin, identify it explicitly as additional to the measured interval.
+- Calibrate under a specified workload/RTF/config. Load/latency beyond the bound reduces motion authority or triggers abort according to policy; do not continue relying on old calibration.
+- Command freshness depends on the source sequence/epoch and original expiry. The bridge must not extend a command's lifetime simply by stamping a new publish time.
 
-**Chứng minh khi triển khai:** A06/A07/E08/E09/E12/E15/F06; task `g0-safety`, `g1-calibration`.
+**Proof required during implementation:** A06/A07/E08/E09/E12/E15/F06; tasks `g0-safety`, `g1-calibration`.
 
-## S06. Free-space evidence có coverage thật
+## S06. Free-space evidence with actual coverage
 
-Một ray `NO_RETURN` không chứng minh toàn bộ bin 5° hoặc toàn hành lang thể tích là free.
+One `NO_RETURN` ray does not prove that an entire 5° bin or volumetric corridor is free.
 
-- Coverage phải phản ánh pixel/ray support, FOV, near/far bounds, timestamp và vùng bị occlusion; không chỉ một boolean “bin có dữ liệu”.
-- Corridor chỉ được cấp quyền đến range mà **toàn bộ footprint/swept volume cần kiểm tra** có support theo sensor sampling model đã chốt. Cell/bin chưa support vẫn unknown.
-- Tính inflation/độ rộng support trước reduction. Một pixel gần không bị average/percentile hoà vào ray xa trong cùng bin.
-- `NO_RETURN` chỉ clear đoạn trong tầm tin cậy của ray đã xác minh; không clear bóng sau vật gần hoặc vùng giữa các ray tuỳ ý.
-- Công bố minimum resolvable obstacle size theo range/FOV/resolution. Safety bound không bao gồm vật sensor không thể quan sát; dây dưới pixel thuộc stress suite.
+- Coverage must reflect pixel/ray support, FOV, near/far bounds, timestamps, and occluded regions, not merely a “bin has data” boolean.
+- A corridor may be authorized only up to the range where **the entire footprint/swept volume requiring checks** has support under the agreed sensor sampling model. Unsupported cells/bins remain unknown.
+- Compute inflation/support width before reduction. A near pixel must not be averaged/percentiled away among distant rays in the same bin.
+- `NO_RETURN` clears only the segment within a verified ray's trusted range; it does not clear the shadow behind a near obstacle or arbitrary gaps between rays.
+- Declare the minimum resolvable obstacle size by range/FOV/resolution. Safety bounds do not cover obstacles the sensor cannot observe; subpixel wires belong to the stress suite.
 
-**Chứng minh khi triển khai:** A04/A05/A08/E02/E13/E17; task `g0-geometry`, `g2-adapter`.
+**Proof required during implementation:** A04/A05/A08/E02/E13/E17; tasks `g0-geometry`, `g2-adapter`.
 
-## S07. Input hợp lệ không đồng nghĩa mọi số phải không âm
+## S07. Valid input does not require every number to be nonnegative
 
-- Vị trí, velocity, yaw và quaternion components có thể âm hợp lệ trong ENU/NED/FLU/FRD.
-- Reject NaN/Inf ở physical pose/velocity/command; kiểm tra quaternion norm/order, units và frame theo contract.
-- Distance, latency và margin phải trong miền của chúng; `a_brake` phải dương. Negative distance không phải reverse velocity.
-- Chỉ adapter PX4 được ghi NaN vào **unused setpoint fields theo protocol**, không cho NaN sensor/actual velocity đi qua.
-- Tolerances hình học/số học cần có unit, rationale và fixture độc lập; không mặc định clip quaternion/velocity để che input sai.
+- Position, velocity, yaw, and quaternion components may legitimately be negative in ENU/NED/FLU/FRD.
+- Reject NaN/Inf in physical pose/velocity/commands; check quaternion norm/order, units, and frame against the contract.
+- Distance, latency, and margins must be within their domains; `a_brake` must be positive. Negative distance is not reverse velocity.
+- Only the PX4 adapter may write NaN to **unused setpoint fields as required by the protocol**; do not let NaN sensor/actual-velocity values pass through.
+- Geometric/numerical tolerances need units, rationale, and independent fixtures; do not default to clipping quaternion/velocity values to hide invalid input.
 
-**Chứng minh khi triển khai:** C08/E20 phải có valid negative-axis fixtures lẫn invalid physical values. Tasks `g0-contracts`, `g0-geometry`.
+**Proof required during implementation:** C08/E20 must include both valid negative-axis fixtures and invalid physical values. Tasks `g0-contracts`, `g0-geometry`.
 
-## S08. Route validator và efficiency không là oracle toàn năng
+## S08. Route validation and efficiency are not an all-powerful oracle
 
-- A* grid-centre connectivity chưa chứng minh drone đi qua được khe hoặc chỗ cắt góc. Phải validate liên tục các segment theo footprint, margin, altitude và geofence.
-- Start/goal và volume takeoff/landing hợp lệ được kiểm tra riêng, không chỉ tìm route giữa hai tâm cell.
-- Oracle route có cùng motion constraints cần cho phép so sánh: speed bound, stopping/turn assumptions và protocol NAVIGATE-to-goal-hold.
-- Nếu chưa có reference time khả thi theo dynamics, chỉ report path length/detour ratio; **không chấm time-to-goal ≤2× một con số tự nhận tối ưu**. Gate time-efficiency chưa có reference thì chưa đạt, không bỏ gate.
-- Validator được đóng băng trước test seed generation; giữ mọi rejection và thử lại generator có cap. Không loại world vì local planner fail.
+- A* grid-centre connectivity does not prove that a drone can pass through a gap or cut a corner. Continuously validate segments against footprint, margin, altitude, and geofence.
+- Validate start/goal and takeoff/landing volumes separately, rather than only finding a route between two cell centers.
+- The oracle route needs the same motion constraints for a valid comparison: speed bound, stopping/turn assumptions, and the NAVIGATE-to-goal-hold protocol.
+- Without a dynamics-feasible reference time, report only path length/detour ratio; **do not grade time-to-goal ≤2× an arbitrarily claimed optimal number**. The time-efficiency gate remains unmet without a reference; do not drop the gate.
+- Freeze the validator before test-seed generation; retain every rejection and cap generator retries. Do not exclude a world because the local planner fails.
 
-**Chứng minh khi triển khai:** D02/F01/F05/F08 và A05; task `g3-worlds` rồi `g3-batch`.
+**Proof required during implementation:** D02/F01/F05/F08 and A05; task `g3-worlds`, then `g3-batch`.
 
-## Trạng thái đóng lỗ hổng
+## Gap closure status
 
-S01–S08 được đóng ở mức contract. Core G0 đã kiểm chứng units/frames, synthetic swept-volume coverage, clock/freshness và constant-deceleration bounds qua code/test/demo; không chứng minh sensor hoặc PX4 thực tuân thủ mô hình. Các proof bay, numerical deadlines/bounds thực, environment lock, stopping calibration và oracle geometry SITL vẫn pending tại task tương ứng.
+S01–S08 are closed at the contract level. The G0 core has verified units/frames, synthetic swept-volume coverage, clock/freshness, and constant-deceleration bounds through code/tests/a demo; this does not prove that real sensors or PX4 conform to the model. Flight proofs, actual numerical deadlines/bounds, environment lock, stopping calibration, and SITL oracle geometry remain pending in their corresponding tasks.

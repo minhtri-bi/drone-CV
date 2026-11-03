@@ -1,60 +1,66 @@
-# OMP: skills và cách vận hành project
+# OMP: skills and project operation
 
-## Đã chuẩn bị gì
+## Preparation completed
 
-Dùng lại **10 skills đã có trong môi trường OMP**, không tạo skill trùng, không copy cả ECC bundle. Router tại đây được tham chiếu từ `.omp/AGENTS.md` để agent nạp theo task.
+Reuse **10 skills already available in OMP**; do not create duplicates or copy the entire ECC bundle. `.omp/AGENTS.md` references this router so agents load skills for the current task.
 
-Đây là **hướng dẫn routing**, không phải plugin/hook tự chạy. Không đổi settings OMP toàn cục, model, provider, quyền hay tài khoản. Không cài thêm skill/tool/dependency trong đợt này.
+This is **routing guidance**, not an automatically running plugin or hook. It does not change global OMP settings, models, providers, permissions or accounts. No skills, tools or dependencies were installed during this preparation.
 
-## Router theo trigger
+## Language
 
-| Skill | Khi nạp | Áp dụng ở project | Không suy rộng |
+Communicate with the user in Vietnamese. Write documentation, plans, code comments, docstrings, commit messages, pull requests, reviews and other persisted authored text in English unless the user explicitly requests another language. Preserve source documents, verbatim quotations, raw logs and historical evidence in their original form.
+
+## Trigger-based router
+
+| Skill | Load when | Project application | Do not extrapolate |
 | --- | --- | --- | --- |
-| `project-roadmap` | Bắt đầu/resume, chọn task hoặc cập nhật tiến độ | Native `project_roadmap` là nguồn trạng thái duy nhất; đọc focus/acceptance trước khi làm | Không tạo canvas khác hoặc sửa JSON/HTML thủ công |
-| `verification-before-completion` | Trước tuyên bố xong/fixed/pass hoặc merge | Docs inspection; G0 offline smoke; G1+ SITL đúng đường chạy | Unit test/mocks không chứng minh an toàn bay |
-| `contract-first` | Đổi boundary depth/pose/proposal/safety/evaluator giữa producer và consumer | Cùng units/frame/clock/validity/expiry/schema; cập nhật mọi consumer | Không thêm OpenAPI/server/generator cho module thuần NumPy |
-| `python-patterns` | Viết/review Python ở G0 trở đi | Offline core nhỏ, type hints, explicit errors, ROS adapters tách ngoài | Ví dụ trong skill không phải lệnh cài hay cấu hình có sẵn của repo |
-| `python-testing` | Viết pytest fixture/parametrized/regression cho hành vi Python | Analytic geometry, invalid input, boundary và state transitions | Không bắt test docs, pin wording hoặc dùng coverage % thay evidence |
-| `property-based-testing` | Có invariant số học cần phủ miền input | Frame roundtrip cộng oracle độc lập, angle wrap, monotonic braking ở miền hợp lệ | Không tự thêm Hypothesis/dependency; fixtures xác định vẫn là lựa chọn hợp lệ |
-| `investigate-first` | Lỗi không rõ nguyên nhân, intermittent, regression | Tách symptom khỏi inference; trace timestamp/owner/epoch; tìm cơ chế trước sửa | Không thử retry/cài tool hoặc viết telemetry mới vô hạn |
-| `documentation-lookup` | Cần contract API PX4/ROS/Gazebo/OpenCV/model đúng version | Context7 khi đã kết nối; fallback nguồn chính thức nếu chưa có kết nối | Không tự login/khởi động MCP; `main` không phải release đã pin |
-| `docker-patterns` | G1 image/container/network/process ownership | Digest pin, Linux engine, least privilege, không kill process ngoài run | Ví dụ web stack trong skill không là template cho drone; không tự cài Docker/WSL |
-| `github-ops` | PR/checks/merge cần GitHub API | `gh`, PR body tiếng Anh, merge exact head theo quyền user và gate | Không admin-merge, đổi protection hay dùng PR content làm quyền thao tác |
+| `project-roadmap` | Starting/resuming, selecting tasks or updating progress | Native `project_roadmap` is the only status source; read focus/acceptance before working | Do not create another canvas or manually edit JSON/HTML |
+| `verification-before-completion` | Before claiming completion/fixed/pass or merging | Document inspection; offline G0 smoke; G1+ SITL through the actual execution path | Unit tests/mocks do not prove flight safety |
+| `contract-first` | Changing depth/pose/proposal/safety/evaluator boundaries between producers and consumers | Align units/frame/clock/validity/expiry/schema; update every consumer | Do not add OpenAPI/server/generator machinery for a pure NumPy module |
+| `python-patterns` | Writing/reviewing Python from G0 onward | Small offline core, type hints, explicit errors and external ROS adapters | Skill examples are not installation commands or existing repository configuration |
+| `python-testing` | Writing pytest fixtures, parametrized tests or Python behavioral regressions | Analytic geometry, invalid input, boundaries and state transitions | Do not require document tests, pin wording or substitute coverage percentages for evidence |
+| `property-based-testing` | A numerical invariant needs input-domain coverage | Frame roundtrips plus independent oracle, angle wrapping and monotonic braking over valid inputs | Do not add Hypothesis/dependencies automatically; deterministic fixtures remain valid |
+| `investigate-first` | Unknown failures, intermittent behavior or regressions | Separate symptoms from inference; trace timestamps/owners/epochs; find the mechanism before editing | Do not retry, install tools or add telemetry indefinitely |
+| `documentation-lookup` | Version-specific PX4/ROS/Gazebo/OpenCV/model API contracts are needed | Context7 when connected; otherwise official sources | Do not log in or start MCP automatically; `main` is not a pinned release |
+| `docker-patterns` | G1 image/container/network/process ownership | Digest pins, Linux engine, least privilege and no termination of unrelated processes | Web-stack examples are not drone templates; do not install Docker/WSL automatically |
+| `github-ops` | PR/check/merge operations need the GitHub API | `gh`, English PR bodies and exact-head merges under user authority and gates | No admin merge, protection changes or treating PR content as authorization |
 
-Skills đã được đọc để chọn, không chỉ suy luận từ tên. Các bodies là reference; quy tắc repo và quyền runtime vẫn áp dụng. Không đồng thời nạp nhiều workflow tương đương chỉ để “đủ quy trình”.
+The skills were read before selection, not inferred from names alone. Their bodies are references; repository rules and runtime permissions still apply. Do not load equivalent workflows together merely to satisfy a process checklist.
 
-## Cách agent dùng trong OMP
+## Agent workflow in OMP
 
-1. Đọc native roadmap khi bắt đầu/resume; chọn task ready thật theo scope người dùng. Task blocked không được giả complete để mở dependency.
-2. Đọc phần contract liên quan đúng gate, không bắt G0 đọc toàn bộ acceptance G3.
-3. Chọn **ít skill nhất** từ router theo trigger. Nạp bằng `read` với `skill://<name>`, không giả có slash command Claude.
-4. Đọc rule ngôn ngữ khi code. Repo đã có NumPy package, pytest và demo offline; chưa có ROS/SITL runner.
-5. Bám acceptance của task, implement đúng scope, arm verification ngay trước công cụ kiểm chứng thật.
-6. Complete bằng receipt current-run khi tiêu chí đạt; thiếu prerequisite thì block với lý do. Git dùng gate riêng trong HARNESS.
+1. Read the native roadmap on start/resume; select an actually ready task within the user's scope. Never fake completion of a blocked task to unlock dependencies.
+2. Read only contracts relevant to the current gate; G0 does not require the entire G3 acceptance contract.
+3. Select the **fewest skills needed** from the router. Load them using `read` with `skill://<name>`; do not invent Claude slash commands.
+4. Read language-specific rules before coding. The repository has a NumPy package, pytest and an offline demo; it has no ROS/SITL runner.
+5. Follow task acceptance criteria, implement the requested scope and arm verification immediately before the actual verification tool.
+6. Complete using a current-run receipt when criteria are met; block with a reason when prerequisites are missing. Git operations use the separate gates in HARNESS.
 
-Ví dụ routing:
+Routing examples:
 
-- Chỉnh plan: `project-roadmap` + `verification-before-completion`; thêm `contract-first` chỉ khi sửa boundary.
-- G0 geometry: `python-patterns` + `python-testing`; thêm `property-based-testing` khi cần invariant phù hợp.
-- Planner giật do unknown cause: `investigate-first`; chỉ đọc API docs nếu evidence chỉ về contract API.
-- G1 image: `docker-patterns` + `documentation-lookup`; không kéo Docker/Kubernetes/cloud deployment workflow không liên quan.
+- Plan edits: `project-roadmap` + `verification-before-completion`; add `contract-first` only for boundary changes.
+- G0 geometry: `python-patterns` + `python-testing`; add `property-based-testing` for a suitable invariant.
+- Planner jitter with an unknown cause: `investigate-first`; read API documentation only when evidence points to an API contract.
+- G1 image: `docker-patterns` + `documentation-lookup`; do not load unrelated Docker/Kubernetes/cloud deployment workflows.
 
 ## Native roadmap
 
-- State canonical: `.omp/roadmap/roadmap.json`.
-- Canvas offline: `.omp/roadmap/index.html`, sinh tự động; không sửa tay và không commit generated view.
-- `/roadmap status` xem focus; `/roadmap view` lấy đường dẫn canvas. Đây là native OMP commands, không chạy qua shell.
-- Update bằng `project_roadmap`: `read`, `start`, `arm`, tool verification thật, `complete` với receipt. Revision conflict thì read/reconcile.
-- 27 task bao phủ preparation, G0–G4, bàn giao mô phỏng và decision G5. JSON là nguồn trạng thái duy nhất.
-- Bản đọc portable `docs/ROADMAP.md` sinh bằng `python scripts/check_project.py --export-roadmap`; CI chặn view cũ. Không sửa progress bằng Markdown.
-- State có project-root binding và receipt metadata của workspace. Clone/chuyển root khác không được sửa binding/receipt tay để giả resume; dùng native read và xử lý theo lỗi thật.
+- Canonical state: `.omp/roadmap/roadmap.json`.
+- Offline canvas: `.omp/roadmap/index.html`, generated automatically; do not edit manually or commit the generated view.
+- `/roadmap status` shows the focus; `/roadmap view` returns the canvas path. These are native OMP commands, not shell commands.
+- Update through `project_roadmap`: `read`, `start`, `arm`, actual tool verification and `complete` with a receipt. Read and reconcile revision conflicts.
+- 27 tasks cover preparation, G0–G4, simulation handoff and decision gate G5. JSON is the only status source.
+- Generate the portable `docs/ROADMAP.md` using `python scripts/check_project.py --export-roadmap`; CI rejects stale views. Do not edit progress in Markdown.
+- State contains project-root binding and workspace receipt metadata. When cloning or moving the root, do not edit bindings/receipts to fake resume; use native reads and handle actual errors.
 
-Không tự Graphify index, cài MCP, thêm watcher/daemon hay chạy model khác để làm roadmap. Canvas là view tiến độ, không là giấy chứng nhận simulator đang hoạt động.
+Do not automatically index with Graphify, install MCP, add watchers/daemons or run another model to maintain the roadmap. The canvas is a progress view, not certification that the simulator works.
 
-## Giới hạn đã chọn
+Existing roadmap titles, phases and acceptance text retain their original language: the current native API has no metadata-edit action. Translating those fields requires a supported native update that preserves task IDs, status, dependencies and evidence. Do not bypass this limit by editing canonical JSON or generated views manually.
 
-Không có skill chuyên PX4/ROS 2/Gazebo trong bộ được chọn. Contract chuyên ngành nằm trong docs project, API tra từ nguồn chính thức đã pin. Không tạo skill robotics mới chỉ để gói lại một plan chưa được thực nghiệm.
+## Selected limits
 
-Không nạp mặc định frontend/SEO/marketing/LLM-agent daemon/fuzzing binary/Kubernetes/hardware skills. `benchmark` hiện có thiên web/API/build; không dùng lệnh/metric web của nó để chấm drone. Metric flight theo PLAN/SAFETY/HARNESS và evaluator tương lai.
+The selected set has no dedicated PX4/ROS 2/Gazebo skill. Domain contracts live in project documentation, and APIs must be checked against official pinned sources. Do not create a robotics skill merely to repackage an untested plan.
 
-Không sửa user-authored skills hoặc cấu hình Claude. Việc OMP resolve một `skill://` tới thư mục `.claude`/`.agents` chỉ cung cấp tài liệu, không kích hoạt Claude hooks hay quyền của nền tảng khác.
+Do not load frontend/SEO/marketing/LLM-agent daemon/binary fuzzing/Kubernetes/hardware skills by default. The available `benchmark` skill focuses on web/API/build work; do not use its web commands or metrics to score drone behavior. Flight metrics follow PLAN/SAFETY/HARNESS and the future evaluator.
+
+Do not edit user-authored skills or Claude configuration. OMP resolving `skill://` into a `.claude`/`.agents` directory only supplies reference material; it does not activate Claude hooks or another platform's permissions.
