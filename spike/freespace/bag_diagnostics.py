@@ -22,8 +22,9 @@ def validate_receive_log(records: list, manifest: dict, policy: dict, events: li
             progress = advance_progress(progress, topic, event["source_ns"], event["received_wall_ns"])
         logged[topic] += 1
         if not event["seeded"]:
-            require_fresh(progress, policy["stream_progress_wall_s"], event["received_wall_ns"])
-    require_fresh(progress, policy["stream_progress_wall_s"], manifest["record_end_wall_monotonic_ns"])
+            require_fresh(progress, policy, event["received_wall_ns"], sim_now_ns=event["received_sim_ns"])
+    require_fresh(progress, policy, manifest["record_end_wall_monotonic_ns"],
+                  sim_now_ns=manifest.get("record_end_sim_ns"))
     actual = Counter(topic for topic, _, _ in records)
     if dict(actual) != manifest["topic_counts"] or actual != logged:
         raise ValueError("RECEIVE_LOG_BAG_COUNTS_MISMATCH")
@@ -65,6 +66,10 @@ def diagnostics(records: list, manifest: dict, events: list | None = None) -> di
               "storage_minus_capture_sim_ms": {
                   "depth": quantiles([stored-stamp for stamp, stored in images], 1e-6),
                   "odometry": quantiles([stored-int(msg.timestamp_sample)*1000 for msg, stored in odometry], 1e-6)},
+              "source_minus_received_clock_sim_ms": {
+                  "depth": quantiles([stamp-stored for stamp, stored in images], 1e-6),
+                  "odometry": quantiles([int(msg.timestamp_sample)*1000-stored for msg, stored in odometry], 1e-6)},
+              "clock_offset_note": "Difference to the recorder's latest delivered ROS clock, including clock transport lag; not independent timebase calibration.",
               "receive_wall_diagnostics": None,
               "variance_note": "Reported estimator variance is not calibrated relative drift or a motion safety bound."}
     if odometry:
@@ -99,3 +104,15 @@ def diagnostics(records: list, manifest: dict, events: list | None = None) -> di
     else:
         result["missing_wall_provenance"] = "Historical bag has no per-message monotonic receive trace; windowed RTF is unavailable."
     return result
+
+
+def geometry_summary(rows: list) -> dict:
+    if not rows:
+        return {}
+    return {name: {"minimum_support": min(row["targets"][name]["support"] for row in rows),
+                   "first_frame_p95_m": rows[0]["targets"][name]["p95_m"],
+                   "worst_frame_p95_m": max((row["targets"][name]["p95_m"] for row in rows
+                                              if row["targets"][name]["p95_m"] is not None), default=None),
+                   "maximum_error_m": max((row["targets"][name]["maximum_m"] for row in rows
+                                             if row["targets"][name]["maximum_m"] is not None), default=None)}
+            for name in rows[0]["targets"]}

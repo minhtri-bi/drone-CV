@@ -1,14 +1,18 @@
 {
-  "schema": 2,
+  "schema": 3,
   "scope": "Unarmed acquisition health only; not calibrated motion-authority deadlines.",
   "startup_wall_s": 20.0,
   "alignment_wait_wall_s": 5.0,
+  "alignment_buffer_samples": 512,
+  "writer_queue_items": 128,
+  "writer_shutdown_wall_s": 10.0,
   "max_pose_gap_ns": 50000000,
-  "stream_progress_wall_s": {
-    "/drone_cv_g1/camera/depth/image_raw": 2.0,
-    "/drone_cv_g1/camera/depth/camera_info": 2.0,
-    "/drone_cv_g1/fmu/out/vehicle_odometry": 2.0,
-    "/drone_cv_g1/fmu/out/vehicle_status_v4": 3.0,
-    "/clock": 1.5
+  "clock_progress_wall_s": 1.5,
+  "max_source_clock_lead_ns": 100000000,
+  "stream_age_sim_s": {
+    "/drone_cv_g1/camera/depth/image_raw": 0.5,
+    "/drone_cv_g1/camera/depth/camera_info": 0.5,
+    "/drone_cv_g1/fmu/out/vehicle_odometry": 0.2,
+    "/drone_cv_g1/fmu/out/vehicle_status_v4": 1.1
   }
 }

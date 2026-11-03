@@ -115,7 +115,7 @@ def check_evidence_archive(path: Path) -> None:
                     or hashlib.file_digest(archive.extractfile(member), "sha256").hexdigest() != identity["sha256"]):
                 raise ValueError(f"archived bag identity mismatch: {path.name}:{name}")
         identities = {"fixture.json": manifest["fixture_sha256"]}
-        if manifest.get("recording_schema") == 2:
+        if manifest.get("recording_schema") in (2, 3):
             identities.update({"recording_policy.json": manifest["policy_sha256"],
                                "receive_progress.jsonl": manifest["receive_progress_sha256"]})
         for name, expected in identities.items():
@@ -144,6 +144,19 @@ def check_evidence_bundle(directory: Path) -> int:
         if name.endswith(".tar.gz"):
             check_evidence_archive(path)
     return len(listed)
+
+
+def check_evidence_root(root: Path) -> int:
+    count = 0
+    for directory in root.iterdir():
+        if directory.is_symlink() or not directory.is_dir():
+            raise ValueError(f"unexpected evidence root entry: {directory.name}")
+        if not (directory / "SHA256SUMS").is_file():
+            raise ValueError(f"missing evidence checksum inventory: {directory.name}")
+        count += check_evidence_bundle(directory)
+    if not count:
+        raise ValueError("empty evidence root")
+    return count
 
 
 def check() -> tuple[dict, str]:
@@ -175,8 +188,7 @@ def check() -> tuple[dict, str]:
         for reference in re.findall(r"\b[A-F]\d{2}\b", " ".join(task["acceptance"])):
             if reference not in expected:
                 raise ValueError(f"undefined scenario {reference} in {task['id']}")
-    evidence_count = sum(check_evidence_bundle(checksums.parent)
-                         for checksums in (ROOT / "docs/replay").glob("*/SHA256SUMS"))
+    evidence_count = check_evidence_root(ROOT / "docs/replay")
     summary = f"Integrity OK: PDF checksum, {len(state['tasks'])} acyclic tasks, 65 scenario IDs, local links and {evidence_count} evidence hashes"
     return state, summary
 
