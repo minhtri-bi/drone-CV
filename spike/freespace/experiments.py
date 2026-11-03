@@ -113,6 +113,8 @@ def main() -> None:
     args.output.mkdir(parents=True, exist_ok=True)
     results = {"camera_fov_deg": {k: [round(c.intrinsics.hfov_deg, 1), round(c.intrinsics.vfov_deg, 1)]
                                   for k, c in CAMERAS.items()},
+               "camera_mount_flu": {k: list(c.mount.translation_flu) for k, c in CAMERAS.items()},
+               "envelope_scope": "Historical spike diagnostic; not calibrated navigation clearance",
                "query": {"start": [B.x, B.y, B.z], "forward_m": QUERY_M,
                          "envelope_radius_m": swept_envelope(B, QUERY_M).radius_m},
                "safety_sweep": safety_sweep(args.trials, seed=11),

@@ -1,0 +1,223 @@
+{
+  "schema": 1,
+  "frame": "base_link FLU",
+  "physical_geometry_source": "collision boxes plus full rotor collision sweep",
+  "z_lo_m": -0.227,
+  "z_hi_m": 0.06042307692307692,
+  "radius_m": 0.3859447197013662,
+  "optical_translation_flu": [
+    0.13233,
+    0.0,
+    0.020780000000000003
+  ],
+  "collision_bounds": [
+    {
+      "link": "base_link",
+      "collision": "base_link_collision_0",
+      "lo": [
+        -0.17677669529663687,
+        -0.17677669529663687,
+        -0.018000000000000002
+      ],
+      "hi": [
+        0.17677669529663687,
+        0.17677669529663687,
+        0.032
+      ],
+      "radial_bound_m": 0.24999999999999997
+    },
+    {
+      "link": "base_link",
+      "collision": "base_link_collision_1",
+      "lo": [
+        -0.0075,
+        -0.14104956512917774,
+        -0.22420586840489065
+      ],
+      "hi": [
+        0.0075,
+        -0.054950434870822275,
+        -0.02179413159510933
+      ],
+      "radial_bound_m": 0.1412488223778526
+    },
+    {
+      "link": "base_link",
+      "collision": "base_link_collision_2",
+      "lo": [
+        -0.0075,
+        0.054950434870822275,
+        -0.22420586840489065
+      ],
+      "hi": [
+        0.0075,
+        0.14104956512917774,
+        -0.02179413159510933
+      ],
+      "radial_bound_m": 0.1412488223778526
+    },
+    {
+      "link": "base_link",
+      "collision": "base_link_collision_3",
+      "lo": [
+        -0.125,
+        -0.1395,
+        -0.227
+      ],
+      "hi": [
+        0.125,
+        -0.1245,
+        -0.212
+      ],
+      "radial_bound_m": 0.18731057097772139
+    },
+    {
+      "link": "base_link",
+      "collision": "base_link_collision_4",
+      "lo": [
+        -0.125,
+        0.1245,
+        -0.227
+      ],
+      "hi": [
+        0.125,
+        0.1395,
+        -0.212
+      ],
+      "radial_bound_m": 0.18731057097772139
+    },
+    {
+      "link": "rotor_0",
+      "collision": "rotor_0_collision",
+      "lo": [
+        0.034128440151552336,
+        -0.3138715598484476,
+        0.059576923076923076
+      ],
+      "hi": [
+        0.3138715598484476,
+        -0.034128440151552336,
+        0.06042307692307692
+      ],
+      "radial_bound_m": 0.3859447197013662
+    },
+    {
+      "link": "rotor_1",
+      "collision": "rotor_1_collision",
+      "lo": [
+        -0.3138715598484476,
+        0.034128440151552336,
+        0.059576923076923076
+      ],
+      "hi": [
+        -0.034128440151552336,
+        0.3138715598484476,
+        0.06042307692307692
+      ],
+      "radial_bound_m": 0.3859447197013662
+    },
+    {
+      "link": "rotor_2",
+      "collision": "rotor_2_collision",
+      "lo": [
+        0.034128440151552336,
+        0.034128440151552336,
+        0.059576923076923076
+      ],
+      "hi": [
+        0.3138715598484476,
+        0.3138715598484476,
+        0.06042307692307692
+      ],
+      "radial_bound_m": 0.3859447197013662
+    },
+    {
+      "link": "rotor_3",
+      "collision": "rotor_3_collision",
+      "lo": [
+        -0.3138715598484476,
+        -0.3138715598484476,
+        0.059576923076923076
+      ],
+      "hi": [
+        -0.034128440151552336,
+        -0.034128440151552336,
+        0.06042307692307692
+      ],
+      "radial_bound_m": 0.3859447197013662
+    },
+    {
+      "link": "camera_link",
+      "collision": "OakD-Lite/collision",
+      "lo": [
+        0.11482999999999999,
+        -0.0455,
+        0.0020000000000000018
+      ],
+      "hi": [
+        0.13233,
+        0.0455,
+        0.030000000000000002
+      ],
+      "radial_bound_m": 0.13993383758047945
+    }
+  ],
+  "rotors": [
+    {
+      "link": "rotor_0",
+      "hub_body": [
+        0.174,
+        -0.174,
+        0.06
+      ],
+      "sweep_radius_m": 0.13987155984844765
+    },
+    {
+      "link": "rotor_1",
+      "hub_body": [
+        -0.174,
+        0.174,
+        0.06
+      ],
+      "sweep_radius_m": 0.13987155984844765
+    },
+    {
+      "link": "rotor_2",
+      "hub_body": [
+        0.174,
+        0.174,
+        0.06
+      ],
+      "sweep_radius_m": 0.13987155984844765
+    },
+    {
+      "link": "rotor_3",
+      "hub_body": [
+        -0.174,
+        -0.174,
+        0.06
+      ],
+      "sweep_radius_m": 0.13987155984844765
+    }
+  ],
+  "visual_meshes_not_bounded": [
+    "model://OakD-Lite/meshes/OakDLite.dae",
+    "model://x500_base/meshes/1345_prop_ccw.stl",
+    "model://x500_base/meshes/1345_prop_cw.stl",
+    "model://x500_base/meshes/5010Base.dae",
+    "model://x500_base/meshes/5010Bell.dae",
+    "model://x500_base/meshes/NXP-HGD-CF.dae"
+  ],
+  "source_sha256": {
+    "x500_depth/model.sdf": "84d05a5072b49e87ca164ec9be8bda2e58201baf624d6d10f7117a5e6d6bbb5f",
+    "x500/model.sdf": "cb76a4afd439f253a8c516b1fcd3528f80347619cfa46bebb620557054fbf125",
+    "x500_base/model.sdf": "e807dca3406f7cd5cb3d545898601c3ec17e0e5242e25cf467a69df1812cf436",
+    "OakD-Lite/model.sdf": "f8a78a93c19eb3902ec751fc56bf22b389c7528b38f4d5e3a6c177f3548ee070"
+  },
+  "flight_admission": false,
+  "limitations": [
+    "Visual meshes are identified but not bounded; collision completeness is not certified.",
+    "Yaw/level swept proxy only; tilted-body sweep and PX4 tracking are not modeled.",
+    "This profile is not a contact ledger, phase allowlist, calibrated uncertainty or continuous coverage proof."
+  ]
+}

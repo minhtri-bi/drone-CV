@@ -1,0 +1,1746 @@
+{
+  "scope": "Synthetic sampled-coverage diagnostic only",
+  "flight_admission": false,
+  "physical_profile": {
+    "radius_m": 0.3859447197013662,
+    "z_lo_m": -0.227,
+    "z_hi_m": 0.06042307692307692,
+    "source_sha256": {
+      "x500_depth/model.sdf": "84d05a5072b49e87ca164ec9be8bda2e58201baf624d6d10f7117a5e6d6bbb5f",
+      "x500/model.sdf": "cb76a4afd439f253a8c516b1fcd3528f80347619cfa46bebb620557054fbf125",
+      "x500_base/model.sdf": "e807dca3406f7cd5cb3d545898601c3ec17e0e5242e25cf467a69df1812cf436",
+      "OakD-Lite/model.sdf": "f8a78a93c19eb3902ec751fc56bf22b389c7528b38f4d5e3a6c177f3548ee070"
+    }
+  },
+  "profiles": {
+    "historical_synthetic": {
+      "mount": [
+        0.13233,
+        0,
+        0.26078
+      ],
+      "clearance_m": 0.1,
+      "pose_xy_m": 0.05,
+      "pose_z_m": 0.0,
+      "historical": true
+    },
+    "corrected_mount_historical_envelope": {
+      "mount": [
+        0.13233,
+        0.0,
+        0.020780000000000003
+      ],
+      "clearance_m": 0.1,
+      "pose_xy_m": 0.05,
+      "pose_z_m": 0.0,
+      "historical": true
+    },
+    "model_navigation_diagnostic": {
+      "mount": [
+        0.13233,
+        0.0,
+        0.020780000000000003
+      ],
+      "clearance_m": 0.5,
+      "pose_xy_m": 0.05398491342397691,
+      "pose_z_m": 0.031002521514892578,
+      "historical": false
+    }
+  },
+  "tested_distances_m": [
+    1.0,
+    1.5,
+    2.0,
+    2.5,
+    3.0,
+    3.5,
+    4.0
+  ],
+  "summary": [
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 0.0,
+      "approach_first_allowed_tested_m": 1.0,
+      "level_first_allowed_tested_m": 1.5
+    },
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 20.0,
+      "approach_first_allowed_tested_m": 1.0,
+      "level_first_allowed_tested_m": 1.5
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 0.0,
+      "approach_first_allowed_tested_m": 1.0,
+      "level_first_allowed_tested_m": 1.5
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 20.0,
+      "approach_first_allowed_tested_m": null,
+      "level_first_allowed_tested_m": 2.0
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 0.0,
+      "approach_first_allowed_tested_m": 2.5,
+      "level_first_allowed_tested_m": 2.5
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 20.0,
+      "approach_first_allowed_tested_m": null,
+      "level_first_allowed_tested_m": null
+    }
+  ],
+  "rows": [
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 0.0,
+      "strategy": "climb_only",
+      "sampled_coverage_allowed": false,
+      "reason": "UNSEEN_VOLUME",
+      "counts": {
+        "FREE": 3132,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 3501
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 0.0,
+      "strategy": "climb_then_scan",
+      "sampled_coverage_allowed": false,
+      "reason": "UNSEEN_VOLUME",
+      "counts": {
+        "FREE": 3732,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 2901
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 0.0,
+      "strategy": "approach_1.0m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 0.0,
+      "strategy": "level_1.0m",
+      "sampled_coverage_allowed": false,
+      "reason": "UNSEEN_VOLUME",
+      "counts": {
+        "FREE": 6224,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 409
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 0.0,
+      "strategy": "approach_1.5m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 0.0,
+      "strategy": "level_1.5m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 0.0,
+      "strategy": "approach_2.0m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 0.0,
+      "strategy": "level_2.0m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 0.0,
+      "strategy": "approach_2.5m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 0.0,
+      "strategy": "level_2.5m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 0.0,
+      "strategy": "approach_3.0m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 0.0,
+      "strategy": "level_3.0m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 0.0,
+      "strategy": "approach_3.5m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 0.0,
+      "strategy": "level_3.5m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 0.0,
+      "strategy": "approach_4.0m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 0.0,
+      "strategy": "level_4.0m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 20.0,
+      "strategy": "climb_only",
+      "sampled_coverage_allowed": false,
+      "reason": "UNSEEN_VOLUME",
+      "counts": {
+        "FREE": 3312,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 3321
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 20.0,
+      "strategy": "climb_then_scan",
+      "sampled_coverage_allowed": false,
+      "reason": "UNSEEN_VOLUME",
+      "counts": {
+        "FREE": 4590,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 2043
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 20.0,
+      "strategy": "approach_1.0m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 20.0,
+      "strategy": "level_1.0m",
+      "sampled_coverage_allowed": false,
+      "reason": "UNSEEN_VOLUME",
+      "counts": {
+        "FREE": 6632,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 1
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 20.0,
+      "strategy": "approach_1.5m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 20.0,
+      "strategy": "level_1.5m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 20.0,
+      "strategy": "approach_2.0m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 20.0,
+      "strategy": "level_2.0m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 20.0,
+      "strategy": "approach_2.5m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 20.0,
+      "strategy": "level_2.5m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 20.0,
+      "strategy": "approach_3.0m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 20.0,
+      "strategy": "level_3.0m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 20.0,
+      "strategy": "approach_3.5m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 20.0,
+      "strategy": "level_3.5m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 20.0,
+      "strategy": "approach_4.0m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "historical_synthetic",
+      "pitch_down_deg": 20.0,
+      "strategy": "level_4.0m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 0.0,
+      "strategy": "climb_only",
+      "sampled_coverage_allowed": false,
+      "reason": "UNSEEN_VOLUME",
+      "counts": {
+        "FREE": 3123,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 3510
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 0.0,
+      "strategy": "climb_then_scan",
+      "sampled_coverage_allowed": false,
+      "reason": "UNSEEN_VOLUME",
+      "counts": {
+        "FREE": 4364,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 2269
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 0.0,
+      "strategy": "approach_1.0m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 0.0,
+      "strategy": "level_1.0m",
+      "sampled_coverage_allowed": false,
+      "reason": "UNSEEN_VOLUME",
+      "counts": {
+        "FREE": 6632,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 1
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 0.0,
+      "strategy": "approach_1.5m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 0.0,
+      "strategy": "level_1.5m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 0.0,
+      "strategy": "approach_2.0m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 0.0,
+      "strategy": "level_2.0m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 0.0,
+      "strategy": "approach_2.5m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 0.0,
+      "strategy": "level_2.5m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 0.0,
+      "strategy": "approach_3.0m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 0.0,
+      "strategy": "level_3.0m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 0.0,
+      "strategy": "approach_3.5m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 0.0,
+      "strategy": "level_3.5m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 0.0,
+      "strategy": "approach_4.0m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 0.0,
+      "strategy": "level_4.0m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 20.0,
+      "strategy": "climb_only",
+      "sampled_coverage_allowed": false,
+      "reason": "TOO_CLOSE",
+      "counts": {
+        "FREE": 0,
+        "OBSTACLE": 0,
+        "OCCLUDED": 6633,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 20.0,
+      "strategy": "climb_then_scan",
+      "sampled_coverage_allowed": false,
+      "reason": "TOO_CLOSE",
+      "counts": {
+        "FREE": 0,
+        "OBSTACLE": 0,
+        "OCCLUDED": 6633,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 20.0,
+      "strategy": "approach_1.0m",
+      "sampled_coverage_allowed": false,
+      "reason": "TOO_CLOSE",
+      "counts": {
+        "FREE": 0,
+        "OBSTACLE": 0,
+        "OCCLUDED": 6633,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 20.0,
+      "strategy": "level_1.0m",
+      "sampled_coverage_allowed": false,
+      "reason": "UNSEEN_VOLUME",
+      "counts": {
+        "FREE": 6196,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 437
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 20.0,
+      "strategy": "approach_1.5m",
+      "sampled_coverage_allowed": false,
+      "reason": "TOO_CLOSE",
+      "counts": {
+        "FREE": 0,
+        "OBSTACLE": 0,
+        "OCCLUDED": 6633,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 20.0,
+      "strategy": "level_1.5m",
+      "sampled_coverage_allowed": false,
+      "reason": "UNSEEN_VOLUME",
+      "counts": {
+        "FREE": 6561,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 72
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 20.0,
+      "strategy": "approach_2.0m",
+      "sampled_coverage_allowed": false,
+      "reason": "TOO_CLOSE",
+      "counts": {
+        "FREE": 0,
+        "OBSTACLE": 0,
+        "OCCLUDED": 6633,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 20.0,
+      "strategy": "level_2.0m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 20.0,
+      "strategy": "approach_2.5m",
+      "sampled_coverage_allowed": false,
+      "reason": "TOO_CLOSE",
+      "counts": {
+        "FREE": 0,
+        "OBSTACLE": 0,
+        "OCCLUDED": 6633,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 20.0,
+      "strategy": "level_2.5m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 20.0,
+      "strategy": "approach_3.0m",
+      "sampled_coverage_allowed": false,
+      "reason": "TOO_CLOSE",
+      "counts": {
+        "FREE": 0,
+        "OBSTACLE": 0,
+        "OCCLUDED": 6633,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 20.0,
+      "strategy": "level_3.0m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 20.0,
+      "strategy": "approach_3.5m",
+      "sampled_coverage_allowed": false,
+      "reason": "TOO_CLOSE",
+      "counts": {
+        "FREE": 0,
+        "OBSTACLE": 0,
+        "OCCLUDED": 6633,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 20.0,
+      "strategy": "level_3.5m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 20.0,
+      "strategy": "approach_4.0m",
+      "sampled_coverage_allowed": false,
+      "reason": "TOO_CLOSE",
+      "counts": {
+        "FREE": 0,
+        "OBSTACLE": 0,
+        "OCCLUDED": 6633,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "corrected_mount_historical_envelope",
+      "pitch_down_deg": 20.0,
+      "strategy": "level_4.0m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 6633,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 6633,
+      "radius_m": 0.49999999999999994,
+      "z_lo_m": 1.0,
+      "z_hi_m": 1.4
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 0.0,
+      "strategy": "climb_only",
+      "sampled_coverage_allowed": false,
+      "reason": "UNSEEN_VOLUME",
+      "counts": {
+        "FREE": 18989,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 34463
+      },
+      "sample_count": 53452,
+      "radius_m": 0.9399296331253431,
+      "z_lo_m": 0.4419974784851074,
+      "z_hi_m": 1.7914255984379694
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 0.0,
+      "strategy": "climb_then_scan",
+      "sampled_coverage_allowed": false,
+      "reason": "UNSEEN_VOLUME",
+      "counts": {
+        "FREE": 33228,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 20224
+      },
+      "sample_count": 53452,
+      "radius_m": 0.9399296331253431,
+      "z_lo_m": 0.4419974784851074,
+      "z_hi_m": 1.7914255984379694
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 0.0,
+      "strategy": "approach_1.0m",
+      "sampled_coverage_allowed": false,
+      "reason": "UNSEEN_VOLUME",
+      "counts": {
+        "FREE": 40470,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 12982
+      },
+      "sample_count": 53452,
+      "radius_m": 0.9399296331253431,
+      "z_lo_m": 0.4419974784851074,
+      "z_hi_m": 1.7914255984379694
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 0.0,
+      "strategy": "level_1.0m",
+      "sampled_coverage_allowed": false,
+      "reason": "UNSEEN_VOLUME",
+      "counts": {
+        "FREE": 37383,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 16069
+      },
+      "sample_count": 53452,
+      "radius_m": 0.9399296331253431,
+      "z_lo_m": 0.4419974784851074,
+      "z_hi_m": 1.7914255984379694
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 0.0,
+      "strategy": "approach_1.5m",
+      "sampled_coverage_allowed": false,
+      "reason": "UNSEEN_VOLUME",
+      "counts": {
+        "FREE": 50717,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 2735
+      },
+      "sample_count": 53452,
+      "radius_m": 0.9399296331253431,
+      "z_lo_m": 0.4419974784851074,
+      "z_hi_m": 1.7914255984379694
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 0.0,
+      "strategy": "level_1.5m",
+      "sampled_coverage_allowed": false,
+      "reason": "UNSEEN_VOLUME",
+      "counts": {
+        "FREE": 48019,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 5433
+      },
+      "sample_count": 53452,
+      "radius_m": 0.9399296331253431,
+      "z_lo_m": 0.4419974784851074,
+      "z_hi_m": 1.7914255984379694
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 0.0,
+      "strategy": "approach_2.0m",
+      "sampled_coverage_allowed": false,
+      "reason": "UNSEEN_VOLUME",
+      "counts": {
+        "FREE": 53420,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 32
+      },
+      "sample_count": 53452,
+      "radius_m": 0.9399296331253431,
+      "z_lo_m": 0.4419974784851074,
+      "z_hi_m": 1.7914255984379694
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 0.0,
+      "strategy": "level_2.0m",
+      "sampled_coverage_allowed": false,
+      "reason": "UNSEEN_VOLUME",
+      "counts": {
+        "FREE": 52746,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 706
+      },
+      "sample_count": 53452,
+      "radius_m": 0.9399296331253431,
+      "z_lo_m": 0.4419974784851074,
+      "z_hi_m": 1.7914255984379694
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 0.0,
+      "strategy": "approach_2.5m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 53452,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 53452,
+      "radius_m": 0.9399296331253431,
+      "z_lo_m": 0.4419974784851074,
+      "z_hi_m": 1.7914255984379694
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 0.0,
+      "strategy": "level_2.5m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 53452,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 53452,
+      "radius_m": 0.9399296331253431,
+      "z_lo_m": 0.4419974784851074,
+      "z_hi_m": 1.7914255984379694
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 0.0,
+      "strategy": "approach_3.0m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 53452,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 53452,
+      "radius_m": 0.9399296331253431,
+      "z_lo_m": 0.4419974784851074,
+      "z_hi_m": 1.7914255984379694
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 0.0,
+      "strategy": "level_3.0m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 53452,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 53452,
+      "radius_m": 0.9399296331253431,
+      "z_lo_m": 0.4419974784851074,
+      "z_hi_m": 1.7914255984379694
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 0.0,
+      "strategy": "approach_3.5m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 53452,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 53452,
+      "radius_m": 0.9399296331253431,
+      "z_lo_m": 0.4419974784851074,
+      "z_hi_m": 1.7914255984379694
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 0.0,
+      "strategy": "level_3.5m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 53452,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 53452,
+      "radius_m": 0.9399296331253431,
+      "z_lo_m": 0.4419974784851074,
+      "z_hi_m": 1.7914255984379694
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 0.0,
+      "strategy": "approach_4.0m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 53452,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 53452,
+      "radius_m": 0.9399296331253431,
+      "z_lo_m": 0.4419974784851074,
+      "z_hi_m": 1.7914255984379694
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 0.0,
+      "strategy": "level_4.0m",
+      "sampled_coverage_allowed": true,
+      "reason": "ALLOWED",
+      "counts": {
+        "FREE": 53452,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 0
+      },
+      "sample_count": 53452,
+      "radius_m": 0.9399296331253431,
+      "z_lo_m": 0.4419974784851074,
+      "z_hi_m": 1.7914255984379694
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 20.0,
+      "strategy": "climb_only",
+      "sampled_coverage_allowed": false,
+      "reason": "TOO_CLOSE",
+      "counts": {
+        "FREE": 0,
+        "OBSTACLE": 0,
+        "OCCLUDED": 53452,
+        "UNSEEN": 0
+      },
+      "sample_count": 53452,
+      "radius_m": 0.9399296331253431,
+      "z_lo_m": 0.4419974784851074,
+      "z_hi_m": 1.7914255984379694
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 20.0,
+      "strategy": "climb_then_scan",
+      "sampled_coverage_allowed": false,
+      "reason": "TOO_CLOSE",
+      "counts": {
+        "FREE": 0,
+        "OBSTACLE": 0,
+        "OCCLUDED": 53452,
+        "UNSEEN": 0
+      },
+      "sample_count": 53452,
+      "radius_m": 0.9399296331253431,
+      "z_lo_m": 0.4419974784851074,
+      "z_hi_m": 1.7914255984379694
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 20.0,
+      "strategy": "approach_1.0m",
+      "sampled_coverage_allowed": false,
+      "reason": "TOO_CLOSE",
+      "counts": {
+        "FREE": 0,
+        "OBSTACLE": 0,
+        "OCCLUDED": 53452,
+        "UNSEEN": 0
+      },
+      "sample_count": 53452,
+      "radius_m": 0.9399296331253431,
+      "z_lo_m": 0.4419974784851074,
+      "z_hi_m": 1.7914255984379694
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 20.0,
+      "strategy": "level_1.0m",
+      "sampled_coverage_allowed": false,
+      "reason": "UNSEEN_VOLUME",
+      "counts": {
+        "FREE": 31560,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 21892
+      },
+      "sample_count": 53452,
+      "radius_m": 0.9399296331253431,
+      "z_lo_m": 0.4419974784851074,
+      "z_hi_m": 1.7914255984379694
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 20.0,
+      "strategy": "approach_1.5m",
+      "sampled_coverage_allowed": false,
+      "reason": "TOO_CLOSE",
+      "counts": {
+        "FREE": 0,
+        "OBSTACLE": 0,
+        "OCCLUDED": 53452,
+        "UNSEEN": 0
+      },
+      "sample_count": 53452,
+      "radius_m": 0.9399296331253431,
+      "z_lo_m": 0.4419974784851074,
+      "z_hi_m": 1.7914255984379694
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 20.0,
+      "strategy": "level_1.5m",
+      "sampled_coverage_allowed": false,
+      "reason": "UNSEEN_VOLUME",
+      "counts": {
+        "FREE": 40834,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 12618
+      },
+      "sample_count": 53452,
+      "radius_m": 0.9399296331253431,
+      "z_lo_m": 0.4419974784851074,
+      "z_hi_m": 1.7914255984379694
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 20.0,
+      "strategy": "approach_2.0m",
+      "sampled_coverage_allowed": false,
+      "reason": "TOO_CLOSE",
+      "counts": {
+        "FREE": 0,
+        "OBSTACLE": 0,
+        "OCCLUDED": 53452,
+        "UNSEEN": 0
+      },
+      "sample_count": 53452,
+      "radius_m": 0.9399296331253431,
+      "z_lo_m": 0.4419974784851074,
+      "z_hi_m": 1.7914255984379694
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 20.0,
+      "strategy": "level_2.0m",
+      "sampled_coverage_allowed": false,
+      "reason": "UNSEEN_VOLUME",
+      "counts": {
+        "FREE": 45110,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 8342
+      },
+      "sample_count": 53452,
+      "radius_m": 0.9399296331253431,
+      "z_lo_m": 0.4419974784851074,
+      "z_hi_m": 1.7914255984379694
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 20.0,
+      "strategy": "approach_2.5m",
+      "sampled_coverage_allowed": false,
+      "reason": "TOO_CLOSE",
+      "counts": {
+        "FREE": 0,
+        "OBSTACLE": 0,
+        "OCCLUDED": 53452,
+        "UNSEEN": 0
+      },
+      "sample_count": 53452,
+      "radius_m": 0.9399296331253431,
+      "z_lo_m": 0.4419974784851074,
+      "z_hi_m": 1.7914255984379694
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 20.0,
+      "strategy": "level_2.5m",
+      "sampled_coverage_allowed": false,
+      "reason": "UNSEEN_VOLUME",
+      "counts": {
+        "FREE": 47929,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 5523
+      },
+      "sample_count": 53452,
+      "radius_m": 0.9399296331253431,
+      "z_lo_m": 0.4419974784851074,
+      "z_hi_m": 1.7914255984379694
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 20.0,
+      "strategy": "approach_3.0m",
+      "sampled_coverage_allowed": false,
+      "reason": "TOO_CLOSE",
+      "counts": {
+        "FREE": 0,
+        "OBSTACLE": 0,
+        "OCCLUDED": 53452,
+        "UNSEEN": 0
+      },
+      "sample_count": 53452,
+      "radius_m": 0.9399296331253431,
+      "z_lo_m": 0.4419974784851074,
+      "z_hi_m": 1.7914255984379694
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 20.0,
+      "strategy": "level_3.0m",
+      "sampled_coverage_allowed": false,
+      "reason": "UNSEEN_VOLUME",
+      "counts": {
+        "FREE": 50205,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 3247
+      },
+      "sample_count": 53452,
+      "radius_m": 0.9399296331253431,
+      "z_lo_m": 0.4419974784851074,
+      "z_hi_m": 1.7914255984379694
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 20.0,
+      "strategy": "approach_3.5m",
+      "sampled_coverage_allowed": false,
+      "reason": "TOO_CLOSE",
+      "counts": {
+        "FREE": 0,
+        "OBSTACLE": 0,
+        "OCCLUDED": 53452,
+        "UNSEEN": 0
+      },
+      "sample_count": 53452,
+      "radius_m": 0.9399296331253431,
+      "z_lo_m": 0.4419974784851074,
+      "z_hi_m": 1.7914255984379694
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 20.0,
+      "strategy": "level_3.5m",
+      "sampled_coverage_allowed": false,
+      "reason": "UNSEEN_VOLUME",
+      "counts": {
+        "FREE": 51876,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 1576
+      },
+      "sample_count": 53452,
+      "radius_m": 0.9399296331253431,
+      "z_lo_m": 0.4419974784851074,
+      "z_hi_m": 1.7914255984379694
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 20.0,
+      "strategy": "approach_4.0m",
+      "sampled_coverage_allowed": false,
+      "reason": "TOO_CLOSE",
+      "counts": {
+        "FREE": 0,
+        "OBSTACLE": 0,
+        "OCCLUDED": 53452,
+        "UNSEEN": 0
+      },
+      "sample_count": 53452,
+      "radius_m": 0.9399296331253431,
+      "z_lo_m": 0.4419974784851074,
+      "z_hi_m": 1.7914255984379694
+    },
+    {
+      "profile": "model_navigation_diagnostic",
+      "pitch_down_deg": 20.0,
+      "strategy": "level_4.0m",
+      "sampled_coverage_allowed": false,
+      "reason": "UNSEEN_VOLUME",
+      "counts": {
+        "FREE": 52935,
+        "OBSTACLE": 0,
+        "OCCLUDED": 0,
+        "UNSEEN": 517
+      },
+      "sample_count": 53452,
+      "radius_m": 0.9399296331253431,
+      "z_lo_m": 0.4419974784851074,
+      "z_hi_m": 1.7914255984379694
+    }
+  ],
+  "uncertainty_status": {
+    "diagnostic_xy_span_m": 0.05398491342397691,
+    "diagnostic_z_span_m": 0.031002521514892578,
+    "source": "r39 stationary trace peak-to-peak displacement, not calibrated error",
+    "tracking_bound_m": null,
+    "relative_angular_bound_rad": null,
+    "calibrated_pose_bound_m": null
+  },
+  "limitations": [
+    "Observed spans are illustrative input floors, not worst-case localization bounds.",
+    "Navigation clearance is included once; physical geometry itself is not inflated.",
+    "Level/yaw collision proxy excludes visual-mesh completeness and tilted body motion.",
+    "Synthetic no-return is certified by the renderer only; real sensor +Inf remains uncertified.",
+    "An ALLOWED sampled query in this fixture is not runtime motion authority."
+  ]
+}

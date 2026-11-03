@@ -3,12 +3,13 @@ from math import pi
 import numpy as np
 import pytest
 
-from camera import CameraModel, Intrinsics, Pose
+from camera import CameraModel, Intrinsics, Mount, Pose
 from capture import ahead, capture, climb, straight
 from evidence import Envelope, EvidenceStore, Frame, SensorProfile, Status, decide, swept_envelope
 from scene import Box, Cylinder, Scene, capsule_hits_scene, render_depth
 
-CAM = CameraModel(Intrinsics.pinned_x500_depth())
+# Preserve the original synthetic regression fixture, not the new model profile.
+CAM = CameraModel(Intrinsics.pinned_x500_depth(), Mount((0.13233, 0.0, 0.26078)))
 PROFILE = SensorProfile()
 WALLS = (Box((-2, 2.5, 0), (12, 2.7, 3)), Box((-2, -2.7, 0), (12, -2.5, 3)))
 CLEAR = Scene(walls=WALLS)

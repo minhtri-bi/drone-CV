@@ -20,7 +20,7 @@ def test_ned_axes_and_full_tilt_have_independent_enu_answers():
     np.testing.assert_allclose(pose.world_from_body(), expected, atol=1e-12)
     camera = CameraModel(Intrinsics.pinned_x500_depth())
     rotation, origin = camera.world_from_optical(pose)
-    np.testing.assert_allclose(origin, [2.26078, 1.13233, -3], atol=1e-12)
+    np.testing.assert_allclose(origin, [2.02078, 1.13233, -3], atol=1e-12)
     np.testing.assert_allclose(rotation[:, 2], [0, 1, 0], atol=1e-12)
 
 

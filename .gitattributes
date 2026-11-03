@@ -1,5 +1,6 @@
 # Published evidence hashes describe exact bytes, including JSON and SDF files.
-/docs/replay/** -text
+# Recognize retained CRLF without rewriting the hashed evidence.
+/docs/replay/** -text whitespace=cr-at-eol
 # The copied acquisition input retains its original trailing blank line.
 /docs/replay/integrity-r39/depth-bridge.yaml whitespace=-blank-at-eof
 
