@@ -2,7 +2,7 @@
 
 ## Trạng thái và nguồn
 
-- Đây là **thiết kế để triển khai**, không phải báo cáo hệ thống đã chạy.
+- Thiết kế tổng thể chưa đạt flight acceptance. G0 offline đã có code/test/demo; xem README và native roadmap để biết phạm vi bằng chứng.
 - Repo khi nhập plan chỉ có README; chưa có ROS node, simulator launcher, runner hay CI.
 - [PDF gốc, 15 trang](source/drone-obstacle-avoidance-plan.pdf) được giữ nguyên byte.
 - Tên gốc: `Plan Computer Vision tránh vật cản cho Drone (mô phỏng trước).pdf`.
@@ -10,7 +10,7 @@
 - Bản này chuẩn hoá nội dung và sửa các rủi ro trong [phản biện](REVIEW.md). Không phải bản chép nguyên văn PDF.
 - [Danh mục scenario](SCENARIOS.md) giữ đủ 30 case gốc và thêm các case còn thiếu.
 - [Harness](HARNESS.md) quy định cách agent phát triển và cách evaluator chấm độc lập.
-- [Contract an toàn bổ sung](SAFETY.md) sửa contact/clearance theo phase, outcome precedence, coverage và thứ tự triển khai. Các sửa này chưa có runtime proof.
+- [Contract an toàn bổ sung](SAFETY.md) sửa contact/clearance theo phase, outcome precedence, coverage và thứ tự triển khai. G0 kiểm chứng geometry/freshness offline; các contract bay chưa có SITL proof.
 
 ## 1. Mục tiêu và giới hạn
 
@@ -149,7 +149,7 @@ Luồng bình thường: `IDLE -> PREFLIGHT -> ARM -> TAKEOFF -> NAVIGATE <-> RE
 
 ## 4. Lộ trình và gate
 
-Các mục dưới là **công việc chưa triển khai**. Chỉ chuyển giai đoạn khi có bằng chứng gate, không theo số tuần.
+Đây là tiêu chí gate; trạng thái hiện tại nằm trong native roadmap và bản portable sinh tự động. G0 có triển khai offline, không đồng nghĩa G1–G4 đạt. Không chuyển giai đoạn theo số tuần.
 
 | Gate | Công việc | Xong khi |
 | --- | --- | --- |
@@ -182,7 +182,7 @@ Thứ tự chi tiết nằm trong native roadmap: G1 environment không arm, ora
 
 ## 6. Việc làm ngay
 
-1. Làm G0: pure NumPy geometry + braking + invalid-depth contract, kèm test biên có ý nghĩa.
+1. Chạy core G0 bằng `python -m pytest -q` và `python scripts/g0_demo.py --output artifacts/<new-name>`; không dùng fixture synthetic để chứng nhận sensor/flight stack.
 2. Xác định máy Linux/GPU và smoke image ứng viên để quyết định lock môi trường G1. Không tự cài Docker/WSL/dual boot.
 3. Triển khai oracle/logger và supervisor tối thiểu trước G1 flight; chỉ sau calibration mới mở perception wall-stop và navigation. Mọi numerical bound chưa đo vẫn là pending.
 

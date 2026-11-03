@@ -3,7 +3,7 @@
 ## 1. Hai harness khác nhau
 
 1. **Coding-agent harness:** task nhỏ, contract rõ, evidence trước Git, quyền thao tác có giới hạn. Có hướng dẫn repo tại [`.omp/AGENTS.md`](../.omp/AGENTS.md).
-2. **Simulation-evaluation harness:** chạy scenario, inject fault, ghi log, oracle độc lập và aggregate. Tài liệu này là đặc tả để triển khai; **chưa có runner/evaluator/CI hoạt động**.
+2. **Simulation-evaluation harness:** chạy scenario, inject fault, ghi log, oracle độc lập và aggregate. Phần SITL vẫn là đặc tả; đã có core/demo G0 và CI offline, **chưa có runner/evaluator/flight CI**.
 
 Không dùng LLM điều khiển drone trong control loop. State machine, planner, supervisor và judge runtime phải deterministic theo input/config.
 
@@ -11,7 +11,7 @@ Không dùng LLM điều khiển drone trong control loop. State machine, planne
 
 | Có | Chưa có |
 | --- | --- |
-| PDF gốc, plan sửa, phản biện có nguồn, 65 scenario, contract này, hướng dẫn agent | ROS nodes, pure geometry module, simulator launcher, fault injector, rosbag dataset, scenario runner, acceptance CLI, CI flight benchmark |
+| PDF/plan/contracts, native + portable roadmap, NumPy G0 core, pytest, synthetic demo và workflow CI offline | ROS nodes, simulator launcher, fault injector, rosbag dataset, scenario runner, acceptance flight CLI, CI flight benchmark |
 
 Không được đổi tên thiết kế thành “harness đã chạy”. Không dùng Markdown gate làm bảo đảm kỹ thuật: chỉ runner/CI thật mới enforce được.
 
@@ -173,13 +173,15 @@ Report tối thiểu: numerator/denominator, Wilson CI, outcome counts, missing/
 
 ## 7. Gate merge và acceptance
 
-- Docs-only hiện tại: PDF readback/provenance, local links, coverage 30+35 scenario và đối chiếu nguồn. Không có runtime test để báo green.
+- Source integrity: `python scripts/check_project.py` kiểm tra PDF, DAG, scenario IDs, links và portable roadmap; không thay thế test hành vi.
 - H0: unit/regression hành vi và offline smoke không cần simulator.
 - H1–H3: test phần thay đổi cộng SITL smoke đúng scenario. Nếu thiếu môi trường thì không merge với tuyên bố đã đạt flight gate.
 - Acceptance G3: 50 frozen navigation worlds hợp lệ, ≥45 success, zero unsafe, navigation clearance ≥0.5 m theo phase contract, performance gates, đủ required scenario theo suite và không trial thiếu.
 - Acceptance G4: mỗi source được công bố đạt ≥40/50 như PDF, không hạ contact/phase-clearance gate. Đổi source làm mất hiệu lực bằng chứng G3 cho source đó đến khi rerun.
 - Người dùng quyết định thay mục tiêu/phạm vi hoặc chuyển sang hardware. Một PR tài liệu được merge không đồng nghĩa hệ thống bay đã được chấp nhận.
 
-## 8. Lệnh giao task đầu tiên
+## 8. Commands G0 và handoff G1
 
-> Triển khai G0/H0 của docs/PLAN.md và docs/HARNESS.md. Chỉ làm geometry/validity/histogram/braking offline bằng NumPy, không ROS/GPU/SITL. Dùng docs/SCENARIOS.md để chọn các case G0; viết test hành vi cho optical/FLU/ENU/NED, encoding/unknown/near/far, vật ít pixel, wrap, inflation và stopping-distance boundaries. Chạy fixture qua API thật và báo kết quả. Không tạo node/runner giả, không tự sửa seed/threshold để pass. Hoàn tất đúng slice rồi commit/push/PR/merge theo quyền hiện có và gate thật.
+`python -m pytest -q` chạy regression hành vi; `python scripts/g0_demo.py --output artifacts/<new-name>` chạy API thật và xuất SVG/NPZ/summary. Demo chỉ dùng dữ liệu tổng hợp; xem README về sampling support, independent local-clear certificate và giới hạn braking.
+
+`g1-environment` đã probe và blocked: Docker Linux engine không sẵn sàng, WSL chưa có ROS/PX4/Gazebo trên PATH. Không chạy flight hoặc tự cài stack. Sau khi operator giải prerequisite, native roadmap giữ đúng thứ tự environment, oracle/supervisor, bootstrap flight và calibration.

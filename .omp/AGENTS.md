@@ -3,8 +3,8 @@
 ## Scope and current truth
 
 - Simulation-first obstacle avoidance; no real drone control, purchases or hardware deployment.
-- Read `docs/PLAN.md` and `docs/SAFETY.md`; load `docs/SCENARIOS.md` and `docs/HARNESS.md` only for the current slice.
-- The initial import contains plans, research and harness specifications, not a working flight stack or evaluator.
+- Read only the PLAN/SAFETY sections relevant to the current gate; do not reload all contracts for a small G0 change. Load SCENARIOS/HARNESS when their boundary is affected.
+- G0 now has a NumPy core, behavioral tests and synthetic CLI demo. There is still no flight stack, ROS node or SITL evaluator in this repository.
 - Do not claim a phase passed without evidence from that phase's real execution path.
 
 ## Architecture invariants
@@ -47,6 +47,11 @@
 - This authorization does not cover other repositories, account/security changes, tool installation or real flights.
 - If a required gate cannot run, state exactly what remains unverified. Do not manufacture green evidence.
 
-## Next implementation slice
+## Commands and next slice
 
-G0/H0: offline geometry, depth validity, histogram and braking contracts. See the final task prompt in `docs/HARNESS.md`. No project test/runner command exists at the initial import; add real commands with the implementation rather than inventing an existing suite.
+- `python -m pytest -q`: offline behavioral regressions.
+- `python scripts/check_project.py`: PDF/scenario/link/DAG integrity and portable roadmap freshness.
+- `python scripts/check_project.py --export-roadmap`: regenerate the read-only portable view after native state updates.
+- `python scripts/g0_demo.py --output artifacts/<new-name>`: actual synthetic API smoke; never overwrite earlier evidence.
+- G1 environment is blocked by an unavailable Docker Linux engine and missing ROS/PX4/Gazebo in WSL. Do not bypass that blocker with fake flight evidence or automatic installation.
+- LocalClearance and verified pixel-cone support in the G0 demo come from analytic synthetic geometry, not forward-camera proof. Future adapters must justify them independently.
