@@ -13,6 +13,8 @@ from capture_pose import (OdomSample, camera_from_info, decode_depth, interpolat
                           quaternion_rotation)
 from evidence import EvidenceStore, Frame, SensorProfile, decide, swept_envelope
 from replay_fixture import aligned_camera, grade_frame
+from bag_diagnostics import diagnostics, validate_receive_log
+from recording_integrity import require_alignment_epoch, validate_alignment
 
 
 def stamp_ns(stamp):
@@ -50,7 +52,10 @@ def validate_tf(message, expected_translation):
 
 def collect(records, fixture, fault=None):
     """Decode events into independent epochs; never interpolate or fuse across reset."""
-    epochs = defaultdict(lambda: {"odom": [], "infos": {}, "images": [], "clocks": []})
+    clock_epoch = 0
+    alignment_invalid = False
+    epochs = defaultdict(lambda: {"odom": [], "infos": {}, "images": [], "clocks": [],
+                                  "clock_epoch": clock_epoch, "alignment_invalid": alignment_invalid})
     rejected = Counter()
     epoch, last_clock, reset, last_odom = 0, None, None, None
     mount, calibration = None, None
@@ -66,6 +71,8 @@ def collect(records, fixture, fault=None):
         elif topic == "/clock":
             value = stamp_ns(message.clock)
             if last_clock is not None and value < last_clock:
+                clock_epoch += 1
+                alignment_invalid = True
                 epoch, last_odom, reset, last_image = epoch+1, None, None, None
             last_clock = value
             epochs[epoch]["clocks"].append(value)
@@ -77,6 +84,7 @@ def collect(records, fixture, fault=None):
             if fault == "reset_counter" and odom_seen >= odom_total//2:
                 counter = (counter+1) % 256
             if reset is not None and counter != reset:
+                alignment_invalid = True
                 epoch, last_odom, last_image = epoch+1, None, None
             reset = counter
             try:
@@ -112,8 +120,13 @@ def collect(records, fixture, fault=None):
     return epochs, mount, rejected
 
 
-def evaluate(records, manifest, fixture, output=None, fault=None):
+def evaluate(records, manifest, fixture, output=None, fault=None, *, legacy_analysis=False):
     epochs, mount, rejected = collect(records, fixture, fault)
+    if legacy_analysis:
+        first_sample = next(sample for group in epochs.values() for sample in group["odom"])
+        contract = {"clock_epoch": 0, "reset_counter": first_sample.reset_counter}
+    else:
+        contract = validate_alignment(manifest, fixture["max_pose_gap_ns"])
     reports, gates = [], []
     accepted, considered, previous_stamp = 0, 0, None
     preview = None
@@ -123,6 +136,13 @@ def evaluate(records, manifest, fixture, output=None, fault=None):
         previous_stamp = None
         max_clock = max(group["clocks"]) if group["clocks"] else None
         min_clock = min(group["clocks"]) if group["clocks"] else None
+        try:
+            if group["alignment_invalid"]:
+                raise ValueError("ALIGNMENT_EPOCH_INVALIDATED")
+            require_alignment_epoch(contract, group["clock_epoch"], group["odom"])
+            alignment_error = None
+        except ValueError as error:
+            alignment_error = str(error)
         for capture_ns, image, _ in group["images"]:
             if capture_ns < warmup and fault != "backward_stamps":
                 continue
@@ -138,6 +158,8 @@ def evaluate(records, manifest, fixture, output=None, fault=None):
                 info = group["infos"].get(capture_ns)
                 if info is None:
                     raise ValueError("CAMERA_INFO_MISSING")
+                if alignment_error:
+                    raise ValueError(alignment_error)
                 camera = camera_from_info(info, mount)
                 depth = decode_depth(image)
                 if depth.shape != (camera.intrinsics.height, camera.intrinsics.width):
@@ -181,10 +203,14 @@ def evaluate(records, manifest, fixture, output=None, fault=None):
               "all_target_frames_pass": geometry_pass, "stationary_query_blocked": stationary_stop,
               "stale_evidence_blocked": bool(gates) and all(row["stale_reason"] == "NO_FRESH_FRAMES" for row in gates),
               "no_cross_epoch_history": all(row["frames_used"] <= row["epoch_frames"] for row in gates)}
+    if legacy_analysis:
+        checks["verified_alignment_provenance"] = False
     return {"fault": fault, "checks": checks, "all_checks_pass": all(checks.values()),
             "accepted_frames": accepted, "considered_frames": considered,
             "pair_fraction": pair_fraction, "rejected": dict(rejected), "geometry": reports,
-            "gates": gates, "no_return_certified": False, "scope": "unarmed stationary geometry only"}
+            "gates": gates, "no_return_certified": False, "scope": "unarmed stationary geometry only",
+            "acceptance_eligible": not legacy_analysis,
+            "alignment_provenance": "unbound historical analysis" if legacy_analysis else "verified epoch contract"}
 
 
 def fault_passes(name, variant):
@@ -192,7 +218,9 @@ def fault_passes(name, variant):
     if any(row["allowed"] for row in gates):
         return False
     if name == "reset_counter":
-        return (len(gates) >= 2 and variant["accepted_frames"] > 0
+        return (bool(gates) and variant["accepted_frames"] > 0
+                and (variant["rejected"].get("ALIGNMENT_RESET_CHANGED", 0)
+                     + variant["rejected"].get("ALIGNMENT_EPOCH_INVALIDATED", 0)) > 0
                 and variant["checks"]["no_cross_epoch_history"])
     expected = {"missing_info": "CAMERA_INFO_MISSING",
                 "missing_tf": "OPTICAL_TF_MISSING",
@@ -210,6 +238,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--recording", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--legacy-analysis", action="store_true",
+                        help="Analyze historical unbound provenance; never report new-profile acceptance")
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     manifest = json.loads((args.recording / "manifest.json").read_text())
@@ -222,11 +252,23 @@ def main():
         if hashlib.sha256((args.recording / name).read_bytes()).hexdigest() != identity["sha256"]:
             raise ValueError("BAG_HASH_MISMATCH")
     fixture = json.loads(fixture_bytes)
+    if not args.legacy_analysis:
+        validate_alignment(manifest, fixture["max_pose_gap_ns"])
     records = read_bag(args.recording / "bag")
-    report = evaluate(records, manifest, fixture, args.output)
+    events = None
+    if not args.legacy_analysis:
+        policy_bytes = (args.recording / "recording_policy.json").read_bytes()
+        event_bytes = (args.recording / "receive_progress.jsonl").read_bytes()
+        if (hashlib.sha256(policy_bytes).hexdigest() != manifest["policy_sha256"]
+                or hashlib.sha256(event_bytes).hexdigest() != manifest["receive_progress_sha256"]):
+            raise ValueError("RECEIVE_PROVENANCE_HASH_MISMATCH")
+        events = [json.loads(line) for line in event_bytes.splitlines()]
+        validate_receive_log(records, manifest, json.loads(policy_bytes), events)
+    report = evaluate(records, manifest, fixture, args.output, legacy_analysis=args.legacy_analysis)
+    report["diagnostics"] = diagnostics(records, manifest, events)
     faults = {}
     for name in ("missing_info", "missing_tf", "pose_gap", "backward_stamps", "future_stamps", "reset_counter"):
-        variant = evaluate(records, manifest, fixture, fault=name)
+        variant = evaluate(records, manifest, fixture, fault=name, legacy_analysis=args.legacy_analysis)
         faults[name] = {key: variant[key] for key in ("accepted_frames", "considered_frames", "rejected", "gates", "checks")}
         faults[name]["fault_pass"] = fault_passes(name, variant)
     report["fault_variants"] = faults
@@ -235,7 +277,7 @@ def main():
     report["all_checks_pass"] = all(report["checks"].values())
     (args.output / "report.json").write_text(json.dumps(report, indent=2, allow_nan=False)+"\n")
     print(json.dumps({key: report[key] for key in ("all_checks_pass", "checks", "accepted_frames", "pair_fraction", "rejected", "gates")}))
-    return 0 if report["all_checks_pass"] else 2
+    return 0 if report["all_checks_pass"] or args.legacy_analysis else 2
 
 
 if __name__ == "__main__":

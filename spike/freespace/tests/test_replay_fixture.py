@@ -114,3 +114,13 @@ def test_fault_success_requires_rejection_and_never_allows_a_query():
     rejected = {**empty, "rejected": {"OPTICAL_TF_MISSING": 3}}
     assert fault_passes("missing_tf", rejected)
     assert not fault_passes("missing_tf", {**rejected, "gates": [{"allowed": True}]})
+
+
+def test_reset_counter_returning_to_original_value_cannot_restore_alignment():
+    records = [("/fmu/out/vehicle_odometry", odometry(10, 7), 0),
+               ("/fmu/out/vehicle_odometry", odometry(20, 8), 1),
+               ("/fmu/out/vehicle_odometry", odometry(30, 7), 2)]
+    epochs, _, _ = collect(records, FIXTURE)
+    assert not epochs[0]["alignment_invalid"]
+    assert epochs[1]["alignment_invalid"]
+    assert epochs[2]["alignment_invalid"]

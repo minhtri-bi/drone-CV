@@ -1,0 +1,10 @@
+# Transport is one-way: no Gazebo control/actuator services are bridged.
+- gz_topic_name: /depth_camera
+  ros_topic_name: /drone_cv_g1/camera/depth/image_raw
+  gz_type_name: gz.msgs.Image
+  ros_type_name: sensor_msgs/msg/Image
+  direction: GZ_TO_ROS
+  qos_profile: SENSOR_DATA
+  lazy: false
+  frame_id: drone_cv_g1/camera_optical
+

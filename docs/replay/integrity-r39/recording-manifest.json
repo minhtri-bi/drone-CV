@@ -1,0 +1,326 @@
+{
+  "recording_schema": 2,
+  "scope": "unarmed acquisition only",
+  "control_publishers_created": 0,
+  "arming_commands_sent": 0,
+  "fixture_sha256": "c1c0abc87013463f80849b72d130da547ac1c438a4d16e962d760a4cef0d5c15",
+  "policy_sha256": "4ab644cfea2c07f30cc1c2c5e9b4079ccd0b256da16e20ce5ee060815b3b9c1a",
+  "all_observed_disarmed": true,
+  "complete": true,
+  "storage_id": "sqlite3",
+  "world_from_odom": [
+    [
+      0.994623949298936,
+      -0.1035513687888546,
+      -0.0005599133345288615,
+      0.0012412724422836367
+    ],
+    [
+      0.10355072144556256,
+      0.9946235851317435,
+      -0.0010825838445969436,
+      0.021136709909766592
+    ],
+    [
+      0.0006690060470888798,
+      0.0010187843892227836,
+      0.9999992572543627,
+      0.23739557441057735
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "alignment": {
+    "clock_epoch": 0,
+    "reset_counter": 12,
+    "capture_ns": 20664000000,
+    "max_pose_gap_ns": 50000000,
+    "world_body": [
+      [
+        1.0,
+        -8.651691037676095e-18,
+        5.395178246511511e-09,
+        1.144462378888495e-09
+      ],
+      [
+        8.651690859493494e-18,
+        1.0,
+        3.3026267480905755e-17,
+        2.373671349987057e-19
+      ],
+      [
+        -5.395178246511511e-09,
+        -3.302626743422834e-17,
+        1.0,
+        0.22699981265774744
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "pose_samples": [
+      {
+        "timestamp_ns": 20664000000,
+        "position_ned": [
+          -0.02090512588620186,
+          -0.003430274548009038,
+          0.010372176766395569
+        ],
+        "quaternion_wxyz": [
+          0.6694955502113938,
+          -0.00015443434657781257,
+          -0.0005895119690300211,
+          0.7428158162511174
+        ],
+        "reset_counter": 12,
+        "pose_frame": 1
+      }
+    ]
+  },
+  "alignment_source": {
+    "gazebo_pose_snapshot": {
+      "header": {
+        "stamp": {
+          "sec": "20",
+          "nsec": 664000000
+        }
+      },
+      "pose": [
+        {
+          "name": "x500_depth_0",
+          "id": 18,
+          "position": {
+            "x": -1.5038040027426763e-10,
+            "y": -7.688937060418675e-18,
+            "z": -0.013000187342252556
+          },
+          "orientation": {
+            "x": -1.6513133728783523e-17,
+            "y": 2.6975891232557554e-09,
+            "z": 4.325845474292397e-18,
+            "w": 1
+          }
+        },
+        {
+          "name": "base_link",
+          "id": 19,
+          "position": {
+            "z": 0.24
+          },
+          "orientation": {
+            "w": 1
+          }
+        },
+        {
+          "name": "rotor_0",
+          "id": 37,
+          "position": {
+            "x": 0.17400000000000002,
+            "y": -0.174,
+            "z": 0.3000000000000001
+          },
+          "orientation": {
+            "x": 4.5417092665887005e-34,
+            "y": 7.143326480705756e-35,
+            "z": -1.2190150618695687e-21,
+            "w": 1
+          }
+        },
+        {
+          "name": "rotor_1",
+          "id": 41,
+          "position": {
+            "x": -0.17400000000000002,
+            "y": 0.174,
+            "z": 0.3000000000000001
+          },
+          "orientation": {
+            "x": -1.9601251238402635e-33,
+            "y": 7.143326480728885e-35,
+            "z": -2.103837227499601e-20,
+            "w": 1
+          }
+        },
+        {
+          "name": "rotor_2",
+          "id": 45,
+          "position": {
+            "x": 0.17400000000000002,
+            "y": 0.174,
+            "z": 0.3000000000000001
+          },
+          "orientation": {
+            "x": 3.2693634939519387e-34,
+            "y": 7.143326480700769e-35,
+            "z": 3.055562893017817e-21,
+            "w": 1
+          }
+        },
+        {
+          "name": "rotor_3",
+          "id": 49,
+          "position": {
+            "x": -0.17400000000000002,
+            "y": -0.174,
+            "z": 0.3000000000000001
+          },
+          "orientation": {
+            "x": -2.0377692334242827e-33,
+            "y": 7.143326480704979e-35,
+            "z": -5.521235116423902e-22,
+            "w": 1
+          }
+        },
+        {
+          "name": "camera_link",
+          "id": 53,
+          "position": {
+            "x": 0.11999999999999998,
+            "y": 0.03,
+            "z": 0.242
+          },
+          "orientation": {
+            "y": 7.143326480704334e-35,
+            "w": 1
+          }
+        }
+      ]
+    },
+    "note": "Capture-time bracket; frozen before recording; not fitted to depth."
+  },
+  "publishers": {
+    "/drone_cv_g1/camera/depth/image_raw": [
+      {
+        "type": "sensor_msgs/msg/Image",
+        "reliability": "BEST_EFFORT",
+        "durability": "VOLATILE",
+        "history": "UNKNOWN",
+        "depth": 0
+      }
+    ],
+    "/drone_cv_g1/camera/depth/camera_info": [
+      {
+        "type": "sensor_msgs/msg/CameraInfo",
+        "reliability": "BEST_EFFORT",
+        "durability": "VOLATILE",
+        "history": "UNKNOWN",
+        "depth": 0
+      }
+    ],
+    "/clock": [
+      {
+        "type": "rosgraph_msgs/msg/Clock",
+        "reliability": "BEST_EFFORT",
+        "durability": "VOLATILE",
+        "history": "UNKNOWN",
+        "depth": 0
+      }
+    ],
+    "/tf_static": [
+      {
+        "type": "tf2_msgs/msg/TFMessage",
+        "reliability": "RELIABLE",
+        "durability": "TRANSIENT_LOCAL",
+        "history": "UNKNOWN",
+        "depth": 0
+      }
+    ],
+    "/drone_cv_g1/fmu/out/vehicle_odometry": [
+      {
+        "type": "px4_msgs/msg/VehicleOdometry",
+        "reliability": "BEST_EFFORT",
+        "durability": "TRANSIENT_LOCAL",
+        "history": "UNKNOWN",
+        "depth": 0
+      }
+    ],
+    "/drone_cv_g1/fmu/out/vehicle_status_v4": [
+      {
+        "type": "px4_msgs/msg/VehicleStatus",
+        "reliability": "BEST_EFFORT",
+        "durability": "TRANSIENT_LOCAL",
+        "history": "UNKNOWN",
+        "depth": 0
+      }
+    ]
+  },
+  "subscribers": {
+    "/drone_cv_g1/camera/depth/image_raw": {
+      "reliability": "BEST_EFFORT",
+      "durability": "VOLATILE",
+      "history": "KEEP_LAST",
+      "depth": 100
+    },
+    "/drone_cv_g1/camera/depth/camera_info": {
+      "reliability": "BEST_EFFORT",
+      "durability": "VOLATILE",
+      "history": "KEEP_LAST",
+      "depth": 100
+    },
+    "/clock": {
+      "reliability": "BEST_EFFORT",
+      "durability": "VOLATILE",
+      "history": "KEEP_LAST",
+      "depth": 100
+    },
+    "/tf_static": {
+      "reliability": "RELIABLE",
+      "durability": "TRANSIENT_LOCAL",
+      "history": "KEEP_LAST",
+      "depth": 10
+    },
+    "/drone_cv_g1/fmu/out/vehicle_odometry": {
+      "reliability": "BEST_EFFORT",
+      "durability": "VOLATILE",
+      "history": "KEEP_LAST",
+      "depth": 100
+    },
+    "/drone_cv_g1/fmu/out/vehicle_status_v4": {
+      "reliability": "BEST_EFFORT",
+      "durability": "VOLATILE",
+      "history": "KEEP_LAST",
+      "depth": 100
+    }
+  },
+  "record_start_wall_monotonic_ns": 120887975896,
+  "record_start_sim_ns": 20620000000,
+  "warmup_end_sim_ns": 21088000000,
+  "recorded_wall_s": 30.017410602,
+  "record_end_wall_monotonic_ns": 150905386498,
+  "record_end_sim_ns": 26964000000,
+  "topic_counts": {
+    "/drone_cv_g1/camera/depth/image_raw": 145,
+    "/drone_cv_g1/camera/depth/camera_info": 192,
+    "/clock": 1587,
+    "/tf_static": 1,
+    "/drone_cv_g1/fmu/out/vehicle_odometry": 630,
+    "/drone_cv_g1/fmu/out/vehicle_status_v4": 13
+  },
+  "topics": {
+    "/drone_cv_g1/camera/depth/image_raw": "sensor_msgs/msg/Image",
+    "/drone_cv_g1/camera/depth/camera_info": "sensor_msgs/msg/CameraInfo",
+    "/clock": "rosgraph_msgs/msg/Clock",
+    "/tf_static": "tf2_msgs/msg/TFMessage",
+    "/drone_cv_g1/fmu/out/vehicle_odometry": "px4_msgs/msg/VehicleOdometry",
+    "/drone_cv_g1/fmu/out/vehicle_status_v4": "px4_msgs/msg/VehicleStatus"
+  },
+  "warmup_wall_s": 2.0,
+  "bag_files": {
+    "bag/bag_0.db3": {
+      "bytes": 178712576,
+      "sha256": "e9b475f99d9a57484af51242a9145005323a60968397f7a32ee6ba7569ad398e"
+    },
+    "bag/metadata.yaml": {
+      "bytes": 1950,
+      "sha256": "976aff4dd4cca8700e8dca792d9ce968276f2a342c19ead642ba9b68a1cab25a"
+    }
+  },
+  "receive_progress_sha256": "990b53c367fb2bba651d856bab2afd7c3b8dbf930f5328ebe4d9b2eb7e93c30d"
+}

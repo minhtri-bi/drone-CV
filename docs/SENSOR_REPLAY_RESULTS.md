@@ -71,6 +71,8 @@ No host package, driver, WSL, permission or account changes were made. The acqui
 
 ### Replay the immutable bag
 
+The current integrity profile requires capture-time alignment/reset provenance and a monotonic receive trace. This historical recording predates those fields. Use explicit `--legacy-analysis` below; it preserves diagnostic access but reports `acceptance_eligible=False` and cannot pass the new profile. See the [integrity repair results](SENSOR_REPLAY_INTEGRITY.md) for a fresh schema-two recording.
+
 Use the already available pinned image from `environment.json`; missing ROS/storage packages block this check rather than authorizing installation. Commands below use a POSIX shell. On Git Bash, prefix Docker commands with `MSYS_NO_PATHCONV=1`. Choose unused names/directories; do not overwrite prior output.
 
 ```sh
@@ -81,13 +83,13 @@ docker create --name drone-cv-replay-check --network none --cpus 4 --memory 6g -
 docker start drone-cv-replay-check
 docker cp spike/freespace drone-cv-replay-check:/tmp/freespace
 docker cp artifacts/replay-r35-input/recording-03 drone-cv-replay-check:/tmp/recording-03
-docker exec -i drone-cv-replay-check /usr/local/bin/ros2-entrypoint.sh python3 /tmp/freespace/replay_bag.py --recording /tmp/recording-03 --output /tmp/replay-check
+docker exec -i drone-cv-replay-check /usr/local/bin/ros2-entrypoint.sh python3 /tmp/freespace/replay_bag.py --recording /tmp/recording-03 --output /tmp/replay-check --legacy-analysis
 docker cp drone-cv-replay-check:/tmp/replay-check artifacts/replay-r35-check
 docker stop drone-cv-replay-check
 docker rm drone-cv-replay-check
 ```
 
-The reader verifies fixture and bag hashes, pairs actual CDR messages, grades all targets, exercises the variants and exits nonzero if any required check fails. Replaying a saved bag does not require Gazebo, PX4, DDS or a graphics driver to run.
+The reader verifies fixture and bag hashes, pairs actual CDR messages and exercises the variants. Legacy analysis exits zero when diagnostic processing completes, not when the current acquisition profile passes. Strict replay of a new schema-two recording exits nonzero if provenance or a required check fails. Replaying a saved bag does not require Gazebo, PX4, DDS or a graphics driver to run.
 
 Optional plotting uses the existing host NumPy 2.0.0 / matplotlib 3.9.0 environment, not ROS:
 

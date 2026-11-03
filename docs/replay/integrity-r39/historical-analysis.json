@@ -1,0 +1,4942 @@
+{
+  "fault": null,
+  "checks": {
+    "minimum_frames": true,
+    "paired_fraction": true,
+    "all_target_frames_pass": true,
+    "stationary_query_blocked": true,
+    "stale_evidence_blocked": true,
+    "no_cross_epoch_history": true,
+    "verified_alignment_provenance": false,
+    "fault_variants_pass": true
+  },
+  "all_checks_pass": false,
+  "accepted_frames": 152,
+  "considered_frames": 152,
+  "pair_fraction": 1.0,
+  "rejected": {},
+  "geometry": [
+    {
+      "stamp_ns": 159064000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.006269788097154283,
+          "maximum_m": 0.0062761839835725475,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.006350476884058631,
+          "maximum_m": 0.0063570793309706275,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 395,
+          "valid_pixels": 395,
+          "support": 1.0,
+          "p95_m": 0.000545125155983378,
+          "maximum_m": 0.0005489173842472272,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 159128000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.005510065922901308,
+          "maximum_m": 0.005512135462987899,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.005622550132538606,
+          "maximum_m": 0.005625063245339845,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 394,
+          "valid_pixels": 394,
+          "support": 1.0,
+          "p95_m": 0.0009051413808724692,
+          "maximum_m": 0.0009062533027804076,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 159160000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.005086702188394643,
+          "maximum_m": 0.005093697825248711,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.00523984082981892,
+          "maximum_m": 0.005247771022692582,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 395,
+          "valid_pixels": 395,
+          "support": 1.0,
+          "p95_m": 0.0011241418067452797,
+          "maximum_m": 0.0011251380960130841,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 159196000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.004600464781959879,
+          "maximum_m": 0.004612905577867643,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.00476999769421429,
+          "maximum_m": 0.0047835930061959075,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 395,
+          "valid_pixels": 395,
+          "support": 1.0,
+          "p95_m": 0.0013979047415036499,
+          "maximum_m": 0.0013979965014706552,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 159228000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4550,
+          "valid_pixels": 4550,
+          "support": 1.0,
+          "p95_m": 0.004202846487451328,
+          "maximum_m": 0.004218769225064811,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.004368951663454723,
+          "maximum_m": 0.00438626718878421,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 395,
+          "valid_pixels": 395,
+          "support": 1.0,
+          "p95_m": 0.0016502241875639312,
+          "maximum_m": 0.0016507569302096348,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 159260000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4550,
+          "valid_pixels": 4550,
+          "support": 1.0,
+          "p95_m": 0.0038207828224884554,
+          "maximum_m": 0.0038386427415906255,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.003989044121643382,
+          "maximum_m": 0.004008385076666343,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 397,
+          "valid_pixels": 397,
+          "support": 1.0,
+          "p95_m": 0.0017756325763308434,
+          "maximum_m": 0.0017764363911564884,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 159292000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.0034903037662149306,
+          "maximum_m": 0.003509218191110719,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.003677657119787714,
+          "maximum_m": 0.003697954342096743,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 396,
+          "valid_pixels": 396,
+          "support": 1.0,
+          "p95_m": 0.0017670480346784478,
+          "maximum_m": 0.0017679430682329411,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 159328000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.003085925523534749,
+          "maximum_m": 0.003105706586012502,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.0032705598679494408,
+          "maximum_m": 0.0032918046993515304,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 396,
+          "valid_pixels": 396,
+          "support": 1.0,
+          "p95_m": 0.0017306275396594961,
+          "maximum_m": 0.0017308807153101902,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 159360000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.0027082896837606007,
+          "maximum_m": 0.0027283698933269207,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.002866476535932616,
+          "maximum_m": 0.0028877981989863244,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 396,
+          "valid_pixels": 396,
+          "support": 1.0,
+          "p95_m": 0.001737322871089575,
+          "maximum_m": 0.001737503137940244,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 159392000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.002327661009420723,
+          "maximum_m": 0.002347332085236964,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.0024837444752182415,
+          "maximum_m": 0.002504609097770505,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 396,
+          "valid_pixels": 396,
+          "support": 1.0,
+          "p95_m": 0.0016756617068536955,
+          "maximum_m": 0.001676042399847144,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 159424000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.0019348584218255472,
+          "maximum_m": 0.001954317312756082,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.0020828136819500465,
+          "maximum_m": 0.002103516984547582,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 396,
+          "valid_pixels": 396,
+          "support": 1.0,
+          "p95_m": 0.0016113030301776188,
+          "maximum_m": 0.0016125340749253148,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 159460000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.0014758197048431398,
+          "maximum_m": 0.00149558533865779,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.001624809692922735,
+          "maximum_m": 0.0016458443187703509,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 396,
+          "valid_pixels": 396,
+          "support": 1.0,
+          "p95_m": 0.0015398862355736342,
+          "maximum_m": 0.0015413546982456228,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 159492000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.0010796204195716364,
+          "maximum_m": 0.001099647690455896,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.0012347502020247703,
+          "maximum_m": 0.001256026974117752,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 396,
+          "valid_pixels": 396,
+          "support": 1.0,
+          "p95_m": 0.0014773101483570375,
+          "maximum_m": 0.0014804672078288506,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 159524000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.0007335241498596546,
+          "maximum_m": 0.0007532347756478153,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.0008833237178435205,
+          "maximum_m": 0.0009043174654088659,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 396,
+          "valid_pixels": 396,
+          "support": 1.0,
+          "p95_m": 0.0014211374919319286,
+          "maximum_m": 0.001425794715180173,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 159556000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.00045085448945734183,
+          "maximum_m": 0.00046893729784125426,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.0005824035799164129,
+          "maximum_m": 0.0006016286814549687,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 396,
+          "valid_pixels": 396,
+          "support": 1.0,
+          "p95_m": 0.0013824711311486715,
+          "maximum_m": 0.0013897476061367764,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 159592000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.00023408508232751758,
+          "maximum_m": 0.0002496069986821503,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.00034412296595149884,
+          "maximum_m": 0.00036061491309702376,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 395,
+          "valid_pixels": 395,
+          "support": 1.0,
+          "p95_m": 0.0013286489763635917,
+          "maximum_m": 0.0013378841174714329,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 159624000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.0001467964433492508,
+          "maximum_m": 0.00015990266193677272,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.00023712795641683826,
+          "maximum_m": 0.0002510941758835372,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 395,
+          "valid_pixels": 395,
+          "support": 1.0,
+          "p95_m": 0.0013031222080903458,
+          "maximum_m": 0.0013134995168822272,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 159656000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.00011654606525453027,
+          "maximum_m": 0.00012744419260535267,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.00018375963669585714,
+          "maximum_m": 0.00019528714318894913,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 395,
+          "valid_pixels": 395,
+          "support": 1.0,
+          "p95_m": 0.0013308696310503714,
+          "maximum_m": 0.0013445933829259182,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 159688000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.00013624611274729582,
+          "maximum_m": 0.00014507522302542597,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.00018283805344001535,
+          "maximum_m": 0.00019209728647506807,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 395,
+          "valid_pixels": 395,
+          "support": 1.0,
+          "p95_m": 0.0013645153193397013,
+          "maximum_m": 0.0013782511377573026,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 159724000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.00013474928766710192,
+          "maximum_m": 0.0001424868183992345,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.00017275812279873292,
+          "maximum_m": 0.00018085670471545967,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 396,
+          "valid_pixels": 396,
+          "support": 1.0,
+          "p95_m": 0.0014522515004259245,
+          "maximum_m": 0.0014669421062352417,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 159788000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 2.6224982418820985e-05,
+          "maximum_m": 2.827255734461076e-05,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 2.8037423524374103e-05,
+          "maximum_m": 3.0114871306885505e-05,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 396,
+          "valid_pixels": 396,
+          "support": 1.0,
+          "p95_m": 0.0018107625973705702,
+          "maximum_m": 0.001827163461486092,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 159820000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.00012402243305920102,
+          "maximum_m": 0.0001284113393569264,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.00014165215575037137,
+          "maximum_m": 0.00014624143914510057,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 396,
+          "valid_pixels": 396,
+          "support": 1.0,
+          "p95_m": 0.0020206916116038767,
+          "maximum_m": 0.0020370492702448395,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 159856000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.00030784875395459824,
+          "maximum_m": 0.0003149173583452125,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.00035060031571871876,
+          "maximum_m": 0.00035799941210878927,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 397,
+          "valid_pixels": 397,
+          "support": 1.0,
+          "p95_m": 0.00229288611229691,
+          "maximum_m": 0.0023091730462412585,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 159920000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.0007518899801033374,
+          "maximum_m": 0.0007609656609735005,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.0008172040722099538,
+          "maximum_m": 0.0008267303942322002,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 398,
+          "valid_pixels": 398,
+          "support": 1.0,
+          "p95_m": 0.0028128602055092116,
+          "maximum_m": 0.0028294408840638663,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 159952000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4544,
+          "valid_pixels": 4544,
+          "support": 1.0,
+          "p95_m": 0.0010139286012454951,
+          "maximum_m": 0.0010232535448615465,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.0010843784016084435,
+          "maximum_m": 0.0010942537900922034,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 398,
+          "valid_pixels": 398,
+          "support": 1.0,
+          "p95_m": 0.0030010008139094353,
+          "maximum_m": 0.003016477491869174,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 159988000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4544,
+          "valid_pixels": 4544,
+          "support": 1.0,
+          "p95_m": 0.0013677499026969685,
+          "maximum_m": 0.0013749092235957328,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.0014110627025603506,
+          "maximum_m": 0.0014186492392944672,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 454,
+          "valid_pixels": 454,
+          "support": 1.0,
+          "p95_m": 0.0031462478860285028,
+          "maximum_m": 0.003163041336352007,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 160020000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4544,
+          "valid_pixels": 4544,
+          "support": 1.0,
+          "p95_m": 0.0016974933174954243,
+          "maximum_m": 0.001704449522041518,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.0017444239976453168,
+          "maximum_m": 0.0017517677547802535,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 526,
+          "valid_pixels": 526,
+          "support": 1.0,
+          "p95_m": 0.003234234690973392,
+          "maximum_m": 0.0032530482293548213,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 160052000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4544,
+          "valid_pixels": 4544,
+          "support": 1.0,
+          "p95_m": 0.0020275122328425876,
+          "maximum_m": 0.0020321132581395673,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.002047033446454538,
+          "maximum_m": 0.0020518989015281264,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 526,
+          "valid_pixels": 526,
+          "support": 1.0,
+          "p95_m": 0.003352720403540066,
+          "maximum_m": 0.0033726207222463944,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 160084000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4544,
+          "valid_pixels": 4544,
+          "support": 1.0,
+          "p95_m": 0.002340109247418054,
+          "maximum_m": 0.002342834972129282,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.0023462003353484917,
+          "maximum_m": 0.0023489934540110724,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 527,
+          "valid_pixels": 527,
+          "support": 1.0,
+          "p95_m": 0.0034707824297026597,
+          "maximum_m": 0.003489467019766296,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 160120000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4544,
+          "valid_pixels": 4544,
+          "support": 1.0,
+          "p95_m": 0.0026673058727135547,
+          "maximum_m": 0.002672580657028245,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.002649605919017173,
+          "maximum_m": 0.0026551916504811146,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 525,
+          "valid_pixels": 525,
+          "support": 1.0,
+          "p95_m": 0.003503477233716934,
+          "maximum_m": 0.003522764662456712,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 160152000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4608,
+          "valid_pixels": 4608,
+          "support": 1.0,
+          "p95_m": 0.0029041339222479977,
+          "maximum_m": 0.0029133690306042404,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3094,
+          "valid_pixels": 3094,
+          "support": 1.0,
+          "p95_m": 0.002861136573496159,
+          "maximum_m": 0.0028708325872388585,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 525,
+          "valid_pixels": 525,
+          "support": 1.0,
+          "p95_m": 0.003420530438866426,
+          "maximum_m": 0.0034391176317365713,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 160184000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4608,
+          "valid_pixels": 4608,
+          "support": 1.0,
+          "p95_m": 0.003023769414948041,
+          "maximum_m": 0.0030362977383950884,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3136,
+          "valid_pixels": 3136,
+          "support": 1.0,
+          "p95_m": 0.0029558586787821195,
+          "maximum_m": 0.0029691073861526363,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 436,
+          "valid_pixels": 436,
+          "support": 1.0,
+          "p95_m": 0.0032604626941037176,
+          "maximum_m": 0.0032747937266243976,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 160216000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4544,
+          "valid_pixels": 4544,
+          "support": 1.0,
+          "p95_m": 0.003014328299445257,
+          "maximum_m": 0.0030274732182928865,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3136,
+          "valid_pixels": 3136,
+          "support": 1.0,
+          "p95_m": 0.002945111463047434,
+          "maximum_m": 0.002959123991171708,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 398,
+          "valid_pixels": 398,
+          "support": 1.0,
+          "p95_m": 0.003074812957114051,
+          "maximum_m": 0.00308775733573588,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 160252000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4562,
+          "valid_pixels": 4562,
+          "support": 1.0,
+          "p95_m": 0.002858719370362994,
+          "maximum_m": 0.002873721122612416,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3136,
+          "valid_pixels": 3136,
+          "support": 1.0,
+          "p95_m": 0.0027682613461115224,
+          "maximum_m": 0.002784316400524567,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 398,
+          "valid_pixels": 398,
+          "support": 1.0,
+          "p95_m": 0.0028005552740258967,
+          "maximum_m": 0.002814467728567166,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 160284000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.0026298240584427647,
+          "maximum_m": 0.00264562976479521,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3136,
+          "valid_pixels": 3136,
+          "support": 1.0,
+          "p95_m": 0.00252293560206307,
+          "maximum_m": 0.002539650663683446,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 397,
+          "valid_pixels": 397,
+          "support": 1.0,
+          "p95_m": 0.0025502889833397156,
+          "maximum_m": 0.002563103769790548,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 160316000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.002371578665162666,
+          "maximum_m": 0.0023897663325564977,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3136,
+          "valid_pixels": 3136,
+          "support": 1.0,
+          "p95_m": 0.0022249878824380787,
+          "maximum_m": 0.0022442291963278294,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 397,
+          "valid_pixels": 397,
+          "support": 1.0,
+          "p95_m": 0.002313490687803993,
+          "maximum_m": 0.0023251698820460354,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 160348000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.002096997012657598,
+          "maximum_m": 0.002114081060598405,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3136,
+          "valid_pixels": 3136,
+          "support": 1.0,
+          "p95_m": 0.0019473206755094008,
+          "maximum_m": 0.00196541377767101,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 397,
+          "valid_pixels": 397,
+          "support": 1.0,
+          "p95_m": 0.002062565301267821,
+          "maximum_m": 0.0020728717767321547,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 160384000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.0017631987816770778,
+          "maximum_m": 0.0017774097206886275,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3136,
+          "valid_pixels": 3136,
+          "support": 1.0,
+          "p95_m": 0.0016286780747585272,
+          "maximum_m": 0.0016436986122396746,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 396,
+          "valid_pixels": 396,
+          "support": 1.0,
+          "p95_m": 0.0017943049992141108,
+          "maximum_m": 0.0018025435120310462,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 160416000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.0014911116339991538,
+          "maximum_m": 0.0015041341684791654,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3136,
+          "valid_pixels": 3136,
+          "support": 1.0,
+          "p95_m": 0.0013635165252208203,
+          "maximum_m": 0.0013773116265571872,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 396,
+          "valid_pixels": 396,
+          "support": 1.0,
+          "p95_m": 0.0015970161668488123,
+          "maximum_m": 0.0016055616731287248,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 160448000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.0012260082907470603,
+          "maximum_m": 0.001236452671999011,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3136,
+          "valid_pixels": 3136,
+          "support": 1.0,
+          "p95_m": 0.0011075946808234427,
+          "maximum_m": 0.0011186628657142705,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 396,
+          "valid_pixels": 396,
+          "support": 1.0,
+          "p95_m": 0.0013846859864820454,
+          "maximum_m": 0.001392723287956893,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 160516000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.0006948082698977398,
+          "maximum_m": 0.0007053601263526943,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3136,
+          "valid_pixels": 3136,
+          "support": 1.0,
+          "p95_m": 0.0005577276421919741,
+          "maximum_m": 0.0005688317669196863,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 395,
+          "valid_pixels": 395,
+          "support": 1.0,
+          "p95_m": 0.0011603569093667331,
+          "maximum_m": 0.0011688060671219413,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 160580000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.00018885222604447804,
+          "maximum_m": 0.00019487215450819662,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3136,
+          "valid_pixels": 3136,
+          "support": 1.0,
+          "p95_m": 7.177746126951767e-05,
+          "maximum_m": 7.810289472764964e-05,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 395,
+          "valid_pixels": 395,
+          "support": 1.0,
+          "p95_m": 0.0007971944578656048,
+          "maximum_m": 0.0008080646987181084,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 160648000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.0005708929188715129,
+          "maximum_m": 0.0005753527995371321,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3072,
+          "valid_pixels": 3072,
+          "support": 1.0,
+          "p95_m": 0.0006882791718872295,
+          "maximum_m": 0.0006936742134735496,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 531,
+          "valid_pixels": 531,
+          "support": 1.0,
+          "p95_m": 0.00013412788663327846,
+          "maximum_m": 0.0001519170046255791,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 160680000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.0009017995439776439,
+          "maximum_m": 0.000904203664742198,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.0010116585689435187,
+          "maximum_m": 0.0010149568858794922,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 531,
+          "valid_pixels": 531,
+          "support": 1.0,
+          "p95_m": 0.0004946571382858089,
+          "maximum_m": 0.0005141258737919596,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 160712000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.0012255120273096942,
+          "maximum_m": 0.0012278877955842482,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.0013525006642440384,
+          "maximum_m": 0.0013557282309122343,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 530,
+          "valid_pixels": 530,
+          "support": 1.0,
+          "p95_m": 0.0008880186404698412,
+          "maximum_m": 0.0009109389753889641,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 160744000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.0015608291255231332,
+          "maximum_m": 0.0015639950050188034,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.0017018431846614669,
+          "maximum_m": 0.0017060433681015397,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 529,
+          "valid_pixels": 529,
+          "support": 1.0,
+          "p95_m": 0.0012823084151313113,
+          "maximum_m": 0.0013078766688572607,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 160780000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4622,
+          "valid_pixels": 4622,
+          "support": 1.0,
+          "p95_m": 0.0018839179926726456,
+          "maximum_m": 0.0018887655098249745,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.0020002543828800514,
+          "maximum_m": 0.0020059792341475813,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 527,
+          "valid_pixels": 527,
+          "support": 1.0,
+          "p95_m": 0.001714901659631432,
+          "maximum_m": 0.00174296476694763,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 160812000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4544,
+          "valid_pixels": 4544,
+          "support": 1.0,
+          "p95_m": 0.002084919889812009,
+          "maximum_m": 0.002089544895934825,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.0021884962920421637,
+          "maximum_m": 0.0021940004496405763,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 526,
+          "valid_pixels": 526,
+          "support": 1.0,
+          "p95_m": 0.002221241446739096,
+          "maximum_m": 0.0022506030446864667,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 160844000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4544,
+          "valid_pixels": 4544,
+          "support": 1.0,
+          "p95_m": 0.0021723167976379853,
+          "maximum_m": 0.0021779597253970273,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.002266761668117523,
+          "maximum_m": 0.0022732768405226977,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 525,
+          "valid_pixels": 525,
+          "support": 1.0,
+          "p95_m": 0.0027856138618596094,
+          "maximum_m": 0.002817531817059238,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 160876000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4544,
+          "valid_pixels": 4544,
+          "support": 1.0,
+          "p95_m": 0.0022053271310637835,
+          "maximum_m": 0.0022121146634779265,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.0022994378391270943,
+          "maximum_m": 0.00230704747575583,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 524,
+          "valid_pixels": 524,
+          "support": 1.0,
+          "p95_m": 0.003314099773112307,
+          "maximum_m": 0.003348554184028102,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 160912000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4544,
+          "valid_pixels": 4544,
+          "support": 1.0,
+          "p95_m": 0.002157385850075566,
+          "maximum_m": 0.0021644784513026316,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.0022375882178437222,
+          "maximum_m": 0.0022454655855490557,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 397,
+          "valid_pixels": 397,
+          "support": 1.0,
+          "p95_m": 0.003911241359943624,
+          "maximum_m": 0.003939001322148472,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 160944000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4544,
+          "valid_pixels": 4544,
+          "support": 1.0,
+          "p95_m": 0.002089268249475906,
+          "maximum_m": 0.0020987556920357697,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.002188540589486365,
+          "maximum_m": 0.0021988965377861547,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 395,
+          "valid_pixels": 395,
+          "support": 1.0,
+          "p95_m": 0.004480237514865909,
+          "maximum_m": 0.004509636896206565,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 160976000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4607,
+          "valid_pixels": 4607,
+          "support": 1.0,
+          "p95_m": 0.00201107279365047,
+          "maximum_m": 0.0020240844833052662,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.0021395909646505285,
+          "maximum_m": 0.0021539203770721826,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 533,
+          "valid_pixels": 533,
+          "support": 1.0,
+          "p95_m": 0.005146162126625609,
+          "maximum_m": 0.005186933075926298,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 161008000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.0018782557319707571,
+          "maximum_m": 0.0018941819848294905,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.002028648633346375,
+          "maximum_m": 0.0020456905664678615,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 530,
+          "valid_pixels": 530,
+          "support": 1.0,
+          "p95_m": 0.005837645214260253,
+          "maximum_m": 0.005875824125881751,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 161044000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.0016219500685315858,
+          "maximum_m": 0.0016402353686602034,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.0017909137104029859,
+          "maximum_m": 0.0018104969620535982,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 529,
+          "valid_pixels": 529,
+          "support": 1.0,
+          "p95_m": 0.006661128361468249,
+          "maximum_m": 0.006697739901516397,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 161076000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.0013266823241006253,
+          "maximum_m": 0.0013447674709397006,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.0014959443947570427,
+          "maximum_m": 0.0015152841288150753,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 527,
+          "valid_pixels": 527,
+          "support": 1.0,
+          "p95_m": 0.007509524214758612,
+          "maximum_m": 0.007546373013174346,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 161108000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.0009373397714175448,
+          "maximum_m": 0.0009582814503374948,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.001122097655864085,
+          "maximum_m": 0.0011443482844075703,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 525,
+          "valid_pixels": 525,
+          "support": 1.0,
+          "p95_m": 0.008273179785287955,
+          "maximum_m": 0.008313405155876863,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 161140000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.00046027172322258284,
+          "maximum_m": 0.0004824799019091941,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.0006455490499678973,
+          "maximum_m": 0.0006690399476099174,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 524,
+          "valid_pixels": 524,
+          "support": 1.0,
+          "p95_m": 0.00902724325625336,
+          "maximum_m": 0.009067771939815034,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 161176000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.00023952147029975278,
+          "maximum_m": 0.000263118256066619,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 6.621260113739423e-05,
+          "maximum_m": 8.868667314576584e-05,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 535,
+          "valid_pixels": 535,
+          "support": 1.0,
+          "p95_m": 0.009831289301353524,
+          "maximum_m": 0.009873270794789085,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 161240000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4544,
+          "valid_pixels": 4544,
+          "support": 1.0,
+          "p95_m": 0.0012972242267170087,
+          "maximum_m": 0.0013243716371800218,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.0010906585113807487,
+          "maximum_m": 0.0011191010918700783,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 532,
+          "valid_pixels": 532,
+          "support": 1.0,
+          "p95_m": 0.011343929521319133,
+          "maximum_m": 0.011386185790762643,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 161272000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4544,
+          "valid_pixels": 4544,
+          "support": 1.0,
+          "p95_m": 0.0018232822364218527,
+          "maximum_m": 0.001849093896538534,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.0016411393142831353,
+          "maximum_m": 0.0016680227935266245,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 530,
+          "valid_pixels": 530,
+          "support": 1.0,
+          "p95_m": 0.012096783844904962,
+          "maximum_m": 0.012139229419416364,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 161308000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4612,
+          "valid_pixels": 4612,
+          "support": 1.0,
+          "p95_m": 0.0024525085674458992,
+          "maximum_m": 0.0024777514505736065,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.0022780045850502527,
+          "maximum_m": 0.002304230784890393,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 528,
+          "valid_pixels": 528,
+          "support": 1.0,
+          "p95_m": 0.013016689405544912,
+          "maximum_m": 0.013058578380104047,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 161340000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.0030678018695704965,
+          "maximum_m": 0.0030936679027027125,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.002895519598531271,
+          "maximum_m": 0.0029223364010464437,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 526,
+          "valid_pixels": 526,
+          "support": 1.0,
+          "p95_m": 0.013814811375639939,
+          "maximum_m": 0.01385485421022739,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 161372000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.003755559780125717,
+          "maximum_m": 0.003784339305959783,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.0035561711248664808,
+          "maximum_m": 0.0035860073674012227,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 663,
+          "valid_pixels": 663,
+          "support": 1.0,
+          "p95_m": 0.014688480713199234,
+          "maximum_m": 0.01473420906012371,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 161404000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.004445927091290436,
+          "maximum_m": 0.004474908292073199,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.004265581095805349,
+          "maximum_m": 0.004295606960337928,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 534,
+          "valid_pixels": 534,
+          "support": 1.0,
+          "p95_m": 0.015470556230011655,
+          "maximum_m": 0.015508170038022573,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 161440000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.005145122817087522,
+          "maximum_m": 0.005175668854581872,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.004957956148766751,
+          "maximum_m": 0.004989435258311303,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 533,
+          "valid_pixels": 533,
+          "support": 1.0,
+          "p95_m": 0.016364981234852437,
+          "maximum_m": 0.01640341209735266,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 161472000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.005705427558411946,
+          "maximum_m": 0.005736077810521323,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.005513745203822751,
+          "maximum_m": 0.005545848983331325,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 532,
+          "valid_pixels": 532,
+          "support": 1.0,
+          "p95_m": 0.017089646207992963,
+          "maximum_m": 0.017127464908882506,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 161536000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.006683848288233651,
+          "maximum_m": 0.006715679024896559,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.006487364766710968,
+          "maximum_m": 0.006520356457068388,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 528,
+          "valid_pixels": 528,
+          "support": 1.0,
+          "p95_m": 0.01824612931003328,
+          "maximum_m": 0.01827610996173537,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 161572000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.0071524750232145,
+          "maximum_m": 0.007183586739623937,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.006959984693986954,
+          "maximum_m": 0.006992292871902173,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 668,
+          "valid_pixels": 668,
+          "support": 1.0,
+          "p95_m": 0.018698458578941795,
+          "maximum_m": 0.01873309641406737,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 161604000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.007571727194226252,
+          "maximum_m": 0.007601826029036474,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.007391868031747073,
+          "maximum_m": 0.007423489714143194,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 667,
+          "valid_pixels": 667,
+          "support": 1.0,
+          "p95_m": 0.018950684876944363,
+          "maximum_m": 0.01898459531792296,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 161636000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4612,
+          "valid_pixels": 4612,
+          "support": 1.0,
+          "p95_m": 0.007990980561796035,
+          "maximum_m": 0.008019269640224813,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.007807455328205037,
+          "maximum_m": 0.00783896210128443,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 666,
+          "valid_pixels": 666,
+          "support": 1.0,
+          "p95_m": 0.01911207703076774,
+          "maximum_m": 0.01914405652164297,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 161736000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.009495584838006544,
+          "maximum_m": 0.009524425207461107,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.009330975587832403,
+          "maximum_m": 0.009361307209725389,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 665,
+          "valid_pixels": 665,
+          "support": 1.0,
+          "p95_m": 0.01931069269019036,
+          "maximum_m": 0.019344292923426293,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 161768000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4601,
+          "valid_pixels": 4601,
+          "support": 1.0,
+          "p95_m": 0.00996051570223111,
+          "maximum_m": 0.009987515309469508,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.009795394041804161,
+          "maximum_m": 0.009824933055776697,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 665,
+          "valid_pixels": 665,
+          "support": 1.0,
+          "p95_m": 0.01942813444814126,
+          "maximum_m": 0.019461571756851315,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 161800000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4563,
+          "valid_pixels": 4563,
+          "support": 1.0,
+          "p95_m": 0.010357255882061267,
+          "maximum_m": 0.010384011372892132,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3136,
+          "valid_pixels": 3136,
+          "support": 1.0,
+          "p95_m": 0.010202281447407646,
+          "maximum_m": 0.010230746272174684,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 665,
+          "valid_pixels": 665,
+          "support": 1.0,
+          "p95_m": 0.019531974913090062,
+          "maximum_m": 0.019564426425008608,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 161836000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4544,
+          "valid_pixels": 4544,
+          "support": 1.0,
+          "p95_m": 0.010763456749994727,
+          "maximum_m": 0.010789502757971192,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3136,
+          "valid_pixels": 3136,
+          "support": 1.0,
+          "p95_m": 0.010613494234019694,
+          "maximum_m": 0.010641267291696899,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 665,
+          "valid_pixels": 665,
+          "support": 1.0,
+          "p95_m": 0.019636721542081865,
+          "maximum_m": 0.019667333224011763,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 161900000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4544,
+          "valid_pixels": 4544,
+          "support": 1.0,
+          "p95_m": 0.011465138136547082,
+          "maximum_m": 0.011490863540739582,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3136,
+          "valid_pixels": 3136,
+          "support": 1.0,
+          "p95_m": 0.011315223045605283,
+          "maximum_m": 0.011342745766431683,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 663,
+          "valid_pixels": 663,
+          "support": 1.0,
+          "p95_m": 0.01998336423503914,
+          "maximum_m": 0.02001992449229198,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 162032000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.013121724782290433,
+          "maximum_m": 0.013146097489860065,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3136,
+          "valid_pixels": 3136,
+          "support": 1.0,
+          "p95_m": 0.012986015473753332,
+          "maximum_m": 0.01301182214431229,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 536,
+          "valid_pixels": 536,
+          "support": 1.0,
+          "p95_m": 0.02091266813204202,
+          "maximum_m": 0.020943998904616762,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 162064000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.013506177086482874,
+          "maximum_m": 0.013528228131486575,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3136,
+          "valid_pixels": 3136,
+          "support": 1.0,
+          "p95_m": 0.0133915330691885,
+          "maximum_m": 0.01341487192158386,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 536,
+          "valid_pixels": 536,
+          "support": 1.0,
+          "p95_m": 0.021130833831793323,
+          "maximum_m": 0.021162232954701682,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 162132000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.014275595940189057,
+          "maximum_m": 0.014295531396426142,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3136,
+          "valid_pixels": 3136,
+          "support": 1.0,
+          "p95_m": 0.014180641440481256,
+          "maximum_m": 0.014201767786836683,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 534,
+          "valid_pixels": 534,
+          "support": 1.0,
+          "p95_m": 0.02157524686043969,
+          "maximum_m": 0.02160574348282429,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 162232000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4680,
+          "valid_pixels": 4680,
+          "support": 1.0,
+          "p95_m": 0.015359772665969818,
+          "maximum_m": 0.015378882257535587,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3136,
+          "valid_pixels": 3136,
+          "support": 1.0,
+          "p95_m": 0.015280257833405475,
+          "maximum_m": 0.01530025415784042,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 628,
+          "valid_pixels": 628,
+          "support": 1.0,
+          "p95_m": 0.02218841780906704,
+          "maximum_m": 0.0222238487632197,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 162264000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4680,
+          "valid_pixels": 4680,
+          "support": 1.0,
+          "p95_m": 0.015567462815834255,
+          "maximum_m": 0.015583666754495518,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3082,
+          "valid_pixels": 3082,
+          "support": 1.0,
+          "p95_m": 0.015503191724966614,
+          "maximum_m": 0.015519956685118963,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 673,
+          "valid_pixels": 673,
+          "support": 1.0,
+          "p95_m": 0.02233026953518725,
+          "maximum_m": 0.02236910317102586,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 162296000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4680,
+          "valid_pixels": 4680,
+          "support": 1.0,
+          "p95_m": 0.01571013636722012,
+          "maximum_m": 0.015724543814226166,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3081,
+          "valid_pixels": 3081,
+          "support": 1.0,
+          "p95_m": 0.015659982737483702,
+          "maximum_m": 0.015674870532865093,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 673,
+          "valid_pixels": 673,
+          "support": 1.0,
+          "p95_m": 0.022358037526434272,
+          "maximum_m": 0.022395620538991273,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 162328000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4680,
+          "valid_pixels": 4680,
+          "support": 1.0,
+          "p95_m": 0.015854560941419328,
+          "maximum_m": 0.015867027446423876,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3080,
+          "valid_pixels": 3080,
+          "support": 1.0,
+          "p95_m": 0.015815634635705143,
+          "maximum_m": 0.015828479972141984,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 673,
+          "valid_pixels": 673,
+          "support": 1.0,
+          "p95_m": 0.02238085998944714,
+          "maximum_m": 0.022418799619622592,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 162364000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4680,
+          "valid_pixels": 4680,
+          "support": 1.0,
+          "p95_m": 0.015991976515673856,
+          "maximum_m": 0.016005835252802303,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3122,
+          "valid_pixels": 3122,
+          "support": 1.0,
+          "p95_m": 0.015947445077525303,
+          "maximum_m": 0.01596012113809575,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 673,
+          "valid_pixels": 673,
+          "support": 1.0,
+          "p95_m": 0.022328133454653572,
+          "maximum_m": 0.022367444519881874,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 162460000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.016190824684518157,
+          "maximum_m": 0.016205519322830764,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3136,
+          "valid_pixels": 3136,
+          "support": 1.0,
+          "p95_m": 0.01614239562702302,
+          "maximum_m": 0.01615789464982953,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 537,
+          "valid_pixels": 537,
+          "support": 1.0,
+          "p95_m": 0.021985194614590857,
+          "maximum_m": 0.02201850091270463,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 162560000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.01620028474434343,
+          "maximum_m": 0.016209766308697304,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3136,
+          "valid_pixels": 3136,
+          "support": 1.0,
+          "p95_m": 0.016178206245955007,
+          "maximum_m": 0.016188040397801196,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 534,
+          "valid_pixels": 534,
+          "support": 1.0,
+          "p95_m": 0.02129015162183675,
+          "maximum_m": 0.021328047620874258,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 162592000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.01621360275591206,
+          "maximum_m": 0.016224299426037092,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3136,
+          "valid_pixels": 3136,
+          "support": 1.0,
+          "p95_m": 0.016185084600077504,
+          "maximum_m": 0.016196279566475624,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 535,
+          "valid_pixels": 535,
+          "support": 1.0,
+          "p95_m": 0.02093931612018477,
+          "maximum_m": 0.02097945031588397,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 162628000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4562,
+          "valid_pixels": 4562,
+          "support": 1.0,
+          "p95_m": 0.016289311659626327,
+          "maximum_m": 0.016302302123418322,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3136,
+          "valid_pixels": 3136,
+          "support": 1.0,
+          "p95_m": 0.016245594243669892,
+          "maximum_m": 0.0162596324326163,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 537,
+          "valid_pixels": 537,
+          "support": 1.0,
+          "p95_m": 0.020459899019040956,
+          "maximum_m": 0.020501096858814127,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 162692000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.016491559109848897,
+          "maximum_m": 0.016502571462799764,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3136,
+          "valid_pixels": 3136,
+          "support": 1.0,
+          "p95_m": 0.016459049810723103,
+          "maximum_m": 0.016470643940102114,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 621,
+          "valid_pixels": 621,
+          "support": 1.0,
+          "p95_m": 0.01953450447632657,
+          "maximum_m": 0.019577031435781128,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 162724000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.016539660087830966,
+          "maximum_m": 0.01655325526867557,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3136,
+          "valid_pixels": 3136,
+          "support": 1.0,
+          "p95_m": 0.01648910083384414,
+          "maximum_m": 0.016503480973918627,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 667,
+          "valid_pixels": 667,
+          "support": 1.0,
+          "p95_m": 0.019126893248399994,
+          "maximum_m": 0.01917925269451959,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 162760000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.016582087280808056,
+          "maximum_m": 0.016600061955636125,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3136,
+          "valid_pixels": 3136,
+          "support": 1.0,
+          "p95_m": 0.016492740848587983,
+          "maximum_m": 0.01651166241905866,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 668,
+          "valid_pixels": 668,
+          "support": 1.0,
+          "p95_m": 0.018667500263161267,
+          "maximum_m": 0.018721926838461245,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 162792000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.01655922071015925,
+          "maximum_m": 0.016578654459049602,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.0164575159100802,
+          "maximum_m": 0.016477941625881343,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 669,
+          "valid_pixels": 669,
+          "support": 1.0,
+          "p95_m": 0.01820818038094833,
+          "maximum_m": 0.018262448521860764,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 162856000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4680,
+          "valid_pixels": 4680,
+          "support": 1.0,
+          "p95_m": 0.016395155700215148,
+          "maximum_m": 0.016415867163985354,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.016280700254229695,
+          "maximum_m": 0.01630222688020666,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 612,
+          "valid_pixels": 612,
+          "support": 1.0,
+          "p95_m": 0.017279458910536425,
+          "maximum_m": 0.017331654672780722,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 162892000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4680,
+          "valid_pixels": 4680,
+          "support": 1.0,
+          "p95_m": 0.016182054322667016,
+          "maximum_m": 0.01620319733206932,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.016053367824023022,
+          "maximum_m": 0.016075204084141426,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 532,
+          "valid_pixels": 532,
+          "support": 1.0,
+          "p95_m": 0.016777360251907604,
+          "maximum_m": 0.016827388227910717,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 162924000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4680,
+          "valid_pixels": 4680,
+          "support": 1.0,
+          "p95_m": 0.015914213347607363,
+          "maximum_m": 0.015935350519997282,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.01578252193135743,
+          "maximum_m": 0.015804513023921274,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 533,
+          "valid_pixels": 533,
+          "support": 1.0,
+          "p95_m": 0.016359570075715348,
+          "maximum_m": 0.016411711727442324,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 162956000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4680,
+          "valid_pixels": 4680,
+          "support": 1.0,
+          "p95_m": 0.015583737296200328,
+          "maximum_m": 0.015604000887694536,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3053,
+          "valid_pixels": 3053,
+          "support": 1.0,
+          "p95_m": 0.015453960649849385,
+          "maximum_m": 0.015474890793027996,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 534,
+          "valid_pixels": 534,
+          "support": 1.0,
+          "p95_m": 0.015974276641117252,
+          "maximum_m": 0.016027099693562752,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 163056000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.013946656680720971,
+          "maximum_m": 0.013969948471149518,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3072,
+          "valid_pixels": 3072,
+          "support": 1.0,
+          "p95_m": 0.013724415350594566,
+          "maximum_m": 0.013748721302095923,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 537,
+          "valid_pixels": 537,
+          "support": 1.0,
+          "p95_m": 0.01486260583385649,
+          "maximum_m": 0.01492118248664509,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 163088000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.013276825664845138,
+          "maximum_m": 0.013298140985555928,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3072,
+          "valid_pixels": 3072,
+          "support": 1.0,
+          "p95_m": 0.013019903549310107,
+          "maximum_m": 0.013041860703914665,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 538,
+          "valid_pixels": 538,
+          "support": 1.0,
+          "p95_m": 0.014579414871309093,
+          "maximum_m": 0.014638640263433506,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 163120000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.012561914551107601,
+          "maximum_m": 0.012580077853075355,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3072,
+          "valid_pixels": 3072,
+          "support": 1.0,
+          "p95_m": 0.012274624232774877,
+          "maximum_m": 0.012293599741845185,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 537,
+          "valid_pixels": 537,
+          "support": 1.0,
+          "p95_m": 0.01432910255576616,
+          "maximum_m": 0.014390233757331061,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 163156000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4680,
+          "valid_pixels": 4680,
+          "support": 1.0,
+          "p95_m": 0.011762472728830487,
+          "maximum_m": 0.011777390391760623,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.011441758169074178,
+          "maximum_m": 0.011457045590343107,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 592,
+          "valid_pixels": 592,
+          "support": 1.0,
+          "p95_m": 0.01407616556547666,
+          "maximum_m": 0.014143918624995283,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 163188000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4680,
+          "valid_pixels": 4680,
+          "support": 1.0,
+          "p95_m": 0.011051793621177697,
+          "maximum_m": 0.011058614029750391,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.010716593825306209,
+          "maximum_m": 0.010724281757933163,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 653,
+          "valid_pixels": 653,
+          "support": 1.0,
+          "p95_m": 0.013948376129979118,
+          "maximum_m": 0.014006135737289205,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 163220000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4671,
+          "valid_pixels": 4671,
+          "support": 1.0,
+          "p95_m": 0.010356086585344704,
+          "maximum_m": 0.010369638190573571,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.009992703271403825,
+          "maximum_m": 0.010006764165910731,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 666,
+          "valid_pixels": 666,
+          "support": 1.0,
+          "p95_m": 0.01375650352551186,
+          "maximum_m": 0.013835437747214019,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 163252000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.0096721759535642,
+          "maximum_m": 0.009690478721475326,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.009306186116332738,
+          "maximum_m": 0.00932520622341837,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 639,
+          "valid_pixels": 639,
+          "support": 1.0,
+          "p95_m": 0.013488694279843793,
+          "maximum_m": 0.013567636866007399,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 163288000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.008917606106153641,
+          "maximum_m": 0.008937601317127175,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3072,
+          "valid_pixels": 3072,
+          "support": 1.0,
+          "p95_m": 0.00856080476615766,
+          "maximum_m": 0.008581778203670787,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 529,
+          "valid_pixels": 529,
+          "support": 1.0,
+          "p95_m": 0.01314798308309218,
+          "maximum_m": 0.013221077879647741,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 163320000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4580,
+          "valid_pixels": 4580,
+          "support": 1.0,
+          "p95_m": 0.00825003893194003,
+          "maximum_m": 0.008268790484444732,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3072,
+          "valid_pixels": 3072,
+          "support": 1.0,
+          "p95_m": 0.007876821599467565,
+          "maximum_m": 0.007896520308860566,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 530,
+          "valid_pixels": 530,
+          "support": 1.0,
+          "p95_m": 0.012753860394339667,
+          "maximum_m": 0.012825958771574275,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 163352000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4544,
+          "valid_pixels": 4544,
+          "support": 1.0,
+          "p95_m": 0.007587521232433714,
+          "maximum_m": 0.007606799534157549,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3072,
+          "valid_pixels": 3072,
+          "support": 1.0,
+          "p95_m": 0.007210286846920777,
+          "maximum_m": 0.007230626152338715,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 529,
+          "valid_pixels": 529,
+          "support": 1.0,
+          "p95_m": 0.012335747174079943,
+          "maximum_m": 0.012408543305471365,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 163384000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4544,
+          "valid_pixels": 4544,
+          "support": 1.0,
+          "p95_m": 0.006916153268407754,
+          "maximum_m": 0.006936219308170344,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3072,
+          "valid_pixels": 3072,
+          "support": 1.0,
+          "p95_m": 0.00650426127464887,
+          "maximum_m": 0.006525349932066327,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 530,
+          "valid_pixels": 530,
+          "support": 1.0,
+          "p95_m": 0.01188794999237839,
+          "maximum_m": 0.01196127427991825,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 163420000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4544,
+          "valid_pixels": 4544,
+          "support": 1.0,
+          "p95_m": 0.0061703438751148365,
+          "maximum_m": 0.006195522637569173,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.005739899179086283,
+          "maximum_m": 0.0057662648942757855,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 532,
+          "valid_pixels": 532,
+          "support": 1.0,
+          "p95_m": 0.011390162779212561,
+          "maximum_m": 0.011466672400335554,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 163452000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4544,
+          "valid_pixels": 4544,
+          "support": 1.0,
+          "p95_m": 0.005530209457168156,
+          "maximum_m": 0.005557278545361033,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3072,
+          "valid_pixels": 3072,
+          "support": 1.0,
+          "p95_m": 0.005094980978127816,
+          "maximum_m": 0.005123591733855015,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 533,
+          "valid_pixels": 533,
+          "support": 1.0,
+          "p95_m": 0.010919221104770654,
+          "maximum_m": 0.010993944298317376,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 163516000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4680,
+          "valid_pixels": 4615,
+          "support": 0.9861111111111112,
+          "p95_m": 0.004278783358070237,
+          "maximum_m": 0.004301522214259723,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.0038338350372393746,
+          "maximum_m": 0.0038577324997373097,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 534,
+          "valid_pixels": 534,
+          "support": 1.0,
+          "p95_m": 0.009903487650643297,
+          "maximum_m": 0.009977967931674964,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 163552000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4550,
+          "support": 0.9859154929577465,
+          "p95_m": 0.003640322878330893,
+          "maximum_m": 0.0036623754743163595,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.003192227620873389,
+          "maximum_m": 0.003215564150998773,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 487,
+          "valid_pixels": 487,
+          "support": 1.0,
+          "p95_m": 0.009314945855636714,
+          "maximum_m": 0.009387020208891067,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 163584000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4550,
+          "support": 0.9859154929577465,
+          "p95_m": 0.003032958031096089,
+          "maximum_m": 0.0030548865334214526,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.0025756146885715482,
+          "maximum_m": 0.002598753603753501,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 494,
+          "valid_pixels": 494,
+          "support": 1.0,
+          "p95_m": 0.008794245691083334,
+          "maximum_m": 0.00885839273440106,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 163616000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4550,
+          "support": 0.9859154929577465,
+          "p95_m": 0.00236064440461059,
+          "maximum_m": 0.0023818748457933303,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.0019071850566498405,
+          "maximum_m": 0.001929653864967129,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 527,
+          "valid_pixels": 527,
+          "support": 1.0,
+          "p95_m": 0.008393013864324497,
+          "maximum_m": 0.00847167115360814,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 163648000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4550,
+          "support": 0.9859154929577465,
+          "p95_m": 0.0016580482882962767,
+          "maximum_m": 0.0016794087678038139,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3093,
+          "valid_pixels": 3093,
+          "support": 1.0,
+          "p95_m": 0.001203387836646108,
+          "maximum_m": 0.0012256141057607195,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 527,
+          "valid_pixels": 527,
+          "support": 1.0,
+          "p95_m": 0.008029761487062175,
+          "maximum_m": 0.008109115181888393,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 163684000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4550,
+          "support": 0.9859154929577465,
+          "p95_m": 0.0008413612755070243,
+          "maximum_m": 0.0008605537592591972,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3136,
+          "valid_pixels": 3136,
+          "support": 1.0,
+          "p95_m": 0.0003809584445497727,
+          "maximum_m": 0.00040138049396887254,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 528,
+          "valid_pixels": 528,
+          "support": 1.0,
+          "p95_m": 0.007690332233133576,
+          "maximum_m": 0.0077677289406099526,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 163716000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4550,
+          "support": 0.9859154929577465,
+          "p95_m": 9.69881514975457e-05,
+          "maximum_m": 0.00011652112099547196,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3136,
+          "valid_pixels": 3136,
+          "support": 1.0,
+          "p95_m": 0.0006154513731591038,
+          "maximum_m": 0.0006365916009434258,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 528,
+          "valid_pixels": 528,
+          "support": 1.0,
+          "p95_m": 0.0074379200894416865,
+          "maximum_m": 0.007514819754792235,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 163748000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4550,
+          "support": 0.9859154929577465,
+          "p95_m": 0.00091703796842042,
+          "maximum_m": 0.0009370388150085063,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3136,
+          "valid_pixels": 3136,
+          "support": 1.0,
+          "p95_m": 0.0014272294405022201,
+          "maximum_m": 0.001448208398997508,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 529,
+          "valid_pixels": 529,
+          "support": 1.0,
+          "p95_m": 0.007191584726153488,
+          "maximum_m": 0.007268163912259568,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 163780000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4550,
+          "support": 0.9859154929577465,
+          "p95_m": 0.00176286723214627,
+          "maximum_m": 0.001786804002044562,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3136,
+          "valid_pixels": 3136,
+          "support": 1.0,
+          "p95_m": 0.0022784983610859566,
+          "maximum_m": 0.0023038276745328545,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 529,
+          "valid_pixels": 529,
+          "support": 1.0,
+          "p95_m": 0.0069895644150035855,
+          "maximum_m": 0.0070656734293071954,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 163816000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4550,
+          "support": 0.9859154929577465,
+          "p95_m": 0.002646881958479108,
+          "maximum_m": 0.0026715055856092462,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3100,
+          "valid_pixels": 3100,
+          "support": 1.0,
+          "p95_m": 0.0031623317137989384,
+          "maximum_m": 0.0031876721071935066,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 529,
+          "valid_pixels": 529,
+          "support": 1.0,
+          "p95_m": 0.0067061921194232375,
+          "maximum_m": 0.006782419686065744,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 163848000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4550,
+          "support": 0.9859154929577465,
+          "p95_m": 0.003358500115275809,
+          "maximum_m": 0.00338458168834066,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.0038594033352606695,
+          "maximum_m": 0.0038869248086204067,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 530,
+          "valid_pixels": 530,
+          "support": 1.0,
+          "p95_m": 0.006440646708175328,
+          "maximum_m": 0.006516308947013327,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 163880000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4550,
+          "support": 0.9859154929577465,
+          "p95_m": 0.004008830148711562,
+          "maximum_m": 0.004034383962905785,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.004509115331694869,
+          "maximum_m": 0.004536079419610317,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 531,
+          "valid_pixels": 531,
+          "support": 1.0,
+          "p95_m": 0.00606737837484865,
+          "maximum_m": 0.006143893787922322,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 163912000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4550,
+          "support": 0.9859154929577465,
+          "p95_m": 0.00463569477589878,
+          "maximum_m": 0.004663362788704717,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3047,
+          "valid_pixels": 3047,
+          "support": 1.0,
+          "p95_m": 0.005163588548644871,
+          "maximum_m": 0.005192563078554535,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 531,
+          "valid_pixels": 531,
+          "support": 1.0,
+          "p95_m": 0.005748831795666293,
+          "maximum_m": 0.005825245141629021,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 163948000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4550,
+          "support": 0.9859154929577465,
+          "p95_m": 0.005332445016059673,
+          "maximum_m": 0.005362498645403946,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.0058623255250621845,
+          "maximum_m": 0.005893599469369626,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 470,
+          "valid_pixels": 470,
+          "support": 1.0,
+          "p95_m": 0.005472091558789851,
+          "maximum_m": 0.005542940209107783,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 163980000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4550,
+          "support": 0.9859154929577465,
+          "p95_m": 0.005986406281369127,
+          "maximum_m": 0.006018165941967357,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.00652129529835892,
+          "maximum_m": 0.006554413350640331,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 393,
+          "valid_pixels": 393,
+          "support": 1.0,
+          "p95_m": 0.005290547625778052,
+          "maximum_m": 0.005354090473218387,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 164012000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4550,
+          "support": 0.9859154929577465,
+          "p95_m": 0.006675460924166221,
+          "maximum_m": 0.006710043754835748,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.007221153858012874,
+          "maximum_m": 0.007257088203338924,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 396,
+          "valid_pixels": 396,
+          "support": 1.0,
+          "p95_m": 0.005124089937775023,
+          "maximum_m": 0.0051857534245829395,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 164044000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4570,
+          "valid_pixels": 4505,
+          "support": 0.9857768052516411,
+          "p95_m": 0.007337267857042562,
+          "maximum_m": 0.007371525969688708,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.00790791121268426,
+          "maximum_m": 0.007943865520119608,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 396,
+          "valid_pixels": 396,
+          "support": 1.0,
+          "p95_m": 0.004925117182493485,
+          "maximum_m": 0.00498550368442785,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 164080000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4544,
+          "valid_pixels": 4480,
+          "support": 0.9859154929577465,
+          "p95_m": 0.008120905680004875,
+          "maximum_m": 0.008156759871421837,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.008697943249356976,
+          "maximum_m": 0.008735689049648165,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 395,
+          "valid_pixels": 395,
+          "support": 1.0,
+          "p95_m": 0.004750298279367129,
+          "maximum_m": 0.00480910536380863,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 164112000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4544,
+          "valid_pixels": 4480,
+          "support": 0.9859154929577465,
+          "p95_m": 0.008823705292972227,
+          "maximum_m": 0.008860085735227674,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.009420260155476168,
+          "maximum_m": 0.009458470792049312,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 395,
+          "valid_pixels": 395,
+          "support": 1.0,
+          "p95_m": 0.004612036363014715,
+          "maximum_m": 0.004670043951624486,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 164212000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4544,
+          "valid_pixels": 4480,
+          "support": 0.9859154929577465,
+          "p95_m": 0.010902735512113005,
+          "maximum_m": 0.010946849255005553,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.011590226050480679,
+          "maximum_m": 0.011636723082025568,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 395,
+          "valid_pixels": 395,
+          "support": 1.0,
+          "p95_m": 0.004667658010611272,
+          "maximum_m": 0.00471702311986083,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 164276000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4550,
+          "valid_pixels": 4550,
+          "support": 1.0,
+          "p95_m": 0.011959062680838795,
+          "maximum_m": 0.012008406626714763,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3104,
+          "valid_pixels": 3104,
+          "support": 1.0,
+          "p95_m": 0.012664834770494071,
+          "maximum_m": 0.01271394471536258,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 395,
+          "valid_pixels": 395,
+          "support": 1.0,
+          "p95_m": 0.005308826872598507,
+          "maximum_m": 0.005355177075081624,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 164344000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4550,
+          "valid_pixels": 4550,
+          "support": 1.0,
+          "p95_m": 0.012853112660763921,
+          "maximum_m": 0.012903092375899039,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3136,
+          "valid_pixels": 3136,
+          "support": 1.0,
+          "p95_m": 0.013602866666360347,
+          "maximum_m": 0.013656106040251359,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 463,
+          "valid_pixels": 463,
+          "support": 1.0,
+          "p95_m": 0.006286931090084091,
+          "maximum_m": 0.006336098757594361,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 164376000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.01319209181717107,
+          "maximum_m": 0.013245117769031811,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.01394126870482637,
+          "maximum_m": 0.013996797319313359,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 530,
+          "valid_pixels": 530,
+          "support": 1.0,
+          "p95_m": 0.006672794093607212,
+          "maximum_m": 0.006727718531953891,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 164408000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.013422922857214425,
+          "maximum_m": 0.013473901005775168,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.014157965778488624,
+          "maximum_m": 0.014211458900294183,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 529,
+          "valid_pixels": 529,
+          "support": 1.0,
+          "p95_m": 0.006971289690656812,
+          "maximum_m": 0.007028123200506442,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 164440000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.013501693484910903,
+          "maximum_m": 0.013549610204890872,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.014216827567742386,
+          "maximum_m": 0.014267101930905746,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 529,
+          "valid_pixels": 529,
+          "support": 1.0,
+          "p95_m": 0.007252279089172836,
+          "maximum_m": 0.0073083288057480544,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 164476000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.013533666954589397,
+          "maximum_m": 0.013577792126389099,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.014221005204759685,
+          "maximum_m": 0.014267226143778622,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 528,
+          "valid_pixels": 528,
+          "support": 1.0,
+          "p95_m": 0.007495233867997225,
+          "maximum_m": 0.007550090227374684,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 164508000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4544,
+          "valid_pixels": 4544,
+          "support": 1.0,
+          "p95_m": 0.01352294150933575,
+          "maximum_m": 0.013563483351716865,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.014199692985764224,
+          "maximum_m": 0.014242624149588323,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 528,
+          "valid_pixels": 528,
+          "support": 1.0,
+          "p95_m": 0.007718715073915564,
+          "maximum_m": 0.007772401355053332,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 164572000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4544,
+          "valid_pixels": 4544,
+          "support": 1.0,
+          "p95_m": 0.013535323280505062,
+          "maximum_m": 0.01357461371930091,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.014160869976029255,
+          "maximum_m": 0.014201826205095358,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 525,
+          "valid_pixels": 525,
+          "support": 1.0,
+          "p95_m": 0.008270209284270242,
+          "maximum_m": 0.008323193003978047,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 164608000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4544,
+          "valid_pixels": 4544,
+          "support": 1.0,
+          "p95_m": 0.01346756931428703,
+          "maximum_m": 0.013503087035405592,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.014058143686048252,
+          "maximum_m": 0.014095338586078476,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 525,
+          "valid_pixels": 525,
+          "support": 1.0,
+          "p95_m": 0.008523039904328756,
+          "maximum_m": 0.008572520724127786,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 164640000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4544,
+          "valid_pixels": 4544,
+          "support": 1.0,
+          "p95_m": 0.013421883218995512,
+          "maximum_m": 0.01345502845349511,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.013998542260830282,
+          "maximum_m": 0.01403316559701917,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 524,
+          "valid_pixels": 524,
+          "support": 1.0,
+          "p95_m": 0.008756071353207787,
+          "maximum_m": 0.008806601851548218,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 164740000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4514,
+          "valid_pixels": 4514,
+          "support": 1.0,
+          "p95_m": 0.01342997758246205,
+          "maximum_m": 0.01345366660093461,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.013963173965910559,
+          "maximum_m": 0.013987660815389269,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 524,
+          "valid_pixels": 524,
+          "support": 1.0,
+          "p95_m": 0.008884971847917917,
+          "maximum_m": 0.008936101622698839,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 164772000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4480,
+          "valid_pixels": 4480,
+          "support": 1.0,
+          "p95_m": 0.013518279303717452,
+          "maximum_m": 0.013543147010716794,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.014052234122522522,
+          "maximum_m": 0.014078288219739221,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 524,
+          "valid_pixels": 524,
+          "support": 1.0,
+          "p95_m": 0.008872969133832067,
+          "maximum_m": 0.008924077820401,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 164836000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4480,
+          "valid_pixels": 4480,
+          "support": 1.0,
+          "p95_m": 0.013758121033025672,
+          "maximum_m": 0.013781318964802836,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.014320690383317736,
+          "maximum_m": 0.014344842193211527,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 526,
+          "valid_pixels": 526,
+          "support": 1.0,
+          "p95_m": 0.00871269734778108,
+          "maximum_m": 0.008765058240579021,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 164872000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4480,
+          "valid_pixels": 4480,
+          "support": 1.0,
+          "p95_m": 0.013854389306001358,
+          "maximum_m": 0.01387464334478894,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.01441293525430809,
+          "maximum_m": 0.014433790238792099,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 526,
+          "valid_pixels": 526,
+          "support": 1.0,
+          "p95_m": 0.008508408958219006,
+          "maximum_m": 0.008562682479441391,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 164904000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4480,
+          "valid_pixels": 4480,
+          "support": 1.0,
+          "p95_m": 0.013943350846133162,
+          "maximum_m": 0.013964027221645026,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3053,
+          "valid_pixels": 3053,
+          "support": 1.0,
+          "p95_m": 0.014506302298916474,
+          "maximum_m": 0.014527696542838697,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 526,
+          "valid_pixels": 526,
+          "support": 1.0,
+          "p95_m": 0.008300500564231102,
+          "maximum_m": 0.008352917753959604,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 164968000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4480,
+          "valid_pixels": 4480,
+          "support": 1.0,
+          "p95_m": 0.014058567620722573,
+          "maximum_m": 0.014081904579318127,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.014616153531088028,
+          "maximum_m": 0.014640801413035476,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 526,
+          "valid_pixels": 526,
+          "support": 1.0,
+          "p95_m": 0.007798247098843171,
+          "maximum_m": 0.007850495964077692,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 165004000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4550,
+          "valid_pixels": 4550,
+          "support": 1.0,
+          "p95_m": 0.014026734629099003,
+          "maximum_m": 0.01404878102938456,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.014589709258887584,
+          "maximum_m": 0.014612658256461408,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 527,
+          "valid_pixels": 527,
+          "support": 1.0,
+          "p95_m": 0.007388274551499851,
+          "maximum_m": 0.007443679541605547,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 165036000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4550,
+          "valid_pixels": 4550,
+          "support": 1.0,
+          "p95_m": 0.013944032040605236,
+          "maximum_m": 0.013963740468393215,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.014484366438438378,
+          "maximum_m": 0.01450474234232324,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 527,
+          "valid_pixels": 527,
+          "support": 1.0,
+          "p95_m": 0.006973005955355771,
+          "maximum_m": 0.007029194794382854,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 165068000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4550,
+          "valid_pixels": 4550,
+          "support": 1.0,
+          "p95_m": 0.013859997460899765,
+          "maximum_m": 0.013877133679192966,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.014381336291620084,
+          "maximum_m": 0.014399388471382224,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 531,
+          "valid_pixels": 531,
+          "support": 1.0,
+          "p95_m": 0.0065917651787772286,
+          "maximum_m": 0.006647335157538875,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 165100000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4573,
+          "valid_pixels": 4573,
+          "support": 1.0,
+          "p95_m": 0.01376300403205848,
+          "maximum_m": 0.013775993943908826,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.01425441846948674,
+          "maximum_m": 0.014268281905671643,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 410,
+          "valid_pixels": 410,
+          "support": 1.0,
+          "p95_m": 0.006262442814517813,
+          "maximum_m": 0.006306938391018618,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 165136000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.01361165598196088,
+          "maximum_m": 0.013621946987363742,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3087,
+          "valid_pixels": 3087,
+          "support": 1.0,
+          "p95_m": 0.014082060528544726,
+          "maximum_m": 0.014092728608874339,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 393,
+          "valid_pixels": 393,
+          "support": 1.0,
+          "p95_m": 0.005966054694183476,
+          "maximum_m": 0.006010998320421651,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 165232000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4615,
+          "valid_pixels": 4615,
+          "support": 1.0,
+          "p95_m": 0.013084518953324053,
+          "maximum_m": 0.013095465231916403,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.013519147146514632,
+          "maximum_m": 0.013531701868314094,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 394,
+          "valid_pixels": 394,
+          "support": 1.0,
+          "p95_m": 0.0053687241394575255,
+          "maximum_m": 0.005414557026265421,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    },
+    {
+      "stamp_ns": 165268000000,
+      "epoch": 0,
+      "targets": {
+        "front": {
+          "roi_pixels": 4610,
+          "valid_pixels": 4610,
+          "support": 1.0,
+          "p95_m": 0.012942980920296488,
+          "maximum_m": 0.012953321743778723,
+          "pass": true
+        },
+        "offaxis": {
+          "roi_pixels": 3024,
+          "valid_pixels": 3024,
+          "support": 1.0,
+          "p95_m": 0.013356628326652454,
+          "maximum_m": 0.01336850874894946,
+          "pass": true
+        },
+        "horizontal": {
+          "roi_pixels": 395,
+          "valid_pixels": 395,
+          "support": 1.0,
+          "p95_m": 0.005171031254180383,
+          "maximum_m": 0.005217236157350341,
+          "pass": true
+        }
+      },
+      "all_pass": true
+    }
+  ],
+  "gates": [
+    {
+      "epoch": 0,
+      "allowed": false,
+      "reason": "OBSTACLE_IN_ENVELOPE",
+      "counts": {
+        "FREE": 1538,
+        "OBSTACLE": 665,
+        "OCCLUDED": 959,
+        "UNSEEN": 3444
+      },
+      "frames_used": 152,
+      "epoch_frames": 152,
+      "stale_reason": "NO_FRESH_FRAMES"
+    }
+  ],
+  "no_return_certified": false,
+  "scope": "unarmed stationary geometry only",
+  "acceptance_eligible": false,
+  "alignment_provenance": "unbound historical analysis",
+  "diagnostics": {
+    "clock_span_sim_s": 6.832,
+    "recorded_wall_s": 30.050796326999944,
+    "mean_rtf": 0.22734838457048162,
+    "warmup_sim_s": 0.564,
+    "image_count": 167,
+    "camera_info_count": 208,
+    "camera_info_without_image_stamps": 41,
+    "image_without_camera_info_stamps": 0,
+    "image_gap_sim_ms": {
+      "p50": 32.0,
+      "p95": 96.0,
+      "maximum": 132.0
+    },
+    "availability_note": "Observed gaps and unmatched stamps are not a proven renderer/transport loss fraction.",
+    "storage_minus_capture_sim_ms": {
+      "depth": {
+        "p50": 32.0,
+        "p95": 40.0,
+        "maximum": 96.0
+      },
+      "odometry": {
+        "p50": 8.0,
+        "p95": 12.0,
+        "maximum": 132.0
+      }
+    },
+    "receive_wall_diagnostics": null,
+    "variance_note": "Reported estimator variance is not calibrated relative drift or a motion safety bound.",
+    "odometry": {
+      "reset_counters": [
+        12
+      ],
+      "pose_frames": [
+        1
+      ],
+      "position_ned_peak_to_peak_m": [
+        0.0319421929307282,
+        0.02928817358770175,
+        0.026284649968147278
+      ],
+      "quality_note": "Pinned VehicleOdometry quality is unused; zero is not an admission test.",
+      "position_variance": {
+        "invalid_components": 0,
+        "last_sigma_m": [
+          0.10681436589409807,
+          0.10685115405969191,
+          0.16491314073832977
+        ],
+        "frame": "pose reference"
+      },
+      "orientation_variance": {
+        "invalid_components": 0,
+        "last_sigma_rad": [
+          0.004537262089485297,
+          0.004542395519233981,
+          0.1819588529504977
+        ],
+        "frame": "body"
+      }
+    },
+    "missing_wall_provenance": "Historical bag has no per-message monotonic receive trace; windowed RTF is unavailable."
+  },
+  "fault_variants": {
+    "missing_info": {
+      "accepted_frames": 0,
+      "considered_frames": 152,
+      "rejected": {
+        "CAMERA_INFO_MISSING": 152
+      },
+      "gates": [],
+      "checks": {
+        "minimum_frames": false,
+        "paired_fraction": false,
+        "all_target_frames_pass": false,
+        "stationary_query_blocked": false,
+        "stale_evidence_blocked": false,
+        "no_cross_epoch_history": true,
+        "verified_alignment_provenance": false
+      },
+      "fault_pass": true
+    },
+    "missing_tf": {
+      "accepted_frames": 0,
+      "considered_frames": 152,
+      "rejected": {
+        "OPTICAL_TF_MISSING": 152
+      },
+      "gates": [],
+      "checks": {
+        "minimum_frames": false,
+        "paired_fraction": false,
+        "all_target_frames_pass": false,
+        "stationary_query_blocked": false,
+        "stale_evidence_blocked": false,
+        "no_cross_epoch_history": true,
+        "verified_alignment_provenance": false
+      },
+      "fault_pass": true
+    },
+    "pose_gap": {
+      "accepted_frames": 0,
+      "considered_frames": 152,
+      "rejected": {
+        "POSE_GAP": 152
+      },
+      "gates": [],
+      "checks": {
+        "minimum_frames": false,
+        "paired_fraction": false,
+        "all_target_frames_pass": false,
+        "stationary_query_blocked": false,
+        "stale_evidence_blocked": false,
+        "no_cross_epoch_history": true,
+        "verified_alignment_provenance": false
+      },
+      "fault_pass": true
+    },
+    "backward_stamps": {
+      "accepted_frames": 0,
+      "considered_frames": 167,
+      "rejected": {
+        "CAPTURE_OUTSIDE_CLOCK_EPOCH": 167
+      },
+      "gates": [],
+      "checks": {
+        "minimum_frames": false,
+        "paired_fraction": false,
+        "all_target_frames_pass": false,
+        "stationary_query_blocked": false,
+        "stale_evidence_blocked": false,
+        "no_cross_epoch_history": true,
+        "verified_alignment_provenance": false
+      },
+      "fault_pass": true
+    },
+    "future_stamps": {
+      "accepted_frames": 0,
+      "considered_frames": 167,
+      "rejected": {
+        "CAPTURE_OUTSIDE_CLOCK_EPOCH": 167
+      },
+      "gates": [],
+      "checks": {
+        "minimum_frames": false,
+        "paired_fraction": false,
+        "all_target_frames_pass": false,
+        "stationary_query_blocked": false,
+        "stale_evidence_blocked": false,
+        "no_cross_epoch_history": true,
+        "verified_alignment_provenance": false
+      },
+      "fault_pass": true
+    },
+    "reset_counter": {
+      "accepted_frames": 75,
+      "considered_frames": 152,
+      "rejected": {
+        "CAPTURE_OUTSIDE_CLOCK_EPOCH": 1,
+        "ALIGNMENT_EPOCH_INVALIDATED": 76
+      },
+      "gates": [
+        {
+          "epoch": 0,
+          "allowed": false,
+          "reason": "OBSTACLE_IN_ENVELOPE",
+          "counts": {
+            "FREE": 1813,
+            "OBSTACLE": 343,
+            "OCCLUDED": 1058,
+            "UNSEEN": 3392
+          },
+          "frames_used": 75,
+          "epoch_frames": 75,
+          "stale_reason": "NO_FRESH_FRAMES"
+        }
+      ],
+      "checks": {
+        "minimum_frames": true,
+        "paired_fraction": false,
+        "all_target_frames_pass": true,
+        "stationary_query_blocked": true,
+        "stale_evidence_blocked": true,
+        "no_cross_epoch_history": true,
+        "verified_alignment_provenance": false
+      },
+      "fault_pass": true
+    }
+  },
+  "fault_variants_note": "In-memory derived event variants; original bag remains unchanged. Not new sensor recordings."
+}

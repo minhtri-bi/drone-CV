@@ -1,0 +1,16 @@
+- gz_topic_name: /camera_info
+  ros_topic_name: /drone_cv_g1/camera/depth/camera_info
+  gz_type_name: gz.msgs.CameraInfo
+  ros_type_name: sensor_msgs/msg/CameraInfo
+  direction: GZ_TO_ROS
+  qos_profile: SENSOR_DATA
+  lazy: false
+  frame_id: drone_cv_g1/camera_optical
+
+- gz_topic_name: /world/default/clock
+  ros_topic_name: /clock
+  gz_type_name: gz.msgs.Clock
+  ros_type_name: rosgraph_msgs/msg/Clock
+  direction: GZ_TO_ROS
+  qos_profile: CLOCK
+  lazy: false

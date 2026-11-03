@@ -4,7 +4,7 @@
 
 Progress comes from `.omp/roadmap/roadmap.json`; English display text comes from `docs/roadmap.en.json`. Workspace binding and receipts are excluded.
 
-Revision: 37. A completed task does not certify that later gates have passed.
+Revision: 41. A completed task does not certify that later gates have passed.
 
 ## Preparation
 
@@ -238,3 +238,28 @@ Status: **done**. Dependencies: `g1-environment`, `g0-demo`.
 - Compare reconstructed geometry with independent declared targets using regions, alignment and effective numeric criteria fixed before grading; report per-target support and errors without using oracle geometry as navigation free-space evidence.
 - Exercise dropout/gap/reset replay variants and preserve the spike's near-hazard, empty-grid and sensor-range guards; report a stationary blind-zone STOP honestly and do not count synthetic liveness as real-data navigation.
 - Deliver reproducible bags/manifests, replay figures and exercised checks in English; this preparation branch does not complete G1 flight/calibration, G2 adapter/replay acceptance or wall-stop, and does not relax their dependencies.
+
+### `prep-replay-integrity` — Bind replay alignment epochs and recording evidence integrity
+
+Status: **done**. Dependencies: `prep-sensor-replay`.
+
+- Freeze world-to-odometry alignment from capture-time bracketed poses and bind it to the recorded reset/clock epoch; reset, mismatch or excessive alignment gap invalidates world grading instead of silently reusing a transform.
+- Require fresh depth, CameraInfo, odometry, clock and Disarmed status throughout bounded unarmed recording; preserve explicit incomplete reasons for stream loss and record subscriber/publisher QoS and monotonic receive progress.
+- Report available simulation/wall duration, RTF, image gaps, pairing versus availability and estimator uncertainty honestly; old bags missing wall/epoch provenance remain explicitly historical rather than acquiring fabricated metadata.
+- CI verifies every published evidence checksum and applicable archive/fixture identities on Windows and Linux; exercise actual pinned-schema bag decoding and reset/dropout failures without arm, control publishers, installation or altered historical evidence.
+
+### `prep-model-profile` — Derive pinned physical geometry and rerun corrected-mount liveness
+
+Status: **pending**. Dependencies: `prep-replay-integrity`.
+
+- Derive base-link-relative asymmetric collision bounds and rotating propeller sweep from the pinned model, preserve source identities and distinguish physical geometry from phase clearance and localization/tracking/angular budgets.
+- Use the SDF-derived optical mount for new experiments while preserving explicitly labeled historical fixtures; rerun liveness with mount and effective envelope together rather than reusing the old one-metre admission claim.
+- Exercise known points on gear, body and propeller sweep and report unsupported mesh/attitude assumptions; these preparation results are reusable inputs, not completion of the g1-oracle contact ledger or flight calibration.
+
+### `prep-ttl-replay` — Observe rolling evidence expiry in a longer unarmed recording
+
+Status: **pending**. Dependencies: `prep-replay-integrity`.
+
+- Capture a bounded stationary Disarmed sequence longer than the declared simulation-time evidence TTL under the integrity recorder; retain raw messages and wall/sim diagnostics with explicit limits and failure reasons.
+- Query during the real trace to demonstrate old frames expiring while fresh frames remain, then stale-all STOP; keep raw recordings immutable and distinguish temporal replay queries from sensor captures.
+- Do not teleport the vehicle, certify no-return semantics, claim positive real-data movement or waive G1/G2 dependencies; kinematic liveness remains a separately scoped decision.

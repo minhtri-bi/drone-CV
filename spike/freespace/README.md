@@ -47,12 +47,16 @@ The experiment and plot scripts write inside the selected directory and can over
 | `replay_fixture.py`, `replay_fixture.json` | Frozen fixture and independent target grader; never imported by the evidence gate. |
 | `replay_bag.py` | Actual rosbag CDR decoding, capture-time pairing, geometry and six explicit fault variants. |
 | `plot_bag_replay.py` | Reproducible real point-cloud/target and stationary-query figures. |
+| `recording_integrity.py`, `recording_policy.json` | Acquisition-only stream progress limits and snapshot-time/reset-bound alignment. |
+| `bag_diagnostics.py` | Receive-trace verification, timing, image gaps and estimator variance diagnostics; no flight admission. |
 
 ## Real stationary Gazebo replay
 
 The [observed experiment and commands](../../docs/SENSOR_REPLAY_RESULTS.md) provide immutable raw bags and per-target/frame results. Actual bag decoding uses the pinned ROS image; pure tests and synthetic experiments still do not need ROS. The accepted bag paired 152 frames and stayed Disarmed. Its query returns STOP for near-floor returns with a remaining blind zone, not ALLOWED navigation.
 
 The real path derives a 0.02078 m body-relative camera z from the merged SDF, uses `no_return_certified=False`, and preserves full capture orientation. The old synthetic fixtures retain their declared 0.26078 m model-like mount so their results are not silently recast as calibrated body-frame data.
+
+The [integrity repair](../../docs/SENSOR_REPLAY_INTEGRITY.md) adds a fresh schema-two recording, snapshot-time alignment/reset binding and actual receive-wall diagnostics. Old unbound bags require explicit nonaccepting `--legacy-analysis`; their published bytes and earlier results remain unchanged.
 
 
 ## Evidence and decisions

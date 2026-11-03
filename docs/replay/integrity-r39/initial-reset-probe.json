@@ -1,0 +1,1 @@
+{"probe": "Initial reset differs from alignment and origin jumps", "accepted_frames": 0, "gates": [], "rejected": {"ALIGNMENT_RESET_CHANGED": 136}, "all_checks_pass": false}
