@@ -1,0 +1,60 @@
+{
+  "scope": "Real stationary temporal retention and separate geometry diagnostics; never motion authority.",
+  "image": "sha256:061a39905d2d84d40859bb46b67048241b6dacf2ed3983889da7f5fd3e718285",
+  "source_base_commit": "8fbe27797b728677497b761be8274dc4a6749009",
+  "delivered_source_sha256": {
+    "spike/freespace/camera.py": "73c610f351292c143f12384a71cf2bb5a60259d30724372035b6a441c0edf955",
+    "spike/freespace/capture_pose.py": "c6280ef80f572fe5f624c8693f57b1f63302a7a14f1929412ea9ef78fcd89384",
+    "spike/freespace/evidence.py": "2706bba947a81ede4dce69f08cd36530c4b9d6c9ccc3652d4d015472f9778747",
+    "spike/freespace/recording_integrity.py": "93ec130cfa0b1ec156940afdbf865919b252cfe46a11dbb0c318421c2a3d2d31",
+    "spike/freespace/recording_policy.json": "b6ee86163888783bc36b854d9042af01870cec7ac337190fd98cb7ac85c266f8",
+    "spike/freespace/record_sensor_bag.py": "da1b9d0ec630bc8197fb70ad06a1dd135364adb23cd24545a83a7c8ee42b4d82",
+    "spike/freespace/bag_writer.py": "c9e641ae36c82314fd112682b3bd4fdb29b5d2049fc6f8e61b3c15d7f4a20924",
+    "spike/freespace/bag_diagnostics.py": "adbb6aa683a5b1fb34834f7542a86f25e338867d36454bb56b644ba5b075d4b9",
+    "spike/freespace/replay_bag.py": "279c7e878a1374a0181e5d928ca3d370684fed4028fd7ecb79315f2758927d45",
+    "spike/freespace/replay_ttl.py": "4635c5ecaa8c5f9d9a4a96acf944b046a78d583732c51fce28f430edf12d5aef",
+    "spike/freespace/ttl_fixture.json": "43cf088bdc7ed07d2528646ae81c6f352a7db9d8d57cf7ed019c5aa1bf8c54d2"
+  },
+  "source_hash_semantics": "Final delivered Git LF implementation, not a claim that all earlier failed acquisitions used identical source bytes. Exact fixture/policy/receive identities are preserved inside each raw archive manifest.",
+  "px4_firmware": "61907962c9220437ec01a98fa26bfbf5cbb254b5",
+  "px4_msgs": "8fb8277cf95c4ba87094146bc8922e76c4ac0799",
+  "ros": "jazzy",
+  "gazebo": "8.15.0",
+  "resource_policy": {
+    "network": "none",
+    "cpus": 4,
+    "memory_gib": 6,
+    "host_mounts": 0,
+    "software_rendering": true,
+    "ros_domain_id": 87,
+    "gz_partition": "drone_cv_acquisition_r43"
+  },
+  "complete_recording": "recording-03.tar.gz",
+  "failed_recordings": [
+    "recording-01-incomplete.tar.gz",
+    "recording-02-incomplete.tar.gz"
+  ],
+  "failed_causes": [
+    "Queued explicit clock callback lagged behind node ROS time; source lead falsely rejected.",
+    "Synchronous image serialization/storage hot path stopped callback progress; clock wall watchdog correctly failed acquisition."
+  ],
+  "successful_capture": {
+    "wall_s": 90.003453275,
+    "sim_s": 19.328,
+    "disarmed_only": true,
+    "minimum_declared_sim_s": 15,
+    "ttl_sim_s": 10,
+    "queue_items": 128,
+    "writer_shutdown_wall_s": 10,
+    "maximum_observed_storage_write_wall_s": 0.06050971500008018
+  },
+  "threshold_changes": "None to the 100 ms source lead, 1.5 s clock wall limit, declared sim ages, or geometry limits. Corrected clock reference and isolated storage blocking instead.",
+  "temporal_result": "report.json",
+  "separate_geometry_result": "geometry-report.json",
+  "temporal_query_note": "Queries consume only observed prefixes and record actual retained sequence/capture identities; stale-all time is synthetic query advance, not a new sensor recording.",
+  "calibrated_pose_tracking_angular_bounds": false,
+  "real_no_return_certified": false,
+  "arming_commands_sent": 0,
+  "control_publishers_created": 0,
+  "cleanup": "Owned simulator processes were stopped after capture; decoder-only container then stopped and removed. Existing images, Docker Desktop and unrelated resources retained."
+}

@@ -1,0 +1,36 @@
+{
+  "scope": "Mixed-clock acquisition review repair; stationary, Disarmed, no flight or calibrated motion bound.",
+  "image": "sha256:061a39905d2d84d40859bb46b67048241b6dacf2ed3983889da7f5fd3e718285",
+  "base_commit": "8fbe27797b728677497b761be8274dc4a6749009",
+  "ros": "jazzy",
+  "gazebo": "8.15.0",
+  "px4_firmware": "61907962c9220437ec01a98fa26bfbf5cbb254b5",
+  "px4_msgs": "8fb8277cf95c4ba87094146bc8922e76c4ac0799",
+  "resource_policy": {
+    "network": "none",
+    "cpus": 4,
+    "memory_gib": 6,
+    "software_rendering": true,
+    "host_mounts": 0,
+    "ros_domain_id": 87,
+    "gz_partition": "drone_cv_acquisition_r43"
+  },
+  "source_sha256": {
+    "spike/freespace/camera.py": "99d103690b48f7bb25d59de10cf2249d8d6a8585d1eca2968495b8993545da60",
+    "spike/freespace/capture_pose.py": "c6280ef80f572fe5f624c8693f57b1f63302a7a14f1929412ea9ef78fcd89384",
+    "spike/freespace/recording_integrity.py": "3875f7d2d541dc4274463177970db62f7be9a91bca219d4700b2904cef11d3f3",
+    "spike/freespace/recording_policy.json": "412422cca3f3cb8705be5d7ecd6560428ab4f113ba6051a1bc6f12e26cfb77fa",
+    "spike/freespace/record_sensor_bag.py": "a88a2317f449e13d2cd91e5a90f2c9eaa1b8626f11f9afe683913991e003732e",
+    "spike/freespace/bag_diagnostics.py": "15f5c2e45d029d25d44a0417894fb30a4cccfe6c34d2c8bd12ff694326b8bac2",
+    "spike/freespace/replay_bag.py": "117a322622be2b84c5e8d994ea3d00117f88b3e03c47c7897c5b57e3b1ac5a92",
+    "spike/freespace/replay_fixture.py": "ecbea7c627aa6a9d02841a6bc3eafced37a64a52a3d77720f0fc6d7e39574cb4",
+    "spike/freespace/replay_fixture.json": "85dfc31ee10f78aa7bc0f1fc58302599d6a96c07ba8939e5977a1122e3002844"
+  },
+  "source_hash_encoding": "UTF-8 Git text with CRLF normalized to LF, captured before subsequent model-profile edits.",
+  "negative_stimulus": "Terminate owned r43_depth bridge after bag readiness; clock/CameraInfo and PX4 continue.",
+  "negative_exit": 2,
+  "health_policy_schema": 3,
+  "lead_allowance_note": "100 ms to latest delivered clock includes transport skew, not proof of synchronization or a flight deadline.",
+  "arming_commands_sent": 0,
+  "control_publishers_created": 0
+}

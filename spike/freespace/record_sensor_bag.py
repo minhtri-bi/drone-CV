@@ -13,6 +13,7 @@ import numpy as np
 from capture_pose import quaternion_rotation
 from recording_integrity import (SCHEMA, advance_progress, make_alignment, odom_sample,
                                  require_fresh, source_stamp_ns, validate_policy)
+from bag_writer import BagWriter
 
 NS = "/drone_cv_g1"
 TOPICS = {
@@ -49,12 +50,13 @@ def record(output: Path, fixture_path: Path, policy_path: Path) -> int:
     from rclpy.qos import QoSProfile, ReliabilityPolicy, DurabilityPolicy
     from rclpy.serialization import serialize_message
     from rosidl_runtime_py.utilities import get_message
-    import rosbag2_py
 
     fixture_bytes, policy_bytes = fixture_path.read_bytes(), policy_path.read_bytes()
     fixture, policy = json.loads(fixture_bytes), json.loads(policy_bytes)
     validate_policy(policy)
-    if set(policy["stream_progress_wall_s"]) != set(TOPICS)-{"/tf_static"}:
+    if (policy["schema"] != SCHEMA or "writer_queue_items" not in policy
+            or "writer_shutdown_wall_s" not in policy
+            or set(policy["stream_age_sim_s"]) != set(TOPICS)-{"/tf_static", "/clock"}):
         raise ValueError("POLICY_REQUIRED_STREAMS_MISMATCH")
     output.mkdir(parents=True, exist_ok=False)
     (output / "fixture.json").write_bytes(fixture_bytes)
@@ -66,10 +68,10 @@ def record(output: Path, fixture_path: Path, policy_path: Path) -> int:
     static = QoSProfile(depth=10, reliability=ReliabilityPolicy.RELIABLE,
                         durability=DurabilityPolicy.TRANSIENT_LOCAL)
     cached, observed_wall, progress, counts = {}, {}, {}, Counter()
-    odometry, writer, begin_ns = [], None, None
+    odometry, writer, begin_ns = (), None, None
     failure, alignment_counter = [], None
-    last_clock, clock_progress_ns = 0, time.monotonic_ns()
-    events = (output / "receive_progress.jsonl").open("w", encoding="utf-8")
+    last_clock = 0
+    # Disk writes run in a bounded worker process, not in the ROS callback thread.
     manifest = {"recording_schema": SCHEMA, "scope": "unarmed acquisition only",
                 "control_publishers_created": 0, "arming_commands_sent": 0,
                 "fixture_sha256": hashlib.sha256(fixture_bytes).hexdigest(),
@@ -78,14 +80,15 @@ def record(output: Path, fixture_path: Path, policy_path: Path) -> int:
 
     def write_message(topic, message, wall_ns, seeded=False):
         sim_ns = node.get_clock().now().nanoseconds
-        writer.write(topic, serialize_message(message), sim_ns)
-        counts[topic] += 1
-        events.write(json.dumps({"topic": topic, "source_ns": source_stamp_ns(topic, message),
-                                "received_wall_ns": wall_ns, "received_sim_ns": sim_ns,
-                                "seeded": seeded, "topic_sequence": counts[topic]})+"\n")
+        sequence = counts[topic]+1
+        writer.write(topic, serialize_message(message),
+                     {"topic": topic, "source_ns": source_stamp_ns(topic, message),
+                      "received_wall_ns": wall_ns, "received_sim_ns": sim_ns,
+                      "seeded": seeded, "topic_sequence": sequence})
+        counts[topic] = sequence
 
     def receive(topic, message):
-        nonlocal last_clock, clock_progress_ns, progress, odometry
+        nonlocal last_clock, progress, odometry
         wall_ns = time.monotonic_ns()
         try:
             if writer is not None:
@@ -101,16 +104,20 @@ def record(output: Path, fixture_path: Path, policy_path: Path) -> int:
                 sample = odom_sample(message)
                 if alignment_counter is not None and sample.reset_counter != alignment_counter:
                     raise ValueError("ALIGNMENT_RESET_CHANGED")
-                odometry = [*odometry, sample]
+                odometry = ((*odometry[-(policy["alignment_buffer_samples"]-1):], sample)
+                            if alignment_counter is None else ())
             if topic == "/clock" and source_ns > last_clock:
-                last_clock, clock_progress_ns = source_ns, wall_ns
+                last_clock = source_ns
             cached[topic], observed_wall[topic] = message, wall_ns
         except ValueError as error:
             failure.append(str(error))
 
-    def qos_record(qos):
+    def qos_record(qos, discovered=False):
+        unknown = discovered and qos.history.name in ("UNKNOWN", "SYSTEM_DEFAULT")
         return {"reliability": qos.reliability.name, "durability": qos.durability.name,
-                "history": qos.history.name, "depth": qos.depth}
+                "history": None if unknown else qos.history.name,
+                "depth": None if discovered and (unknown or qos.depth == 0) else qos.depth,
+                "source": "DDS discovery; null means unavailable" if discovered else "requested subscriber configuration"}
 
     try:
         subscriptions = [node.create_subscription(get_message(kind), topic,
@@ -140,6 +147,7 @@ def record(output: Path, fixture_path: Path, policy_path: Path) -> int:
         alignment_counter = contract["reset_counter"]
         if odometry[-1].reset_counter != alignment_counter:
             raise ValueError("ALIGNMENT_RESET_CHANGED")
+        odometry = ()
         manifest.update(world_from_odom=alignment.tolist(), alignment=contract,
                         alignment_source={"gazebo_pose_snapshot": truth,
                                           "note": "Capture-time bracket; frozen before recording; not fitted to depth."})
@@ -148,36 +156,29 @@ def record(output: Path, fixture_path: Path, policy_path: Path) -> int:
             if failure:
                 raise ValueError(failure[0])
             try:
-                require_fresh(progress, policy["stream_progress_wall_s"], time.monotonic_ns())
+                require_fresh(progress, policy, time.monotonic_ns(), sim_now_ns=node.get_clock().now().nanoseconds)
                 break
             except ValueError:
                 if time.monotonic() >= deadline:
                     raise
                 rclpy.spin_once(node, timeout_sec=.05)
-        manifest["publishers"] = {topic: [{"type": p.topic_type, **qos_record(p.qos_profile)}
+        manifest["publishers"] = {topic: [{"type": p.topic_type, **qos_record(p.qos_profile, discovered=True)}
             for p in node.get_publishers_info_by_topic(topic)] for topic in TOPICS}
         manifest["subscribers"] = {topic: qos_record(static if topic == "/tf_static" else sensor)
                                    for topic in TOPICS}
-        writer = rosbag2_py.SequentialWriter()
-        writer.open(rosbag2_py.StorageOptions(uri=str(output / "bag"), storage_id="sqlite3"),
-                    rosbag2_py.ConverterOptions("cdr", "cdr"))
-        for topic_id, (topic, kind) in enumerate(TOPICS.items()):
-            writer.create_topic(rosbag2_py.TopicMetadata(
-                id=topic_id, name=topic, type=kind, serialization_format="cdr"))
+        writer = BagWriter(output, TOPICS, policy)
         begin_ns = time.monotonic_ns()
-        manifest.update(record_start_wall_monotonic_ns=begin_ns, record_start_sim_ns=last_clock)
+        manifest.update(record_start_wall_monotonic_ns=begin_ns, record_start_sim_ns=node.get_clock().now().nanoseconds)
         for topic, message in cached.items():
             write_message(topic, message, observed_wall[topic], seeded=True)
         while (time.monotonic_ns()-begin_ns)/1e9 < fixture["record_wall_s"]:
             rclpy.spin_once(node, timeout_sec=.05)
             wall_ns = time.monotonic_ns()
             if "warmup_end_sim_ns" not in manifest and (wall_ns-begin_ns)/1e9 >= fixture["warmup_wall_s"]:
-                manifest["warmup_end_sim_ns"] = last_clock
+                manifest["warmup_end_sim_ns"] = node.get_clock().now().nanoseconds
             if failure:
                 raise ValueError(failure[0])
-            require_fresh(progress, policy["stream_progress_wall_s"], wall_ns)
-            if (wall_ns-clock_progress_ns)/1e9 > fixture["max_clock_stall_wall_s"]:
-                raise ValueError("CLOCK_STALLED")
+            require_fresh(progress, policy, wall_ns, sim_now_ns=node.get_clock().now().nanoseconds)
             if sum(p.stat().st_size for p in output.rglob("*") if p.is_file()) > fixture["max_output_bytes"]:
                 raise ValueError("OUTPUT_BUDGET_EXCEEDED")
         manifest["complete"] = True
@@ -185,13 +186,24 @@ def record(output: Path, fixture_path: Path, policy_path: Path) -> int:
         manifest["failure"] = f"{type(error).__name__}: {error}"
     finally:
         end_ns = time.monotonic_ns()
-        writer = None
-        events.close()
+        end_sim_ns = node.get_clock().now().nanoseconds
+        if writer is not None:
+            try:
+                writer_result = writer.close()
+                manifest["storage_writer"] = writer_result
+                if writer_result["topic_counts"] != dict(counts):
+                    raise ValueError("BAG_WRITER_COUNTS_MISMATCH")
+            except ValueError as error:
+                manifest["complete"] = False
+                manifest["writer_failure"] = str(error)
+                manifest.setdefault("failure", str(error))
+        if not (output / "receive_progress.jsonl").exists():
+            (output / "receive_progress.jsonl").write_text("", encoding="utf-8")
         node.destroy_node()
         rclpy.shutdown()
         elapsed = (end_ns-begin_ns)/1e9 if begin_ns is not None else 0.
         manifest.update(recorded_wall_s=elapsed, record_end_wall_monotonic_ns=end_ns,
-                        record_end_sim_ns=last_clock, topic_counts=dict(counts),
+                        record_end_sim_ns=end_sim_ns, topic_counts=dict(counts),
                         topics=TOPICS, warmup_wall_s=fixture["warmup_wall_s"])
         manifest["bag_files"] = {str(p.relative_to(output)): {
             "bytes": p.stat().st_size, "sha256": hashlib.sha256(p.read_bytes()).hexdigest()}

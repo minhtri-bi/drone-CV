@@ -4,7 +4,7 @@
 
 Progress comes from `.omp/roadmap/roadmap.json`; English display text comes from `docs/roadmap.en.json`. Workspace binding and receipts are excluded.
 
-Revision: 41. A completed task does not certify that later gates have passed.
+Revision: 59. A completed task does not certify that later gates have passed.
 
 ## Preparation
 
@@ -250,7 +250,7 @@ Status: **done**. Dependencies: `prep-sensor-replay`.
 
 ### `prep-model-profile` — Derive pinned physical geometry and rerun corrected-mount liveness
 
-Status: **pending**. Dependencies: `prep-replay-integrity`.
+Status: **done**. Dependencies: `prep-replay-integrity`.
 
 - Derive base-link-relative asymmetric collision bounds and rotating propeller sweep from the pinned model, preserve source identities and distinguish physical geometry from phase clearance and localization/tracking/angular budgets.
 - Use the SDF-derived optical mount for new experiments while preserving explicitly labeled historical fixtures; rerun liveness with mount and effective envelope together rather than reusing the old one-metre admission claim.
@@ -258,7 +258,7 @@ Status: **pending**. Dependencies: `prep-replay-integrity`.
 
 ### `prep-ttl-replay` — Observe rolling evidence expiry in a longer unarmed recording
 
-Status: **pending**. Dependencies: `prep-replay-integrity`.
+Status: **done**. Dependencies: `prep-replay-integrity`.
 
 - Capture a bounded stationary Disarmed sequence longer than the declared simulation-time evidence TTL under the integrity recorder; retain raw messages and wall/sim diagnostics with explicit limits and failure reasons.
 - Query during the real trace to demonstrate old frames expiring while fresh frames remain, then stale-all STOP; keep raw recordings immutable and distinguish temporal replay queries from sensor captures.

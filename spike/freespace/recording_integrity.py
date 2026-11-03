@@ -8,14 +8,29 @@ import numpy as np
 from capture_pose import OdomSample, interpolate_pose
 
 
-SCHEMA = 2
+SCHEMA = 3
 
 
 def validate_policy(policy: dict) -> None:
-    values = [policy["startup_wall_s"], policy["alignment_wait_wall_s"],
-              *policy["stream_progress_wall_s"].values()]
-    if (policy["schema"] != SCHEMA or not policy["stream_progress_wall_s"]
-            or any(not isfinite(value) or value <= 0 for value in values)
+    values = [policy["startup_wall_s"], policy["alignment_wait_wall_s"]]
+    if policy["schema"] == 2:
+        # Immutable historical bags retain their declared wall-progress contract.
+        limits = policy["stream_progress_wall_s"]
+    elif policy["schema"] == SCHEMA:
+        limits = policy["stream_age_sim_s"]
+        values += [policy["clock_progress_wall_s"]]
+        if (type(policy["max_source_clock_lead_ns"]) is not int
+                or policy["max_source_clock_lead_ns"] < 0
+                or type(policy["alignment_buffer_samples"]) is not int
+                or policy["alignment_buffer_samples"] < 2):
+            raise ValueError("INVALID_ACQUISITION_POLICY")
+        if "writer_queue_items" in policy or "writer_shutdown_wall_s" in policy:
+            if (type(policy["writer_queue_items"]) is not int or policy["writer_queue_items"] < 1):
+                raise ValueError("INVALID_WRITER_QUEUE_POLICY")
+            values += [policy["writer_shutdown_wall_s"]]
+    else:
+        raise ValueError("UNSUPPORTED_ACQUISITION_POLICY")
+    if (not limits or any(not isfinite(value) or value <= 0 for value in [*values, *limits.values()])
             or type(policy["max_pose_gap_ns"]) is not int or policy["max_pose_gap_ns"] <= 0):
         raise ValueError("INVALID_ACQUISITION_POLICY")
 
@@ -41,13 +56,31 @@ def advance_progress(progress: dict, topic: str, source_ns: int, wall_ns: int) -
     return {**progress, topic: {"source_ns": source_ns, "wall_ns": wall_ns}}
 
 
-def require_fresh(progress: dict, limits: dict, now_ns: int) -> None:
-    for topic, limit_s in limits.items():
+def require_fresh(progress: dict, policy: dict, now_ns: int, *, sim_now_ns: int | None = None) -> None:
+    if policy["schema"] == 2:
+        for topic, limit_s in policy["stream_progress_wall_s"].items():
+            if topic not in progress:
+                raise ValueError(f"REQUIRED_STREAM_MISSING:{topic}")
+            age_ns = now_ns-progress[topic]["wall_ns"]
+            if age_ns < 0 or age_ns > limit_s*1e9:
+                raise ValueError(f"STREAM_PROGRESS_STALLED:{topic}")
+        return
+    if "/clock" not in progress:
+        raise ValueError("REQUIRED_STREAM_MISSING:/clock")
+    clock = progress["/clock"]
+    clock_age = now_ns-clock["wall_ns"]
+    if clock_age < 0 or clock_age > policy["clock_progress_wall_s"]*1e9:
+        raise ValueError("STREAM_PROGRESS_STALLED:/clock")
+    if sim_now_ns is None:
+        raise ValueError("MISSING_NODE_CLOCK_SNAPSHOT")
+    for topic, limit_s in policy["stream_age_sim_s"].items():
         if topic not in progress:
             raise ValueError(f"REQUIRED_STREAM_MISSING:{topic}")
-        age_ns = now_ns-progress[topic]["wall_ns"]
-        if age_ns < 0 or age_ns > limit_s*1e9:
-            raise ValueError(f"STREAM_PROGRESS_STALLED:{topic}")
+        age_ns = sim_now_ns-progress[topic]["source_ns"]
+        if age_ns < -policy["max_source_clock_lead_ns"]:
+            raise ValueError(f"SOURCE_AHEAD_OF_CLOCK:{topic}")
+        if age_ns > limit_s*1e9:
+            raise ValueError(f"STREAM_SIM_AGE_EXCEEDED:{topic}")
 
 
 def odom_sample(message) -> OdomSample:
@@ -80,7 +113,7 @@ def make_alignment(world_body: np.ndarray, capture_ns: int, samples: list,
 
 
 def validate_alignment(manifest: dict, maximum_gap_ns: int) -> dict:
-    if manifest.get("recording_schema") != SCHEMA or "alignment" not in manifest:
+    if manifest.get("recording_schema") not in (2, SCHEMA) or "alignment" not in manifest:
         raise ValueError("LEGACY_UNBOUND_ALIGNMENT")
     contract = manifest["alignment"]
     if (contract["clock_epoch"] != 0 or type(contract["reset_counter"]) is not int

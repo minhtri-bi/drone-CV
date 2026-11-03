@@ -1,0 +1,17 @@
+{
+  "scope": "Pinned collision proxy and synthetic sampled-coverage diagnostics; no motion or flight authority.",
+  "image": "sha256:061a39905d2d84d40859bb46b67048241b6dacf2ed3983889da7f5fd3e718285",
+  "source_sha256": {
+    "spike/freespace/model_profile.py": "464cb6026419cff488f80e7b5845adc634cb9d7875241c4f8af2af6ee8dd1004",
+    "spike/freespace/model_liveness.py": "fbfedd8b70d79d532bdd6f4560480344905eb79fb0e2eaa0c645aec78ceb90f4",
+    "spike/freespace/camera.py": "73c610f351292c143f12384a71cf2bb5a60259d30724372035b6a441c0edf955"
+  },
+  "source_hash_encoding": "Git LF text.",
+  "observed_drift_report": "docs/replay/integrity-r39/report.json",
+  "observed_drift_report_sha256": "ac8a48e4c49b781a338502e7060dfb9656fecb8a235eb54edafdf415084a5a3d",
+  "visual_meshes_bounded": false,
+  "tilted_body_supported": false,
+  "calibrated_pose_tracking_angular_bounds": false,
+  "sampled_coverage_cases": 96,
+  "flight_admission": false
+}

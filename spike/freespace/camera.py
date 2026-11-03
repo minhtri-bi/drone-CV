@@ -1,9 +1,9 @@
-"""Pinhole camera, body mount and level-flight pose for the offline spike.
+"""Pinhole camera and full capture pose for the offline spike.
 
-Frames (REP-103): world ENU, body FLU, camera optical (x right, y down, z forward).
-Depth is optical Z, not ray range. Defaults reproduce the pinned Gazebo
-x500_depth evidence (fx = fy = 432.496 at 640x480, base_link -> optical
-translation 0.13233, 0, 0.26078 m), scaled to a smaller image with the same FOV.
+Frames: world ENU, body FLU, optical x-right/y-down/z-forward; depth is optical Z.
+The default optical translation is body-relative (0.13233, 0, 0.02078 m),
+including the merged x500_base model pose. Historical model-origin fixtures
+must pass their old mount explicitly; they are not calibrated body-frame data.
 """
 
 from dataclasses import dataclass
@@ -62,7 +62,7 @@ class Intrinsics:
 class Mount:
     """Camera optical origin in body FLU and a downward pitch of the camera."""
 
-    translation_flu: tuple[float, float, float] = (0.13233, 0.0, 0.26078)
+    translation_flu: tuple[float, float, float] = (0.13233, 0.0, 0.02078)
     pitch_down_deg: float = 0.0
 
     def __post_init__(self) -> None:

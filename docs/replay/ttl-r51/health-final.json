@@ -1,0 +1,101 @@
+{
+  "recording_complete": true,
+  "all_disarmed": true,
+  "recorded_wall_s": 90.003453275,
+  "recorded_sim_s": 19.328,
+  "writer": {
+    "complete": true,
+    "topic_counts": {
+      "/drone_cv_g1/camera/depth/image_raw": 445,
+      "/drone_cv_g1/camera/depth/camera_info": 587,
+      "/clock": 4832,
+      "/tf_static": 1,
+      "/drone_cv_g1/fmu/out/vehicle_odometry": 1933,
+      "/drone_cv_g1/fmu/out/vehicle_status_v4": 39
+    },
+    "maximum_storage_write_wall_s": 0.06050971500008018
+  },
+  "status_max_receive_gap_wall_s": 2.503123177,
+  "diagnostics": {
+    "clock_span_sim_s": 19.324,
+    "recorded_wall_s": 90.003453275,
+    "mean_rtf": 0.21470287302151297,
+    "warmup_sim_s": 0.552,
+    "image_count": 445,
+    "camera_info_count": 587,
+    "camera_info_without_image_stamps": 142,
+    "image_without_camera_info_stamps": 0,
+    "image_gap_sim_ms": {
+      "p50": 32.0,
+      "p95": 68.0,
+      "maximum": 396.0
+    },
+    "availability_note": "Observed gaps and unmatched stamps are not a proven renderer/transport loss fraction.",
+    "storage_minus_capture_sim_ms": {
+      "depth": {
+        "p50": 36.0,
+        "p95": 40.0,
+        "maximum": 168.0
+      },
+      "odometry": {
+        "p50": 8.0,
+        "p95": 24.0,
+        "maximum": 160.0
+      }
+    },
+    "source_minus_received_clock_sim_ms": {
+      "depth": {
+        "p50": -36.0,
+        "p95": -36.0,
+        "maximum": -32.0
+      },
+      "odometry": {
+        "p50": -8.0,
+        "p95": -4.0,
+        "maximum": 0.0
+      }
+    },
+    "clock_offset_note": "Difference to the recorder's latest delivered ROS clock, including clock transport lag; not independent timebase calibration.",
+    "receive_wall_diagnostics": {
+      "minimum_observed_rtf_in_nonoverlapping_1s_wall_windows": 0.19670224290757687,
+      "complete_window_count": 89,
+      "note": "Interpolated received clock progress; not a physical compute or flight deadline."
+    },
+    "variance_note": "Reported estimator variance is not calibrated relative drift or a motion safety bound.",
+    "odometry": {
+      "reset_counters": [
+        12
+      ],
+      "pose_frames": [
+        1
+      ],
+      "position_ned_peak_to_peak_m": [
+        0.06184098310768604,
+        0.06228063069283962,
+        0.048545822501182556
+      ],
+      "quality_note": "Pinned VehicleOdometry quality is unused; zero is not an admission test.",
+      "position_variance": {
+        "invalid_components": 0,
+        "last_sigma_m": [
+          0.10697818070418227,
+          0.10701557396163314,
+          0.16492661477004317
+        ],
+        "frame": "pose reference"
+      },
+      "orientation_variance": {
+        "invalid_components": 0,
+        "last_sigma_rad": [
+          0.004602347869984827,
+          0.00460025247238528,
+          0.17984155602198157
+        ],
+        "frame": "body"
+      }
+    }
+  },
+  "strict_receive_alignment_validation": true,
+  "source_lead_limit_ns": 100000000,
+  "clock_wall_limit_s": 1.5
+}

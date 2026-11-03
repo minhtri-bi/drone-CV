@@ -35,7 +35,7 @@ The experiment and plot scripts write inside the selected directory and can over
 
 | File | Role |
 | --- | --- |
-| `camera.py` | Pinhole transforms and capture poses with optional full orientation. The historical synthetic mount is not the corrected real bag's body-relative mount. |
+| `camera.py` | Pinhole transforms and full capture poses; defaults use the SDF-derived body-relative optical mount. |
 | `scene.py` | Synthetic box/cylinder/ground ray caster and a separate geometric collision grader. |
 | `capture.py` | Posed frame histories, optional depth noise and odometry pose perturbations. |
 | `evidence.py` | Retained depth evidence, sampled swept-envelope queries and decisions. Does not import scene ground truth. |
@@ -49,14 +49,19 @@ The experiment and plot scripts write inside the selected directory and can over
 | `plot_bag_replay.py` | Reproducible real point-cloud/target and stationary-query figures. |
 | `recording_integrity.py`, `recording_policy.json` | Acquisition-only stream progress limits and snapshot-time/reset-bound alignment. |
 | `bag_diagnostics.py` | Receive-trace verification, timing, image gaps and estimator variance diagnostics; no flight admission. |
+| `bag_writer.py` | Separate-process storage with finite queue, shutdown and explicit backpressure/failure. |
+| `model_profile.py`, `model_liveness.py` | Pinned collision/rotor proxy and explicit model-consistent synthetic coverage comparison. |
+| `replay_ttl.py`, `ttl_fixture.json` | Longer unarmed acquisition and rolling retained-frame identities. |
 
 ## Real stationary Gazebo replay
 
 The [observed experiment and commands](../../docs/SENSOR_REPLAY_RESULTS.md) provide immutable raw bags and per-target/frame results. Actual bag decoding uses the pinned ROS image; pure tests and synthetic experiments still do not need ROS. The accepted bag paired 152 frames and stayed Disarmed. Its query returns STOP for near-floor returns with a remaining blind zone, not ALLOWED navigation.
 
-The real path derives a 0.02078 m body-relative camera z from the merged SDF, uses `no_return_certified=False`, and preserves full capture orientation. The old synthetic fixtures retain their declared 0.26078 m model-like mount so their results are not silently recast as calibrated body-frame data.
+The default camera now uses the derived body-relative z=0.02078 m. Historical regression fixtures pass the old 0.26078 m model-origin mount explicitly; archived results are not overwritten. New real and synthetic outputs state their effective configuration. Real `no_return_certified=False` remains unchanged.
 
 The [integrity repair](../../docs/SENSOR_REPLAY_INTEGRITY.md) adds a fresh schema-two recording, snapshot-time alignment/reset binding and actual receive-wall diagnostics. Old unbound bags require explicit nonaccepting `--legacy-analysis`; their published bytes and earlier results remain unchanged.
+
+The [model and rolling-TTL results](../../docs/PREPARATION_RESULTS.md) include all 96 sampled-coverage cases, the 90 s / 19.328 s real recording, both incomplete attempts and every retained sequence ID. Model collision proxy, clearance and uncalibrated uncertainty are separate; none grants flight authority.
 
 
 ## Evidence and decisions

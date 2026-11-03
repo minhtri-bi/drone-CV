@@ -5,8 +5,8 @@
   "root": "C:\\Users\\TRI\\drone-CV",
   "title": "Drone-CV: simulation-first obstacle avoidance",
   "goal": "Sửa contract an toàn trước; chuẩn bị OMP; triển khai G0–G4 với oracle độc lập, đạt ít nhất 45/50 world tĩnh ở G3, không unsafe event trong acceptance suite, không tuyên bố bay thật.",
-  "revision": 41,
-  "updatedAt": "2026-11-03T16:40:17.966Z",
+  "revision": 59,
+  "updatedAt": "2026-11-03T17:50:04.732Z",
   "tasks": [
     {
       "id": "prep-safety",
@@ -628,12 +628,12 @@
       "verification": "smoke",
       "status": "done",
       "blocker": "",
-      "runToken": "f61978f6-c476-42be-9a02-2f55ff49fe12",
-      "startedAt": "2026-11-03T14:11:16.269Z",
+      "runToken": "b7444bf7-b148-4a7f-926e-b273f1527104",
+      "startedAt": "2026-11-03T17:03:27.228Z",
       "evidenceIds": [
-        "r_7696fb33-592f-4e1c-8729-a03578a6c94e"
+        "r_41e01528-e497-4463-9bb6-6b48b43c6610"
       ],
-      "note": "Fresh schema-two unarmed acquisition: 30.0174 s wall, 6.344 s sim, 136/136 paired target frames, snapshot-time reset-bound alignment and verified monotonic receive trace. Actual depth-only bridge loss exits 2 with explicit incomplete manifest while clock/PX4 remain live. Actual decoded initial reset/origin mismatch rejects 136 frames; halfway reset invalidates later world grading. Historical bag is strict-refused and only available in explicitly nonaccepting legacy analysis. Added truthful RTF/gap/variance/QoS diagnostics, cross-platform file and archive identity validation; 133 offline tests passed. New evidence archives retain all failures, source/environment bindings and owned cleanup; r35 bytes unchanged. Model profile, rolling TTL, G1/G2 flight/calibration remain pending and dependencies unchanged."
+      "note": "Final real 90.003 s Disarmed acquisition spans 19.328 s simulation with 445 images, 587 CameraInfo, 1933 odometry and 39 status messages. Strict receive trace and snapshot/reset reconstruction pass under unchanged 100 ms lead/1.5 s clock limits. Sim ages use node ROS-time snapshots rather than a queued clock callback. Storage is isolated in a finite 128-item process queue; worker completion/counts are mandatory, backpressure/error fails explicitly. Retained two failed long attempts: queued callback lead and synchronous disk stall. Updated geometry regression numbers, unknown QoS fields, missing checksum inventory detection and provenance-only legacy exits. 55 targeted boundary/model checks passed; final full-suite/CI remain publication gates for the combined authorized preparation work."
     },
     {
       "id": "prep-model-profile",
@@ -649,12 +649,14 @@
       ],
       "milestone": false,
       "verification": "smoke",
-      "status": "pending",
+      "status": "done",
       "blocker": "",
-      "runToken": null,
-      "startedAt": null,
-      "evidenceIds": [],
-      "note": ""
+      "runToken": "d3997685-8d70-468a-bac3-a67eebaff4c4",
+      "startedAt": "2026-11-03T17:40:46.668Z",
+      "evidenceIds": [
+        "r_c612a191-dd25-4f12-b608-e19abbd6f748"
+      ],
+      "note": "Pinned exact SDF collision boxes plus full rotor sweep yield FLU z [-0.227,0.0604231] m, radius 0.3859447 m and optical mount (0.13233,0,0.02078) m. New camera defaults use the body-relative mount; historical regressions pass old mount explicitly. Known gear/prop extremes, inflation-once and unsupported geometry/tilt regressions pass. Executed 96 declared historical/corrected/model-envelope cases using r39 observed XY/Z spans only as uncalibrated illustrative floors. On the tested grid, straight model navigation proxy first covers at 2.5 m; pitched/climb histories retain TOO_CLOSE and may have no allowed case. Visual-mesh completeness, tilted motion, tracking/angular/calibrated pose budgets remain explicitly unresolved; no flight or oracle/contact acceptance. Sources, profile, every case and hashes preserved in docs/replay/model-profile-r51/."
     },
     {
       "id": "prep-ttl-replay",
@@ -670,12 +672,14 @@
       ],
       "milestone": false,
       "verification": "smoke",
-      "status": "pending",
+      "status": "done",
       "blocker": "",
-      "runToken": null,
-      "startedAt": null,
-      "evidenceIds": [],
-      "note": ""
+      "runToken": "546c8b44-1e91-48df-a86c-1d55329307f6",
+      "startedAt": "2026-11-03T17:43:31.989Z",
+      "evidenceIds": [
+        "r_6aa7942d-8c73-4a7b-b81c-61eb97e9ca62"
+      ],
+      "note": "Complete immutable 90.003 s Disarmed capture spans 19.328 s simulation with 10 s TTL; 429/429 post-warmup observations pair successfully. Actual prefix-only queries show 127 retained/0 expired, then 236 retained/24 expired, then 223 retained/206 expired; no future frames used. Subsequent query has NO_FRESH_FRAMES and zero retained. All six temporal checks pass. Separate strict long-bag geometry/fault replay also passes with explicitly reported worst errors ~5.3 cm, not a calibrated pose bound. Both incomplete attempts, complete bag, manifests, receive trace, source/environment provenance and frame identities preserved under docs/replay/ttl-r51/. No set_pose, control, real +Inf certification or positive navigation claim. Owned runtime/decoder removed; images retained. Model and acquisition results are documented; final full suite passed 143 tests, publication CI remains a separate gate."
     }
   ],
   "receipts": [
@@ -860,6 +864,58 @@
       "at": "2026-11-03T16:37:27.919Z",
       "outcome": "success",
       "sha256": "806e95575f41e8f30d6dd25072ecb97a1941ddff84f3bcdc32d34e4896f9608f"
+    },
+    {
+      "id": "r_2b3c9e8f-980c-4936-9d98-b3b60c3bd588",
+      "taskId": "prep-replay-integrity",
+      "runToken": "715995b4-d619-4f00-b79d-d1da353a45e0",
+      "kind": "smoke",
+      "label": "Validate fresh schema-three acquisition health in simulation/wall domains, actual source-clock residuals, snapshot/reset provenance, unchanged target limits and fault variants.",
+      "toolName": "eval",
+      "toolCallId": "call_ebff4903a77e416aa0cf0a82d5cfcf9c|fc_0d5c43c02fe5f47e016aea11fe05148191912e36ffd78aba46",
+      "sessionId": "01a19fb0-735f-769d-b6a1-73a8f41b42e8",
+      "at": "2026-11-03T16:57:25.040Z",
+      "outcome": "success",
+      "sha256": "d4bd90ecb0a6cd1fb33a612fc3bf77f492e412772bada55017e0739171cd90ba"
+    },
+    {
+      "id": "r_41e01528-e497-4463-9bb6-6b48b43c6610",
+      "taskId": "prep-replay-integrity",
+      "runToken": "b7444bf7-b148-4a7f-926e-b273f1527104",
+      "kind": "smoke",
+      "label": "Decode complete 90-second schema-three bag, verify all actual receive-wall/node-clock health checks, alignment/reset provenance, exact bag identities and bounded storage-writer completion without relaxing thresholds.",
+      "toolName": "eval",
+      "toolCallId": "call_76258caa8ac640d289fd08440a6445e9|fc_0e4165bc99270009016aea1c44c46081919b603aa9facfadaf",
+      "sessionId": "01a19fb0-735f-769d-b6a1-73a8f41b42e8",
+      "at": "2026-11-03T17:39:27.342Z",
+      "outcome": "success",
+      "sha256": "f1d499ed30a3bd0969611aba782c4b531e452d1a99c0bcf923894afc6982a867"
+    },
+    {
+      "id": "r_c612a191-dd25-4f12-b608-e19abbd6f748",
+      "taskId": "prep-model-profile",
+      "runToken": "d3997685-8d70-468a-bac3-a67eebaff4c4",
+      "kind": "smoke",
+      "label": "Derive profile from exact pinned SDF source bytes and execute all historical/corrected/model-envelope coverage cases, preserving explicit unknown calibration and no flight authority.",
+      "toolName": "eval",
+      "toolCallId": "call_5ffa1649e2ca4e5f97c3c3560f463000|fc_0e4165bc99270009016aea1ca5b6c48191897f513c21f73f96",
+      "sessionId": "01a19fb0-735f-769d-b6a1-73a8f41b42e8",
+      "at": "2026-11-03T17:42:03.483Z",
+      "outcome": "success",
+      "sha256": "319dd2b3d7ae1b496e52d11a81d08dc965a8f1adddb446f03c642851a1f1671a"
+    },
+    {
+      "id": "r_6aa7942d-8c73-4a7b-b81c-61eb97e9ca62",
+      "taskId": "prep-ttl-replay",
+      "runToken": "546c8b44-1e91-48df-a86c-1d55329307f6",
+      "kind": "smoke",
+      "label": "Decode actual complete long bag under strict integrity checks and query during its real simulation-time span, proving old frame identities expire while fresh remain and stale-all blocks.",
+      "toolName": "eval",
+      "toolCallId": "call_eac26df99b2d40de9006792967c77fef|fc_0e4165bc99270009016aea1d4c921881919df301ab84139f78",
+      "sessionId": "01a19fb0-735f-769d-b6a1-73a8f41b42e8",
+      "at": "2026-11-03T17:44:54.539Z",
+      "outcome": "success",
+      "sha256": "9a177d67504fbca80191dc05ac680d586bc9c20e566d6b6fbbac53e5c7a2293b"
     }
   ]
 }

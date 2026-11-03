@@ -13,7 +13,7 @@ from capture_pose import (OdomSample, camera_from_info, decode_depth, interpolat
                           quaternion_rotation)
 from evidence import EvidenceStore, Frame, SensorProfile, decide, swept_envelope
 from replay_fixture import aligned_camera, grade_frame
-from bag_diagnostics import diagnostics, validate_receive_log
+from bag_diagnostics import diagnostics, geometry_summary, validate_receive_log
 from recording_integrity import require_alignment_epoch, validate_alignment
 
 
@@ -234,6 +234,41 @@ def fault_passes(name, variant):
     raise ValueError("UNKNOWN_FAULT_VARIANT")
 
 
+def replay_exit_code(report: dict, legacy_analysis: bool) -> int:
+    required = {key: value for key, value in report["checks"].items()
+                if not (legacy_analysis and key == "verified_alignment_provenance")}
+    return 0 if required and all(required.values()) else 2
+
+
+def load_recording(recording: Path, *, legacy_analysis: bool = False):
+    manifest = json.loads((recording / "manifest.json").read_text())
+    fixture_bytes = (recording / "fixture.json").read_bytes()
+    if not manifest["complete"] or not manifest["all_observed_disarmed"]:
+        raise ValueError("RECORDING_INCOMPLETE_OR_ARMED")
+    if hashlib.sha256(fixture_bytes).hexdigest() != manifest["fixture_sha256"]:
+        raise ValueError("FIXTURE_HASH_MISMATCH")
+    for name, identity in manifest["bag_files"].items():
+        path = (recording / name).resolve()
+        if not path.is_relative_to(recording.resolve()) or path.is_symlink():
+            raise ValueError("UNSAFE_BAG_PATH")
+        if hashlib.sha256(path.read_bytes()).hexdigest() != identity["sha256"]:
+            raise ValueError("BAG_HASH_MISMATCH")
+    fixture = json.loads(fixture_bytes)
+    if not legacy_analysis:
+        validate_alignment(manifest, fixture["max_pose_gap_ns"])
+    records = read_bag(recording / "bag")
+    events = None
+    if not legacy_analysis:
+        policy_bytes = (recording / "recording_policy.json").read_bytes()
+        event_bytes = (recording / "receive_progress.jsonl").read_bytes()
+        if (hashlib.sha256(policy_bytes).hexdigest() != manifest["policy_sha256"]
+                or hashlib.sha256(event_bytes).hexdigest() != manifest["receive_progress_sha256"]):
+            raise ValueError("RECEIVE_PROVENANCE_HASH_MISMATCH")
+        events = [json.loads(line) for line in event_bytes.splitlines()]
+        validate_receive_log(records, manifest, json.loads(policy_bytes), events)
+    return records, manifest, fixture, events
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--recording", type=Path, required=True)
@@ -242,30 +277,10 @@ def main():
                         help="Analyze historical unbound provenance; never report new-profile acceptance")
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
-    manifest = json.loads((args.recording / "manifest.json").read_text())
-    fixture_bytes = (args.recording / "fixture.json").read_bytes()
-    if not manifest["complete"] or not manifest["all_observed_disarmed"]:
-        raise ValueError("RECORDING_INCOMPLETE_OR_ARMED")
-    if hashlib.sha256(fixture_bytes).hexdigest() != manifest["fixture_sha256"]:
-        raise ValueError("FIXTURE_HASH_MISMATCH")
-    for name, identity in manifest["bag_files"].items():
-        if hashlib.sha256((args.recording / name).read_bytes()).hexdigest() != identity["sha256"]:
-            raise ValueError("BAG_HASH_MISMATCH")
-    fixture = json.loads(fixture_bytes)
-    if not args.legacy_analysis:
-        validate_alignment(manifest, fixture["max_pose_gap_ns"])
-    records = read_bag(args.recording / "bag")
-    events = None
-    if not args.legacy_analysis:
-        policy_bytes = (args.recording / "recording_policy.json").read_bytes()
-        event_bytes = (args.recording / "receive_progress.jsonl").read_bytes()
-        if (hashlib.sha256(policy_bytes).hexdigest() != manifest["policy_sha256"]
-                or hashlib.sha256(event_bytes).hexdigest() != manifest["receive_progress_sha256"]):
-            raise ValueError("RECEIVE_PROVENANCE_HASH_MISMATCH")
-        events = [json.loads(line) for line in event_bytes.splitlines()]
-        validate_receive_log(records, manifest, json.loads(policy_bytes), events)
+    records, manifest, fixture, events = load_recording(args.recording, legacy_analysis=args.legacy_analysis)
     report = evaluate(records, manifest, fixture, args.output, legacy_analysis=args.legacy_analysis)
     report["diagnostics"] = diagnostics(records, manifest, events)
+    report["geometry_summary"] = geometry_summary(report["geometry"])
     faults = {}
     for name in ("missing_info", "missing_tf", "pose_gap", "backward_stamps", "future_stamps", "reset_counter"):
         variant = evaluate(records, manifest, fixture, fault=name, legacy_analysis=args.legacy_analysis)
@@ -277,7 +292,7 @@ def main():
     report["all_checks_pass"] = all(report["checks"].values())
     (args.output / "report.json").write_text(json.dumps(report, indent=2, allow_nan=False)+"\n")
     print(json.dumps({key: report[key] for key in ("all_checks_pass", "checks", "accepted_frames", "pair_fraction", "rejected", "gates")}))
-    return 0 if report["all_checks_pass"] or args.legacy_analysis else 2
+    return replay_exit_code(report, args.legacy_analysis)
 
 
 if __name__ == "__main__":

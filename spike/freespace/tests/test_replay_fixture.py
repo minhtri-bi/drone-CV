@@ -6,7 +6,7 @@ import xml.etree.ElementTree as ET
 import numpy as np
 
 from camera import CameraModel, Intrinsics, Mount, Pose
-from replay_bag import collect, fault_passes
+from replay_bag import collect, fault_passes, replay_exit_code
 from replay_fixture import build_world, grade_frame
 
 FIXTURE = json.loads((Path(__file__).parents[1] / "replay_fixture.json").read_text())
@@ -124,3 +124,12 @@ def test_reset_counter_returning_to_original_value_cannot_restore_alignment():
     assert not epochs[0]["alignment_invalid"]
     assert epochs[1]["alignment_invalid"]
     assert epochs[2]["alignment_invalid"]
+
+
+def test_legacy_analysis_exempts_only_unavailable_provenance_not_failed_geometry():
+    report = {"checks": {"verified_alignment_provenance": False, "all_target_frames_pass": True,
+                         "fault_variants_pass": True}}
+    assert replay_exit_code(report, True) == 0
+    assert replay_exit_code(report, False) == 2
+    assert replay_exit_code({"checks": {**report["checks"], "all_target_frames_pass": False}}, True) == 2
+    assert replay_exit_code({"checks": {**report["checks"], "fault_variants_pass": False}}, True) == 2

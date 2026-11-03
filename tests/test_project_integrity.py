@@ -94,3 +94,11 @@ def test_archive_inner_identity_is_checked_even_if_outer_hash_was_updated(tmp_pa
     (tmp_path / "SHA256SUMS").write_text(f"{expected}  recording.tar.gz\n", encoding="utf-8")
     with pytest.raises(ValueError, match="archived bag identity mismatch"):
         PROJECT.check_evidence_bundle(tmp_path)
+
+
+def test_entire_missing_checksum_inventory_cannot_hide_a_bundle(tmp_path):
+    directory = tmp_path / "unlisted-bundle"
+    directory.mkdir()
+    (directory / "report.json").write_text("{}")
+    with pytest.raises(ValueError, match="missing evidence checksum inventory"):
+        PROJECT.check_evidence_root(tmp_path)
