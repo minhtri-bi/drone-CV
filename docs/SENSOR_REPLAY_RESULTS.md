@@ -65,6 +65,8 @@ All files are under [`replay/unarmed-r35/`](replay/unarmed-r35/):
 - Two failed-attempt archives and `failed-geometry-report.json`: complete failure history for this slice.
 - `SHA256SUMS`: package file identities. Tar members and archived bag hashes were read back after packaging.
 
+Repository attributes preserve published evidence bytes across Windows/Linux checkouts. `source_sha256` describes Git text with LF newlines; `as_executed_source_sha256` separately retains exact acquisition-host bytes. This prevents CRLF conversion from masquerading as a changed experiment.
+
 No host package, driver, WSL, permission or account changes were made. The acquisition container had no network or host mounts, four CPUs, 6 GiB RAM, software rendering and dropped capabilities. Only the owned simulator container/processes were stopped and removed afterward. Docker Desktop and pinned images remain available.
 
 ### Replay the immutable bag

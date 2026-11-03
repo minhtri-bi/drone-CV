@@ -1,0 +1,5 @@
+# Published evidence hashes describe exact bytes, including JSON and SDF files.
+/docs/replay/unarmed-r35/** -text
+
+# Keep the acquisition fixture byte-identical to its archived manifest.
+/spike/freespace/replay_fixture.json text eol=lf

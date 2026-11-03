@@ -59,6 +59,17 @@
   "criteria_changes": "None: 20 frames, 95% pair/support, 50 ms pose gap, 3 px erosion, p95 <= 0.10 m and maximum <= 0.20 m. Physical surface bounds and body-frame origin were corrected from SDF before fresh recording and grading.",
   "source_base_commit": "258aca2a7a4b4f4ddb91964397f692362f0a1a41",
   "source_sha256": {
+    "scripts/g1_ros_observer.py": "bc6875b5166c7e167b84d541263ec48e29b0423dda19e80e708c12b0e1d18dc0",
+    "spike/freespace/camera.py": "99d103690b48f7bb25d59de10cf2249d8d6a8585d1eca2968495b8993545da60",
+    "spike/freespace/capture_pose.py": "c6280ef80f572fe5f624c8693f57b1f63302a7a14f1929412ea9ef78fcd89384",
+    "spike/freespace/record_sensor_bag.py": "dd4e2b4cf64fb8491e1c5165ad2fc82f171c641df35646f607289c05f5d5261f",
+    "spike/freespace/replay_fixture.py": "ecbea7c627aa6a9d02841a6bc3eafced37a64a52a3d77720f0fc6d7e39574cb4",
+    "spike/freespace/replay_fixture.json": "c1c0abc87013463f80849b72d130da547ac1c438a4d16e962d760a4cef0d5c15",
+    "spike/freespace/replay_bag.py": "775a4bb2c0b8466681a956abf7fd1e7b8886b3f09be043536f91ba5fa066223e",
+    "spike/freespace/plot_bag_replay.py": "e7752e2fef25b38e3ff5d745ac97c18bec8a22e21adb152ba5c35d04a25c1293"
+  },
+  "source_hash_encoding": "Git text content: UTF-8 bytes with CRLF normalized to LF. Acquisition-host byte hashes are retained separately.",
+  "as_executed_source_sha256": {
     "scripts/g1_ros_observer.py": "b3eac14bb65915fe45bac0580ce5b1b7f5eb947c408819ee7409ebbd65bfa5c3",
     "spike/freespace/camera.py": "eba9ab2a2552a3d1ba858672bc97dfe0b8989f4be936ed5aefc9bd54cf67377e",
     "spike/freespace/capture_pose.py": "c6280ef80f572fe5f624c8693f57b1f63302a7a14f1929412ea9ef78fcd89384",
