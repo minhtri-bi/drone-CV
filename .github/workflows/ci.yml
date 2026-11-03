@@ -29,10 +29,19 @@ jobs:
         run: python -m pytest -q
       - name: Exercise actual offline pipeline
         run: python scripts/g0_demo.py --output artifacts/g0-ci
+      - name: Exercise synthetic freespace handoff without Monte Carlo sweeps
+        run: python spike/freespace/experiments.py --trials 0 --output artifacts/freespace-ci
       - name: Preserve synthetic smoke artifacts
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: g0-${{ matrix.os }}
           path: artifacts/g0-ci/
+          if-no-files-found: error
+          retention-days: 7
+      - name: Preserve synthetic freespace experiment artifacts
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: freespace-${{ matrix.os }}
+          path: artifacts/freespace-ci/
           if-no-files-found: error
           retention-days: 7
