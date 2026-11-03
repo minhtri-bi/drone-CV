@@ -65,7 +65,7 @@
 ## Commands and next slice
 
 - `python -m pytest -q`: offline behavioral regressions.
-- `python scripts/check_project.py`: PDF/scenario/link/DAG integrity and portable roadmap freshness.
+- `python scripts/check_project.py`: PDF/scenario/link/DAG integrity, published evidence/archive identities and portable roadmap freshness.
 - `python scripts/check_project.py --export-roadmap`: regenerate the read-only portable view after native state updates.
 - `python scripts/g0_demo.py --output artifacts/<new-name>`: actual synthetic API smoke; never overwrite earlier evidence.
 - G1 environment passed an actual unarmed smoke after explicit Docker/image/derived-bridge approval; see docs/environments/g1-bridge-observation.json and docker/g1/packages.lock.json. Gazebo /clock is the only time source: UXRCE_DDS_SYNCT=0, ROS time consumers use_sim_time=true, no wall-stamp override. GZ_CONFIG_PATH=/usr/share/gz preserves native Gazebo sim discovery under ROS vendor hooks. Preserve historical failed windows/base-image evidence. Only g1-environment is complete; oracle/supervisor, flight and calibration remain pending. Never infer an arming or host-install permission.

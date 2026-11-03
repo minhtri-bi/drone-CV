@@ -1,5 +1,7 @@
 # Published evidence hashes describe exact bytes, including JSON and SDF files.
-/docs/replay/unarmed-r35/** -text
+/docs/replay/** -text
+# The copied acquisition input retains its original trailing blank line.
+/docs/replay/integrity-r39/depth-bridge.yaml whitespace=-blank-at-eof
 
 # Keep the acquisition fixture byte-identical to its archived manifest.
 /spike/freespace/replay_fixture.json text eol=lf

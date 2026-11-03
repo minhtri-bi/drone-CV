@@ -57,3 +57,40 @@ def test_translation_cannot_silently_drop_an_acceptance_criterion(roadmap):
         **labels[task_id], "acceptance": labels[task_id]["acceptance"][:-1]}}
     with pytest.raises(ValueError, match="incomplete English labels"):
         PROJECT.portable_roadmap(state, incomplete)
+
+
+def test_evidence_checksum_detects_changed_bytes_and_omitted_payload(tmp_path):
+    import hashlib
+    payload = tmp_path / "report.json"
+    payload.write_bytes(b'{"accepted": 152}\n')
+    expected = hashlib.sha256(payload.read_bytes()).hexdigest()
+    (tmp_path / "SHA256SUMS").write_text(f"{expected}  report.json\n", encoding="utf-8")
+    assert PROJECT.check_evidence_bundle(tmp_path) == 1
+    payload.write_bytes(b'{"accepted": 153}\n')
+    with pytest.raises(ValueError, match="checksum mismatch"):
+        PROJECT.check_evidence_bundle(tmp_path)
+    payload.unlink()
+    with pytest.raises(ValueError, match="coverage mismatch"):
+        PROJECT.check_evidence_bundle(tmp_path)
+
+
+def test_archive_inner_identity_is_checked_even_if_outer_hash_was_updated(tmp_path):
+    import hashlib
+    import io
+    import tarfile
+    archive_path = tmp_path / "recording.tar.gz"
+    correct = b"original bag bytes"
+    manifest = {"bag_files": {"bag/bag.db3": {
+        "bytes": len(correct), "sha256": hashlib.sha256(correct).hexdigest()}},
+        "fixture_sha256": hashlib.sha256(b"{}").hexdigest()}
+    with tarfile.open(archive_path, "w:gz") as archive:
+        for name, data in [("recording/manifest.json", json.dumps(manifest).encode()),
+                           ("recording/fixture.json", b"{}"),
+                           ("recording/bag/bag.db3", b"modified bag bytes")]:
+            member = tarfile.TarInfo(name)
+            member.size = len(data)
+            archive.addfile(member, io.BytesIO(data))
+    expected = hashlib.sha256(archive_path.read_bytes()).hexdigest()
+    (tmp_path / "SHA256SUMS").write_text(f"{expected}  recording.tar.gz\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="archived bag identity mismatch"):
+        PROJECT.check_evidence_bundle(tmp_path)

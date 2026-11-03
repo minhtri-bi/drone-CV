@@ -6,6 +6,8 @@ import json
 from pathlib import Path
 import re
 from urllib.parse import unquote
+import tarfile
+from pathlib import PurePosixPath
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_SHA256 = "bfa563dfdab513089d9006581eae0011a78a1d67e46e885cb4db0e84adbaf26c"
@@ -81,6 +83,69 @@ def portable_roadmap(state: dict, labels: dict) -> str:
     return "\n".join(lines)
 
 
+def check_evidence_archive(path: Path) -> None:
+    with tarfile.open(path, "r:gz") as archive:
+        members = archive.getmembers()
+        names = [member.name for member in members]
+        if (len(names) != len(set(names)) or sum(member.size for member in members) > 2*1024**3
+                or any(PurePosixPath(name).is_absolute() or ".." in PurePosixPath(name).parts
+                       or "\\" in name for name in names)
+                or any(not (member.isfile() or member.isdir()) for member in members)):
+            raise ValueError(f"unsafe evidence archive: {path.name}")
+        manifests = [member for member in members if member.isfile()
+                     and PurePosixPath(member.name).name == "manifest.json"]
+        if len(manifests) != 1:
+            raise ValueError(f"ambiguous evidence manifest: {path.name}")
+        manifest_member = manifests[0]
+        manifest = json.load(archive.extractfile(manifest_member))
+        root = PurePosixPath(manifest_member.name).parent
+        declared = {}
+        for name, identity in manifest["bag_files"].items():
+            relative = PurePosixPath(name)
+            if relative.is_absolute() or ".." in relative.parts or "\\" in name:
+                raise ValueError(f"unsafe bag member: {name}")
+            declared[str(root / relative)] = identity
+        actual_bag = {member.name for member in members if member.isfile()
+                      and PurePosixPath(member.name).parent == root / "bag"}
+        if actual_bag != set(declared):
+            raise ValueError(f"bag member coverage mismatch: {path.name}")
+        for name, identity in declared.items():
+            member = archive.getmember(name)
+            if (member.size != identity["bytes"]
+                    or hashlib.file_digest(archive.extractfile(member), "sha256").hexdigest() != identity["sha256"]):
+                raise ValueError(f"archived bag identity mismatch: {path.name}:{name}")
+        identities = {"fixture.json": manifest["fixture_sha256"]}
+        if manifest.get("recording_schema") == 2:
+            identities.update({"recording_policy.json": manifest["policy_sha256"],
+                               "receive_progress.jsonl": manifest["receive_progress_sha256"]})
+        for name, expected in identities.items():
+            if hashlib.file_digest(archive.extractfile(str(root / name)), "sha256").hexdigest() != expected:
+                raise ValueError(f"archived provenance mismatch: {path.name}:{name}")
+
+
+def check_evidence_bundle(directory: Path) -> int:
+    listed = {}
+    for line in (directory / "SHA256SUMS").read_text(encoding="utf-8").splitlines():
+        match = re.fullmatch(r"([0-9a-f]{64})  ([A-Za-z0-9][A-Za-z0-9_.-]*)", line)
+        if not match or match[2] in listed or match[2] in (".", "..", "SHA256SUMS"):
+            raise ValueError(f"invalid evidence checksum entry: {directory.name}")
+        listed[match[2]] = match[1]
+    actual = {path.name for path in directory.iterdir() if path.is_file() and path.name != "SHA256SUMS"}
+    if not listed or actual != set(listed):
+        raise ValueError(f"evidence checksum coverage mismatch: {directory.name}")
+    for name, expected in listed.items():
+        path = directory / name
+        if path.is_symlink():
+            raise ValueError(f"evidence symlink refused: {directory.name}/{name}")
+        with path.open("rb") as stream:
+            actual_hash = hashlib.file_digest(stream, "sha256").hexdigest()
+        if actual_hash != expected:
+            raise ValueError(f"evidence checksum mismatch: {directory.name}/{name}")
+        if name.endswith(".tar.gz"):
+            check_evidence_archive(path)
+    return len(listed)
+
+
 def check() -> tuple[dict, str]:
     pdf = ROOT / "docs/source/drone-obstacle-avoidance-plan.pdf"
     if hashlib.sha256(pdf.read_bytes()).hexdigest() != SOURCE_SHA256:
@@ -110,7 +175,9 @@ def check() -> tuple[dict, str]:
         for reference in re.findall(r"\b[A-F]\d{2}\b", " ".join(task["acceptance"])):
             if reference not in expected:
                 raise ValueError(f"undefined scenario {reference} in {task['id']}")
-    summary = f"Integrity OK: PDF checksum, {len(state['tasks'])} acyclic tasks, 65 scenario IDs and local links"
+    evidence_count = sum(check_evidence_bundle(checksums.parent)
+                         for checksums in (ROOT / "docs/replay").glob("*/SHA256SUMS"))
+    summary = f"Integrity OK: PDF checksum, {len(state['tasks'])} acyclic tasks, 65 scenario IDs, local links and {evidence_count} evidence hashes"
     return state, summary
 
 
@@ -128,7 +195,7 @@ def main() -> None:
             portable.write_text(content, encoding="utf-8")
         elif not portable.is_file() or portable.read_text(encoding="utf-8") != content:
             raise ValueError("portable roadmap stale; run python scripts/check_project.py --export-roadmap")
-    except (OSError, ValueError, KeyError, TypeError) as error:
+    except (OSError, ValueError, KeyError, TypeError, tarfile.TarError) as error:
         parser.exit(1, f"Integrity check failed: {error}\n")
     print(summary)
 
