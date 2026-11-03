@@ -4,7 +4,7 @@
 
 Progress comes from `.omp/roadmap/roadmap.json`; English display text comes from `docs/roadmap.en.json`. Workspace binding and receipts are excluded.
 
-Revision: 33. A completed task does not certify that later gates have passed.
+Revision: 34. A completed task does not certify that later gates have passed.
 
 ## Preparation
 
@@ -226,3 +226,15 @@ Status: **pending**. Dependencies: `sim-delivery`.
 
 - The user selects a direction and confirms the new scope/criteria; do not autonomously purchase or deploy hardware.
 - Add implementation tasks with real dependencies/evidence after the decision; do not treat the choice task as completed G5 integration.
+
+## Unarmed perception preparation
+
+### `prep-sensor-replay` — Unarmed sensor recording and offline geometry replay
+
+Status: **pending**. Dependencies: `g1-environment`, `g0-demo`.
+
+- Capture a bounded real Gazebo bag with depth, CameraInfo, clock, static TF, PX4 odometry and vehicle status in the pinned environment; remain Disarmed with no control publishers or arming commands.
+- Replay paired observations with validated capture-time timestamp_sample poses, full capture orientation, explicit frame conventions and reset/epoch handling; reject missing, stale, future, unsupported or unbracketed inputs.
+- Compare reconstructed geometry with independent declared targets using regions, alignment and effective numeric criteria fixed before grading; report per-target support and errors without using oracle geometry as navigation free-space evidence.
+- Exercise dropout/gap/reset replay variants and preserve the spike's near-hazard, empty-grid and sensor-range guards; report a stationary blind-zone STOP honestly and do not count synthetic liveness as real-data navigation.
+- Deliver reproducible bags/manifests, replay figures and exercised checks in English; this preparation branch does not complete G1 flight/calibration, G2 adapter/replay acceptance or wall-stop, and does not relax their dependencies.

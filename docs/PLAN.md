@@ -164,6 +164,12 @@ G0 must run without ROS/GPU. G1 is the first real Linux/SITL gate; if no compati
 
 The detailed order is in the native roadmap: unarmed G1 environment, static oracle/supervisor, bootstrap flight, calibration, then G2 wall-stop. Do not postpone oracle/safety until G3. Bootstrap is not navigation acceptance.
 
+### Unarmed sensor-preparation branch
+
+The pending `prep-sensor-replay` task depends only on completed `g1-environment` and `g0-demo`. Its [roadmap-aligned review plan](SENSOR_REPLAY_PLAN.md) covers bounded unarmed sensor recording, capture-time geometry and offline replay. It is a preparation branch, not permission to start G2 early or evidence that flight, calibration, adapter/replay acceptance or wall-stop has passed.
+
+The existing G1/G2 dependency chain remains unchanged. Later gates may reuse its artifacts only after validating their inputs, configuration and required evidence; no dependency is waived. The plan's diagram distinguishes actual dependencies from optional artifact reuse.
+
 ## 5. Evaluation and safeguards against easy self-grading
 
 - Two separate sets: development seeds for tuning and test seeds frozen before benchmarking; do not tune against test failures.
@@ -184,6 +190,7 @@ The detailed order is in the native roadmap: unarmed G1 environment, static orac
 
 1. Run the G0 core with `python -m pytest -q` and `python scripts/g0_demo.py --output artifacts/<new-name>`; do not use synthetic fixtures to certify the sensor/flight stack.
 2. The unarmed Linux/SITL environment has been smoke-tested and locked; retain the clock policy, assets, and dependency lock. Do not automatically install Docker/WSL/dual boot or infer performance from a software-rendering smoke test.
-3. Implement the minimal oracle/logger and supervisor before G1 flight; enable perception wall-stop and navigation only after calibration. All unmeasured numerical bounds remain pending.
+3. Review the bounded [unarmed recording/replay plan](SENSOR_REPLAY_PLAN.md) before starting `prep-sensor-replay`; the native task remains pending until implementation is authorized.
+4. Implement the minimal oracle/logger and supervisor before G1 flight; enable perception wall-stop and navigation only after calibration. All unmeasured numerical bounds remain pending.
 
 Technical documentation and sources: [REVIEW.md](REVIEW.md). Operating procedures, evidence, and automation scope: [HARNESS.md](HARNESS.md).
