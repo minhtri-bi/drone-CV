@@ -81,22 +81,33 @@ class Mount:
 
 @dataclass(frozen=True)
 class Pose:
-    """Level-flight base_link pose: position in ENU and yaw about +z (0 = East)."""
+    """Base-link pose in ENU; yaw-only construction remains valid for synthetic scenes."""
 
     x: float
     y: float
     z: float
     yaw_rad: float = 0.0
+    rotation_enu_flu: tuple[tuple[float, ...], ...] | None = None
 
     def __post_init__(self) -> None:
         if not all(isfinite(v) for v in (self.x, self.y, self.z, self.yaw_rad)):
             raise ValueError("pose must be finite")
+        if self.rotation_enu_flu is not None:
+            rotation = np.asarray(self.rotation_enu_flu, dtype=np.float64)
+            if (rotation.shape != (3, 3) or not np.isfinite(rotation).all()
+                    or not np.allclose(rotation.T @ rotation, np.eye(3), atol=1e-8, rtol=0)
+                    or not np.isclose(np.linalg.det(rotation), 1.0, atol=1e-8, rtol=0)):
+                raise ValueError("capture rotation must be a proper orthonormal 3x3 matrix")
+            object.__setattr__(self, "rotation_enu_flu",
+                               tuple(tuple(float(v) for v in row) for row in rotation))
 
     @property
     def position(self) -> NDArray[np.float64]:
         return np.array([self.x, self.y, self.z])
 
     def world_from_body(self) -> NDArray[np.float64]:
+        if self.rotation_enu_flu is not None:
+            return np.array(self.rotation_enu_flu, dtype=np.float64)
         c, s = cos(self.yaw_rad), sin(self.yaw_rad)
         return np.array([[c, -s, 0], [s, c, 0], [0, 0, 1]])
 

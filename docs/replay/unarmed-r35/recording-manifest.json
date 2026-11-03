@@ -1,0 +1,232 @@
+{
+  "scope": "unarmed recording only",
+  "control_publishers_created": 0,
+  "arming_commands_sent": 0,
+  "fixture_sha256": "c1c0abc87013463f80849b72d130da547ac1c438a4d16e962d760a4cef0d5c15",
+  "all_observed_disarmed": true,
+  "complete": true,
+  "storage_id": "sqlite3",
+  "world_from_odom": [
+    [
+      0.9944838370581903,
+      -0.10488983127283802,
+      0.0001453463940414635,
+      0.018138314700505666
+    ],
+    [
+      0.10488975691815461,
+      0.994483754187886,
+      0.0004489432236792253,
+      -0.0056287958046306544
+    ],
+    [
+      -0.00019163420658682435,
+      -0.00043122143176585004,
+      0.9999998886621978,
+      0.2909337683982517
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "alignment_source": {
+    "gazebo_pose_snapshot": {
+      "header": {
+        "stamp": {
+          "sec": "158",
+          "nsec": 608000000
+        }
+      },
+      "pose": [
+        {
+          "name": "x500_depth_0",
+          "id": 18,
+          "position": {
+            "x": -1.5038040027426763e-10,
+            "y": -7.688937060418675e-18,
+            "z": -0.013000187342252556
+          },
+          "orientation": {
+            "x": -1.6513133728783523e-17,
+            "y": 2.6975891232557554e-09,
+            "z": 4.325845474292397e-18,
+            "w": 1
+          }
+        },
+        {
+          "name": "base_link",
+          "id": 19,
+          "position": {
+            "z": 0.24
+          },
+          "orientation": {
+            "w": 1
+          }
+        },
+        {
+          "name": "rotor_0",
+          "id": 37,
+          "position": {
+            "x": 0.17400000000000002,
+            "y": -0.174,
+            "z": 0.3000000000000001
+          },
+          "orientation": {
+            "x": 4.5417092665887005e-34,
+            "y": 7.143326480705756e-35,
+            "z": -1.2190150618695687e-21,
+            "w": 1
+          }
+        },
+        {
+          "name": "rotor_1",
+          "id": 41,
+          "position": {
+            "x": -0.17400000000000002,
+            "y": 0.174,
+            "z": 0.3000000000000001
+          },
+          "orientation": {
+            "x": -1.9601251238402635e-33,
+            "y": 7.143326480728885e-35,
+            "z": -2.103837227499601e-20,
+            "w": 1
+          }
+        },
+        {
+          "name": "rotor_2",
+          "id": 45,
+          "position": {
+            "x": 0.17400000000000002,
+            "y": 0.174,
+            "z": 0.3000000000000001
+          },
+          "orientation": {
+            "x": 3.2693634939519387e-34,
+            "y": 7.143326480700769e-35,
+            "z": 3.055562893017817e-21,
+            "w": 1
+          }
+        },
+        {
+          "name": "rotor_3",
+          "id": 49,
+          "position": {
+            "x": -0.17400000000000002,
+            "y": -0.174,
+            "z": 0.3000000000000001
+          },
+          "orientation": {
+            "x": -2.0377692334242827e-33,
+            "y": 7.143326480704979e-35,
+            "z": -5.521235116423902e-22,
+            "w": 1
+          }
+        },
+        {
+          "name": "camera_link",
+          "id": 53,
+          "position": {
+            "x": 0.11999999999999998,
+            "y": 0.03,
+            "z": 0.242
+          },
+          "orientation": {
+            "y": 7.143326480704334e-35,
+            "w": 1
+          }
+        }
+      ]
+    },
+    "odom_timestamp_sample_ns": 158492000000,
+    "odom_position_ned": [
+      0.007527840323746204,
+      -0.017435604706406593,
+      0.06393405795097351
+    ],
+    "odom_q_wxyz": [
+      0.6689955718228476,
+      9.615698270199964e-05,
+      0.00021545845025475245,
+      0.7432663514601694
+    ],
+    "note": "Frozen before recording; independent resting-pose alignment, not fitted to depth."
+  },
+  "publishers": {
+    "/drone_cv_g1/camera/depth/image_raw": [
+      {
+        "type": "sensor_msgs/msg/Image",
+        "reliability": "BEST_EFFORT",
+        "durability": "VOLATILE"
+      }
+    ],
+    "/drone_cv_g1/camera/depth/camera_info": [
+      {
+        "type": "sensor_msgs/msg/CameraInfo",
+        "reliability": "BEST_EFFORT",
+        "durability": "VOLATILE"
+      }
+    ],
+    "/clock": [
+      {
+        "type": "rosgraph_msgs/msg/Clock",
+        "reliability": "BEST_EFFORT",
+        "durability": "VOLATILE"
+      }
+    ],
+    "/tf_static": [
+      {
+        "type": "tf2_msgs/msg/TFMessage",
+        "reliability": "RELIABLE",
+        "durability": "TRANSIENT_LOCAL"
+      }
+    ],
+    "/drone_cv_g1/fmu/out/vehicle_odometry": [
+      {
+        "type": "px4_msgs/msg/VehicleOdometry",
+        "reliability": "BEST_EFFORT",
+        "durability": "TRANSIENT_LOCAL"
+      }
+    ],
+    "/drone_cv_g1/fmu/out/vehicle_status_v4": [
+      {
+        "type": "px4_msgs/msg/VehicleStatus",
+        "reliability": "BEST_EFFORT",
+        "durability": "TRANSIENT_LOCAL"
+      }
+    ]
+  },
+  "record_start_sim_ns": 158500000000,
+  "warmup_end_sim_ns": 159064000000,
+  "recorded_wall_s": 30.050796326999944,
+  "topic_counts": {
+    "/drone_cv_g1/camera/depth/image_raw": 167,
+    "/drone_cv_g1/camera/depth/camera_info": 208,
+    "/clock": 1709,
+    "/tf_static": 1,
+    "/drone_cv_g1/fmu/out/vehicle_odometry": 684,
+    "/drone_cv_g1/fmu/out/vehicle_status_v4": 14
+  },
+  "topics": {
+    "/drone_cv_g1/camera/depth/image_raw": "sensor_msgs/msg/Image",
+    "/drone_cv_g1/camera/depth/camera_info": "sensor_msgs/msg/CameraInfo",
+    "/clock": "rosgraph_msgs/msg/Clock",
+    "/tf_static": "tf2_msgs/msg/TFMessage",
+    "/drone_cv_g1/fmu/out/vehicle_odometry": "px4_msgs/msg/VehicleOdometry",
+    "/drone_cv_g1/fmu/out/vehicle_status_v4": "px4_msgs/msg/VehicleStatus"
+  },
+  "warmup_wall_s": 2.0,
+  "bag_files": {
+    "bag/bag_0.db3": {
+      "bytes": 205807616,
+      "sha256": "7c1ab71df06f7bcb0c91697b31a15cd34531c1da1d6dc64596b03d7ef826c823"
+    },
+    "bag/metadata.yaml": {
+      "bytes": 1952,
+      "sha256": "dc6f2acfba8e48549ebd4055383757471efd783b6203ff781efd248ebed947bb"
+    }
+  }
+}

@@ -4,7 +4,7 @@
 
 Progress comes from `.omp/roadmap/roadmap.json`; English display text comes from `docs/roadmap.en.json`. Workspace binding and receipts are excluded.
 
-Revision: 34. A completed task does not certify that later gates have passed.
+Revision: 37. A completed task does not certify that later gates have passed.
 
 ## Preparation
 
@@ -231,7 +231,7 @@ Status: **pending**. Dependencies: `sim-delivery`.
 
 ### `prep-sensor-replay` — Unarmed sensor recording and offline geometry replay
 
-Status: **pending**. Dependencies: `g1-environment`, `g0-demo`.
+Status: **done**. Dependencies: `g1-environment`, `g0-demo`.
 
 - Capture a bounded real Gazebo bag with depth, CameraInfo, clock, static TF, PX4 odometry and vehicle status in the pinned environment; remain Disarmed with no control publishers or arming commands.
 - Replay paired observations with validated capture-time timestamp_sample poses, full capture orientation, explicit frame conventions and reset/epoch handling; reject missing, stale, future, unsupported or unbracketed inputs.

@@ -3,7 +3,7 @@
 ## 1. Two different harnesses
 
 1. **Coding-agent harness:** small tasks, clear contracts, evidence before Git operations, and bounded operational permissions. Repository guidance is in [`.omp/AGENTS.md`](../.omp/AGENTS.md).
-2. **Simulation-evaluation harness:** runs scenarios, injects faults, records logs, and provides independent oracles and aggregation. The SITL portion remains a specification; the G0 core/demo and offline CI exist, but **there is no runner/evaluator/flight CI yet**.
+2. **Simulation-evaluation harness:** runs scenarios, injects faults, records logs, and provides independent oracles and aggregation. G0 and an unarmed ROS bag/geometry replay exist; **the flight runner/evaluator and flight CI remain unimplemented**.
 
 Do not use an LLM to control the drone in the control loop. The state machine, planner, supervisor, and runtime judge must be deterministic for a given input/configuration.
 
@@ -11,9 +11,11 @@ Do not use an LLM to control the drone in the control loop. The state machine, p
 
 | Available | Not yet available |
 | --- | --- |
-| PDF/plan/contracts, native + portable roadmap, NumPy G0 core, pytest, synthetic demo, and offline CI workflow | ROS nodes, simulator launcher, fault injector, rosbag dataset, scenario runner, flight acceptance CLI, flight benchmark CI |
+| PDF/plan/contracts, native + portable roadmap, NumPy G0 core, pytest, synthetic demo, offline CI, unarmed ROS recording and independent bag geometry/fault replay | Live perception runtime, flight oracle/supervisor, flight scenario runner, flight acceptance CLI and flight benchmark CI |
 
 Do not relabel a design as a “harness that has run.” Do not treat Markdown gates as technical guarantees: only a real runner/CI can enforce them.
+
+The [unarmed replay results](SENSOR_REPLAY_RESULTS.md) preserve the real dataset, per-frame target errors, fault variants and reproducible commands. Its stationary STOP is not G1 flight or G2 navigation acceptance.
 
 The [SAFETY.md](SAFETY.md) contract is a mandatory supplement: phase-specific contact/clearance, suite membership before a run, an unsafe latch, finite deadlines, and an oracle/supervisor before flight.
 
@@ -106,8 +108,12 @@ docker exec -i drone-cv-g1 /usr/local/bin/ros2-entrypoint.sh ros2 run ros_gz_bri
 ```
 
 ```sh
-docker exec -i drone-cv-g1 /usr/local/bin/ros2-entrypoint.sh ros2 run tf2_ros static_transform_publisher --x 0.13233 --y 0 --z 0.26078 --qx -0.5 --qy 0.5 --qz -0.5 --qw 0.5 --frame-id drone_cv_g1/base_link --child-frame-id drone_cv_g1/camera_optical
+docker exec -i drone-cv-g1 /usr/local/bin/ros2-entrypoint.sh ros2 run tf2_ros static_transform_publisher --x 0.13233 --y 0 --z 0.02078 --qx -0.5 --qy 0.5 --qz -0.5 --qw 0.5 --frame-id drone_cv_g1/base_link --child-frame-id drone_cv_g1/camera_optical
 ```
+The merged `x500_base` model places `base_link` 0.24 m above the outer model origin.
+The sensor's model-relative z is 0.26078 m; its body-relative z is therefore 0.02078 m.
+The historical G1 observation used the outer-model offset and does not certify body-frame geometry.
+
 
 In another terminal, copy the two read-only observers and run a finite observation window:
 
