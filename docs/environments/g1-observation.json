@@ -1,0 +1,299 @@
+{
+  "probe": "read-only G1 environment, never flight acceptance",
+  "control_publishers_created": 0,
+  "arming_commands_sent": 0,
+  "namespace": "/drone_cv_g1",
+  "versions": {
+    "packages": {
+      "exit": 0,
+      "stdout": "libgz-rendering8 8.2.3-1~noble\nlibgz-sim8 8.15.0-1~noble\npx4-gazebo 1.18.0~beta1-noble\nros-jazzy-rclpy 7.1.11-1noble.20260615.133206",
+      "stderr": ""
+    },
+    "firmware": {
+      "exit": 0,
+      "stdout": "HW arch: PX4_SITL\nPX4 git-hash: 61907962c9220437ec01a98fa26bfbf5cbb254b5\nPX4 version: 1.18.0 80 (17956992)\nPX4 git-branch: main\nOS: Linux\nOS version: Release 6.18.33 (101851647)\nBuild datetime: Sep 11 2026 00:55:54\nBuild uri: localhost\nBuild variant: default\nToolchain: GNU GCC, 13.3.0\nUNKNOWN MCU",
+      "stderr": ""
+    }
+  },
+  "assets_sha256": {
+    "share/gz/models/x500_depth/model.sdf": "84d05a5072b49e87ca164ec9be8bda2e58201baf624d6d10f7117a5e6d6bbb5f",
+    "share/gz/models/OakD-Lite/model.sdf": "f8a78a93c19eb3902ec751fc56bf22b389c7528b38f4d5e3a6c177f3548ee070",
+    "share/gz/models/x500/model.sdf": "cb76a4afd439f253a8c516b1fcd3528f80347619cfa46bebb620557054fbf125",
+    "share/gz/models/x500_base/model.sdf": "e807dca3406f7cd5cb3d545898601c3ec17e0e5242e25cf467a69df1812cf436",
+    "share/gz/worlds/default.sdf": "457a363a22c437b788a4aaf1e2335aa149efce4e5b988cdc108065663cd879b2"
+  },
+  "bridge": {
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Package 'ros_gz_bridge' not found"
+  },
+  "ros_source_manifest": "repositories:\n  px4-ros2-interface-lib:\n    type: git\n    url: https://github.com/Auterion/px4-ros2-interface-lib.git\n    version: 22943b5412235d2d36512d58b9073ae3de8fd1cd\n  px4_msgs:\n    type: git\n    url: https://github.com/PX4/px4_msgs.git\n    version: 8fb8277cf95c4ba87094146bc8922e76c4ac0799\n",
+  "depth": {
+    "width": 640,
+    "height": 480,
+    "step_bytes": 2560,
+    "format": "R_FLOAT32",
+    "header": {
+      "stamp": {
+        "sec": "737",
+        "nsec": 620000000
+      },
+      "data": [
+        {
+          "key": "frame_id",
+          "value": [
+            "camera_link"
+          ]
+        },
+        {
+          "key": "seq",
+          "value": [
+            "1150"
+          ]
+        }
+      ]
+    },
+    "finite_pixels": 149626,
+    "nan_pixels": 0,
+    "positive_inf_pixels": 157574,
+    "negative_inf_pixels": 0,
+    "finite_min_m": 0.44744744896888733,
+    "finite_max_m": 16.487102508544922,
+    "payload_sha256": "e9b116431701cdd0a3567d4c50cdd500fa1bbd4e52af7da5d4615fda17ed331d",
+    "no_return_semantics_certified": false
+  },
+  "camera_info": {
+    "header": {
+      "stamp": {
+        "sec": "737",
+        "nsec": 752000000
+      },
+      "data": [
+        {
+          "key": "frame_id",
+          "value": [
+            "camera_link"
+          ]
+        }
+      ]
+    },
+    "width": 640,
+    "height": 480,
+    "distortion": {
+      "k": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "intrinsics": {
+      "k": [
+        432.496042035043,
+        0,
+        320,
+        0,
+        432.496042035043,
+        240,
+        0,
+        0,
+        1
+      ]
+    },
+    "projection": {
+      "p": [
+        432.496042035043,
+        0,
+        320,
+        0,
+        0,
+        432.496042035043,
+        240,
+        0,
+        0,
+        0,
+        1,
+        0
+      ]
+    },
+    "rectificationMatrix": [
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1
+    ]
+  },
+  "world_stats": {
+    "simTime": {
+      "sec": "737",
+      "nsec": 888000000
+    },
+    "realTime": {
+      "sec": "3262",
+      "nsec": 634649075
+    },
+    "iterations": "184472",
+    "realTimeFactor": 0.025084647358616423,
+    "stepSize": {
+      "nsec": 4000000
+    }
+  },
+  "dds": {
+    "odometry": {
+      "count": 116,
+      "wall_window_s": 6.043047264000052,
+      "wall_rate_hz": 19.195613559245366,
+      "strictly_increasing_stamps": true,
+      "first": {
+        "timestamp_us": 1793687725761740,
+        "sample_us": 1793687725741740,
+        "pose_frame": 1,
+        "position": [
+          -0.03310990706086159,
+          0.0042381733655929565,
+          -0.013341888785362244
+        ],
+        "quaternion_wxyz": [
+          0.6696171760559082,
+          -0.000709986430592835,
+          0.00027661077911034226,
+          0.7427060008049011
+        ]
+      },
+      "last": {
+        "timestamp_us": 1793687726913740,
+        "sample_us": 1793687726893740,
+        "pose_frame": 1,
+        "position": [
+          -0.011783975176513195,
+          0.018654463812708855,
+          -0.02878662943840027
+        ],
+        "quaternion_wxyz": [
+          0.6696171164512634,
+          -0.0008333792211487889,
+          9.992982813855633e-05,
+          0.7427060604095459
+        ]
+      }
+    },
+    "status": {
+      "count": 2,
+      "wall_window_s": 6.043047264000052,
+      "wall_rate_hz": 0.3309588544697477,
+      "strictly_increasing_stamps": true,
+      "first": {
+        "timestamp_us": 1793687726165740,
+        "arming_state": 1,
+        "armed": false
+      },
+      "last": {
+        "timestamp_us": 1793687726669740,
+        "arming_state": 1,
+        "armed": false
+      }
+    },
+    "all_observed_disarmed": true,
+    "publishers": {
+      "/drone_cv_g1/fmu/out/vehicle_odometry": [
+        {
+          "type": "px4_msgs/msg/VehicleOdometry",
+          "reliability": "BEST_EFFORT",
+          "durability": "TRANSIENT_LOCAL"
+        }
+      ],
+      "/drone_cv_g1/fmu/out/vehicle_status_v4": [
+        {
+          "type": "px4_msgs/msg/VehicleStatus",
+          "reliability": "BEST_EFFORT",
+          "durability": "TRANSIENT_LOCAL"
+        }
+      ]
+    },
+    "ros_camera_topics": []
+  },
+  "commander_status": {
+    "exit": 0,
+    "stdout": "INFO  [commander] Disarmed\nINFO  [commander] prearm safety: Off\nINFO  [commander] navigation mode: Hold\nINFO  [commander] user intended navigation mode: Hold\nINFO  [commander] in failsafe: no\ncommander: cycle: 61347 events, 68000us elapsed, 1.11us avg, min 0us max 8000us 73.995us rms\ncommander: preflight check: 6822 events, 16000us elapsed, 2.35us avg, min 0us max 4000us 96.838us rms",
+    "stderr": ""
+  },
+  "blockers": [
+    "ros_gz_bridge missing: no ROS image/CameraInfo/clock bridge",
+    "no ROS camera topics; camera QoS/clock/frame alignment unverified"
+  ],
+  "observation_complete": false,
+  "acceptance_evaluated": false,
+  "scope_note": "Gazebo Transport sensor evidence and DDS only; not a ROS camera adapter or aligned-clock proof",
+  "probe_exit": 2,
+  "observed_at_utc": "2026-11-03T06:35:41.026320+00:00",
+  "image": "px4io/px4-sitl-gazebo-ros2@sha256:2c01c89215a5f541d3a819c1bd2115ff27c9423679f3738dbb4096271d77084b",
+  "container_policy": {
+    "network": "none",
+    "cpus": 4,
+    "memory_bytes": 6442450944,
+    "capabilities": "ALL dropped",
+    "no_new_privileges": true,
+    "ROS_DOMAIN_ID": 83,
+    "ROS_LOCALHOST_ONLY": 1,
+    "GZ_PARTITION": "drone_cv_g1_r27",
+    "rendering": "LIBGL_ALWAYS_SOFTWARE=1",
+    "vehicle": "gz_x500_depth"
+  },
+  "sensor_wall_rate_windows": {
+    "frequency_/depth_camera": [
+      6.14162,
+      5.83645,
+      5.80558
+    ],
+    "frequency_/camera_info": [
+      5.87539,
+      5.88957,
+      5.92035
+    ],
+    "frequency_/clock": [
+      56.3374,
+      32.7147,
+      61.7608,
+      66.9603,
+      52.6289,
+      54.9066,
+      53.0264,
+      55.5773,
+      51.8744,
+      59.2834,
+      31.3307,
+      58.7859,
+      34.2171,
+      72.9465,
+      61.3961,
+      68.2621,
+      50.6836,
+      54.8197,
+      68.4812,
+      55.9391,
+      67.3387,
+      30.3321,
+      83.699,
+      33.0701,
+      69.9904,
+      51.1006,
+      63.5949,
+      50.6724,
+      49.5514,
+      44.9657
+    ]
+  },
+  "container_resource_sample": {
+    "CPUPerc": "392.82%",
+    "MemUsage": "979.7MiB / 6GiB",
+    "MemPerc": "15.95%",
+    "PIDs": "188",
+    "scope": "Single observation during software rendering; not a throughput benchmark"
+  }
+}

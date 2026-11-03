@@ -48,7 +48,7 @@ Image `px4io/px4-sitl-gazebo-ros2` tồn tại và nhà cung cấp mô tả có 
 px4io/px4-sitl-gazebo-ros2@sha256:2c01c89215a5f541d3a819c1bd2115ff27c9423679f3738dbb4096271d77084b
 ```
 
-Đây là **ứng viên môi trường**, chưa pull/build/run tại repo. Gate G1 phải kiểm tra package versions, model depth và topic thật trước khi chọn. Nếu sửa DDS topics/firmware thì cần build lại tương ứng; lời hứa “không cần build” chỉ áp dụng nội dung có sẵn trong image.
+Image đã pull đúng digest và chạy unarmed X500 depth trên Docker Linux/amd64. [Probe G1](environments/g1-observation.json) xác nhận PX4 package `1.18.0~beta1`, Gazebo8.15.0, camera Gazebo và DDS odometry, nhưng **thiếu ros_gz_bridge** nên chưa đạt ROS camera/clock/frame contract. Không gọi đây là full G1 environment lock. Nếu sửa DDS topics/firmware phải build messages tương ứng; không mặc định nội dung image đủ mọi bridge.
 
 ## 3. Pipeline và ranh giới an toàn
 
