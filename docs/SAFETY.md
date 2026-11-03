@@ -114,4 +114,4 @@ One `NO_RETURN` ray does not prove that an entire 5° bin or volumetric corridor
 
 ## Gap closure status
 
-S01–S08 are closed at the contract level. The G0 core has verified units/frames, synthetic swept-volume coverage, clock/freshness, and constant-deceleration bounds through code/tests/a demo; this does not prove that real sensors or PX4 conform to the model. Flight proofs, actual numerical deadlines/bounds, environment lock, stopping calibration, and SITL oracle geometry remain pending in their corresponding tasks.
+S01–S08 are closed at the contract level. The G0 core has verified units/frames, synthetic swept-volume coverage, clock/freshness, and constant-deceleration bounds through code/tests/a demo; this does not prove that real sensors or PX4 conform to the model. The unarmed G1 environment lock/smoke is complete, as recorded in [environment evidence](environments/g1-bridge-observation.json). Flight proofs, actual numerical deadlines/bounds, stopping calibration, and SITL oracle geometry remain pending in their corresponding tasks. The separate offline freespace spike does not complete those gates.

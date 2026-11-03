@@ -18,6 +18,7 @@ This target has not been achieved; it is not a benchmark result.
 5. [Development and evaluation harness](docs/HARNESS.md): agent workflow, runner/evaluator contract and Git gates.
 6. [OMP skills and roadmap](docs/OMP.md): 10 trigger-loaded skills, without installing another bundle.
 7. [Repository agent instructions](.omp/AGENTS.md): invariants and automation scope.
+8. [Offline seen-free spike](spike/freespace/README.md): synthetic perception liveness, near-hazard retention and sampled-coverage limits; not flight acceptance.
 
 [Original PDF, preserved byte for byte](docs/source/drone-obstacle-avoidance-plan.pdf).
 The plan records its source, checksum and relationship to the revised documents.
@@ -26,7 +27,7 @@ The plan records its source, checksum and relationship to the revised documents.
 
 The [canonical state](.omp/roadmap/roadmap.json) contains 27 tasks with dependencies and acceptance criteria.
 Use `/roadmap status` or `/roadmap view` in OMP; the offline canvas is generated automatically. Do not edit its HTML.
-Current status and acceptance criteria live in JSON; the [portable view](docs/ROADMAP.md) is generated from the same source. Do not edit it manually.
+Current status and acceptance criteria live in JSON; the [English portable view](docs/ROADMAP.md) uses the same state with a hash-bound [display translation](docs/roadmap.en.json). Do not edit generated Markdown manually.
 This roadmap covers the simulation scope; it is neither an estimate of effort percentages nor flight certification.
 
 ## Run G0 now

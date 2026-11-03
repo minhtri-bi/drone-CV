@@ -2,6 +2,8 @@
 
 Cross-check date: 2026-11-03. Scope: reading the complete 15-page PDF, including the architecture/pipeline/roadmap diagrams, and cross-checking official documentation. This is a design analysis; the flight stack has not been tested experimentally.
 
+Historical scope: this initial review predates the G1 image/bridge smoke and the offline freespace spike. Statements below about an image not yet being run describe that earlier snapshot, not current repository status. See [README](../README.md) and the [recorded G1 environment evidence](environments/g1-bridge-observation.json) for subsequent implementation results.
+
 ## Conclusion
 
 Retain simulation-first, depth-first, no training, a separate supervisor, and seed-based evaluation. Correct sensor semantics, geometry/filtering, recovery, Offboard liveness, and grading before writing flight nodes.

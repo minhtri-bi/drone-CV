@@ -55,7 +55,7 @@ Routing examples:
 
 Do not automatically index with Graphify, install MCP, add watchers/daemons or run another model to maintain the roadmap. The canvas is a progress view, not certification that the simulator works.
 
-Existing roadmap titles, phases and acceptance text retain their original language: the current native API has no metadata-edit action. Translating those fields requires a supported native update that preserves task IDs, status, dependencies and evidence. Do not bypass this limit by editing canonical JSON or generated views manually.
+Native roadmap titles, phases and acceptance text retain their original language because the current native API has no metadata-edit action. The public portable view translates display text through `docs/roadmap.en.json`, keyed by stable task ID. Each entry binds to a SHA-256 of the native title/phase/acceptance; changed source criteria require a reviewed translation before export. Status, dependencies and evidence remain native-owned; the catalog cannot override them. Do not edit canonical JSON or generated HTML to change their language. Original source documents, historical evidence and verbatim diagnostics remain unchanged.
 
 ## Selected limits
 
