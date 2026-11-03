@@ -1,0 +1,620 @@
+{
+  "owner": "omp-project-roadmap",
+  "schema": 1,
+  "id": "p_96eed81d-c5ef-4831-a862-c470d7086618",
+  "root": "C:\\Users\\TRI\\drone-CV",
+  "title": "Drone-CV: simulation-first obstacle avoidance",
+  "goal": "Sửa contract an toàn trước; chuẩn bị OMP; triển khai G0–G4 với oracle độc lập, đạt ít nhất 45/50 world tĩnh ở G3, không unsafe event trong acceptance suite, không tuyên bố bay thật.",
+  "revision": 10,
+  "updatedAt": "2026-11-03T05:02:22.233Z",
+  "tasks": [
+    {
+      "id": "prep-safety",
+      "title": "Sửa lỗ hổng contract và dependency gate",
+      "phase": "Chuẩn bị",
+      "acceptance": [
+        "Định nghĩa contact/clearance theo phase, không miễn trừ va chạm tuỳ ý.",
+        "Oracle và supervisor tối thiểu có trước flight/wall-stop; không còn dependency vòng.",
+        "Outcome unsafe được latch; deadline, suite membership và rollout scope được định nghĩa."
+      ],
+      "dependsOn": [],
+      "milestone": false,
+      "verification": "inspection",
+      "status": "done",
+      "blocker": "",
+      "runToken": "7f2d0134-dc54-44dc-8a4c-e308fce7c9a3",
+      "startedAt": "2026-11-03T04:55:26.763Z",
+      "evidenceIds": [
+        "r_51743662-e7fc-4055-9fbd-c9fcd6c2b338"
+      ],
+      "note": "Đã sửa S01–S08 trong SAFETY/PLAN/HARNESS và scenario liên quan: phase-aware contact/clearance, oracle/supervisor trước flight, unsafe latch, frozen suite semantics, coverage/clock/signed-input/route constraints. Inspection giữ đủ 65 ID và link hợp lệ. Đây là contract repair, chưa có runtime proof."
+    },
+    {
+      "id": "prep-skills",
+      "title": "Chuẩn bị bộ skills OMP theo trigger",
+      "phase": "Chuẩn bị",
+      "acceptance": [
+        "Router chỉ tham chiếu skills hiện có đã đọc; không sao chép bundle hoặc đổi account/policy.",
+        "AGENTS hướng dẫn native roadmap và load-on-demand; không giả có auto-hook hay ROS skill đã cài."
+      ],
+      "dependsOn": [
+        "prep-safety"
+      ],
+      "milestone": false,
+      "verification": "inspection",
+      "status": "done",
+      "blocker": "",
+      "runToken": "e12a9999-89fc-4fb9-86dd-89eb63c336e6",
+      "startedAt": "2026-11-03T04:59:47.986Z",
+      "evidenceIds": [
+        "r_b1ecfdc3-706c-45aa-8652-851b57674929"
+      ],
+      "note": "Đã chuẩn bị router 10 skills hiện có trong docs/OMP.md và liên kết từ .omp/AGENTS.md; kiểm tra tên/frontmatter và path thực. Load-on-demand, không cài skill/hook/MCP, không đổi settings/model/quyền. Native roadmap là trạng thái duy nhất; robotics contracts dùng docs project, không giả có ROS skill."
+    },
+    {
+      "id": "prep-roadmap",
+      "title": "Hoàn thiện roadmap và tài liệu vận hành",
+      "phase": "Chuẩn bị",
+      "acceptance": [
+        "DAG bao phủ G0–G4 và decision gate G5; chỉ chuẩn bị được đánh dấu done.",
+        "Canonical JSON/view được tạo bởi native tool; link tài liệu hợp lệ; không tạo receipt bay giả."
+      ],
+      "dependsOn": [
+        "prep-skills"
+      ],
+      "milestone": true,
+      "verification": "inspection",
+      "status": "done",
+      "blocker": "",
+      "runToken": "f9ca246d-1f55-4ff6-9e10-ce85a4bdeb75",
+      "startedAt": "2026-11-03T05:01:35.971Z",
+      "evidenceIds": [
+        "r_22ba6b4e-dca0-4c75-985a-6975d26e0b07"
+      ],
+      "note": "Native roadmap có 27 task, DAG không chu trình; oracle/supervisor trước flight và calibration trước wall-stop. 24 task triển khai/bàn giao/quyết định còn pending; chỉ 3 prep task done. 24 link nội bộ hợp lệ, native canvas tồn tại; generated view/locks được ignore, JSON canonical được giữ. Không có flight receipt hoặc phase acceptance giả."
+    },
+    {
+      "id": "g0-contracts",
+      "title": "Depth validity, units và clock contract offline",
+      "phase": "G0 Offline",
+      "acceptance": [
+        "API NumPy thật phân biệt valid/too-close/no-return/unknown và encoding mét/mm.",
+        "Reject config vô lý, invalid/future/stale input theo clock epoch; test E01/E04/E08/E20 có expected độc lập.",
+        "Chạy fixture qua API không ROS/GPU, không sửa input của caller."
+      ],
+      "dependsOn": [
+        "prep-roadmap"
+      ],
+      "milestone": false,
+      "verification": "smoke",
+      "status": "pending",
+      "blocker": "",
+      "runToken": null,
+      "startedAt": null,
+      "evidenceIds": [],
+      "note": ""
+    },
+    {
+      "id": "g0-geometry",
+      "title": "Projection, frame transforms và conservative coverage",
+      "phase": "G0 Offline",
+      "acceptance": [
+        "Projection optical/FLU/ENU/NED và quaternion có đáp án analytic, intrinsics/crop đúng.",
+        "Histogram 72x3 giữ near evidence, unknown và wrap; footprint inflation không tạo khe giả.",
+        "A04/A05/B07/C08/E02/E03/E05/E06/E07/E13 được chứng minh offline ở mức geometry."
+      ],
+      "dependsOn": [
+        "g0-contracts"
+      ],
+      "milestone": false,
+      "verification": "smoke",
+      "status": "pending",
+      "blocker": "",
+      "runToken": null,
+      "startedAt": null,
+      "evidenceIds": [],
+      "note": ""
+    },
+    {
+      "id": "g0-safety",
+      "title": "Braking envelope và command freshness offline",
+      "phase": "G0 Offline",
+      "acceptance": [
+        "API bound braking kiểm tra distance/margin/latency/actual velocity và invalid config.",
+        "Proposal stale không được refresh bởi heartbeat; unknown corridor không cấp quyền di chuyển.",
+        "Boundary fixtures gồm d<=margin, a<=0, NaN, stale epoch và vận tốc lệch hướng; không gọi đây là calibration SITL."
+      ],
+      "dependsOn": [
+        "g0-geometry"
+      ],
+      "milestone": false,
+      "verification": "smoke",
+      "status": "pending",
+      "blocker": "",
+      "runToken": null,
+      "startedAt": null,
+      "evidenceIds": [],
+      "note": ""
+    },
+    {
+      "id": "g0-demo",
+      "title": "Gate G0: offline smoke có thể tái lập",
+      "phase": "G0 Offline",
+      "acceptance": [
+        "Command thật chạy synthetic depth qua core đến histogram/safe proposal và xuất artifact có thể xem.",
+        "Tests hành vi cùng smoke đạt trên snapshot xác định; không có ROS node/runner giả."
+      ],
+      "dependsOn": [
+        "g0-safety"
+      ],
+      "milestone": true,
+      "verification": "smoke",
+      "status": "pending",
+      "blocker": "",
+      "runToken": null,
+      "startedAt": null,
+      "evidenceIds": [],
+      "note": ""
+    },
+    {
+      "id": "g1-environment",
+      "title": "Chọn và lock môi trường Linux PX4/ROS/Gazebo",
+      "phase": "G1 SITL nền",
+      "acceptance": [
+        "Người dùng cho phép mọi install/download cần thiết; thiếu prerequisite thì block rõ.",
+        "Image/packages/firmware/messages/Agent/assets được pin sau smoke, không suy luận từ tên image.",
+        "X500 depth, camera encoding/CameraInfo, odom, clock/QoS/namespace được quan sát thật, chưa arm."
+      ],
+      "dependsOn": [
+        "prep-roadmap"
+      ],
+      "milestone": false,
+      "verification": "smoke",
+      "status": "pending",
+      "blocker": "",
+      "runToken": null,
+      "startedAt": null,
+      "evidenceIds": [],
+      "note": ""
+    },
+    {
+      "id": "g1-oracle",
+      "title": "Oracle contact/clearance và logger trước chuyến bay",
+      "phase": "G1 SITL nền",
+      "acceptance": [
+        "Known-free/known-contact fixture chứng minh observer sống, geometry/propeller envelope và landing-contact allowlist đúng.",
+        "Record phase-aware clearance, contact ledger và raw logs; planner không đọc oracle.",
+        "Oracle mất dữ liệu không thành zero collision; unsafe latch không bị infra ghi đè."
+      ],
+      "dependsOn": [
+        "g1-environment"
+      ],
+      "milestone": false,
+      "verification": "smoke",
+      "status": "pending",
+      "blocker": "",
+      "runToken": null,
+      "startedAt": null,
+      "evidenceIds": [],
+      "note": ""
+    },
+    {
+      "id": "g1-supervisor",
+      "title": "Supervisor tối thiểu và single-owner Offboard bridge",
+      "phase": "G1 SITL nền",
+      "acceptance": [
+        "Supervisor/bridge độc lập planner/inference, explicit command TTL/epoch/progress.",
+        "Prime/ack/mode/arm ownership, unused PX4 fields và handoff có contract đúng firmware.",
+        "Stationary fault injection chứng minh stale command/owner conflict không cấp chuyển động; chưa coi đã test phanh bay."
+      ],
+      "dependsOn": [
+        "g1-environment",
+        "g0-safety"
+      ],
+      "milestone": false,
+      "verification": "smoke",
+      "status": "pending",
+      "blocker": "",
+      "runToken": null,
+      "startedAt": null,
+      "evidenceIds": [],
+      "note": ""
+    },
+    {
+      "id": "g1-flight",
+      "title": "Mission trống: takeoff, square, hold, land, disarm",
+      "phase": "G1 SITL nền",
+      "acceptance": [
+        "Trong known-clear test volume, bay vuông cạnh 5 m, goal hold, land/disarm có bag/ULog/ack thật.",
+        "Có bounded speed thăm dò, operator stop và supervisor; không disable preflight.",
+        "Phase-aware floor/landing contact không false-fail, tiếp xúc vật cản khác luôn fail."
+      ],
+      "dependsOn": [
+        "g1-oracle",
+        "g1-supervisor",
+        "g0-demo"
+      ],
+      "milestone": false,
+      "verification": "smoke",
+      "status": "pending",
+      "blocker": "",
+      "runToken": null,
+      "startedAt": null,
+      "evidenceIds": [],
+      "note": ""
+    },
+    {
+      "id": "g1-calibration",
+      "title": "Gate G1: đo stopping envelope và fault handoff",
+      "phase": "G1 SITL nền",
+      "acceptance": [
+        "Đo delay/braking/jerk/tracking theo actual motion và mức tải; đóng băng bounds/deadlines cùng safety config.",
+        "C02–C04/E09–E12/E21–E23 được thử đúng component đã có; bridge chết và PX4 rời Offboard không reclaim.",
+        "Camera/pose mất được xử lý theo mode đã test; không hứa hover/land an toàn vô điều kiện."
+      ],
+      "dependsOn": [
+        "g1-flight"
+      ],
+      "milestone": true,
+      "verification": "smoke",
+      "status": "pending",
+      "blocker": "",
+      "runToken": null,
+      "startedAt": null,
+      "evidenceIds": [],
+      "note": ""
+    },
+    {
+      "id": "g2-adapter",
+      "title": "Depth adapter và capture-time obstacle evidence",
+      "phase": "G2 Perception",
+      "acceptance": [
+        "Sensor semantics/TF/calibration được xác minh; capture-time pose và epoch được giữ.",
+        "Không lọc mất near evidence; finite sampling/FOV/height-envelope giới hạn được ghi rõ."
+      ],
+      "dependsOn": [
+        "g1-calibration",
+        "g0-demo"
+      ],
+      "milestone": false,
+      "verification": "smoke",
+      "status": "pending",
+      "blocker": "",
+      "runToken": null,
+      "startedAt": null,
+      "evidenceIds": [],
+      "note": ""
+    },
+    {
+      "id": "g2-replay",
+      "title": "Bag replay và lỗi cảm biến có kiểm soát",
+      "phase": "G2 Perception",
+      "acceptance": [
+        "Bag thật phát lại ở epoch mới; sensor dropout/blur/flicker có trace injection và oracle.",
+        "A01–A10/E01–E08/E13/E14/E24/E25 được phân biệt pure fixture với sensor-specific SITL."
+      ],
+      "dependsOn": [
+        "g2-adapter"
+      ],
+      "milestone": false,
+      "verification": "smoke",
+      "status": "pending",
+      "blocker": "",
+      "runToken": null,
+      "startedAt": null,
+      "evidenceIds": [],
+      "note": ""
+    },
+    {
+      "id": "g2-wall",
+      "title": "Gate G2: wall-stop 10/10 qua supervisor thật",
+      "phase": "G2 Perception",
+      "acceptance": [
+        "10/10 tiếp cận tường ngoài stopping envelope, không contact/clearance violation theo oracle.",
+        "Actual velocity, wall/sim latency và data age có log; Collision Prevention debug không được tính là bảo vệ Offboard."
+      ],
+      "dependsOn": [
+        "g2-replay",
+        "g1-calibration"
+      ],
+      "milestone": true,
+      "verification": "smoke",
+      "status": "pending",
+      "blocker": "",
+      "runToken": null,
+      "startedAt": null,
+      "evidenceIds": [],
+      "note": ""
+    },
+    {
+      "id": "g3-planner",
+      "title": "Local planner có hysteresis và goal hold",
+      "phase": "G3 Navigation",
+      "acceptance": [
+        "Planner thật tạo velocity/yaw proposals có hạn dùng, không đọc ground truth.",
+        "Corridor/cột/goal yaw-wrap/oscillation được thử; unknown hướng khác không bị xem free."
+      ],
+      "dependsOn": [
+        "g2-wall"
+      ],
+      "milestone": false,
+      "verification": "smoke",
+      "status": "pending",
+      "blocker": "",
+      "runToken": null,
+      "startedAt": null,
+      "evidenceIds": [],
+      "note": ""
+    },
+    {
+      "id": "g3-recovery",
+      "title": "Bounded recovery và mission transitions",
+      "phase": "G3 Navigation",
+      "acceptance": [
+        "B01–B05 và A08/E16/E17 có controlled run; không lùi mù hay quay khi envelope unsafe.",
+        "Retries/state transition/deadline cố định trước test; unreachable goal safe abort riêng."
+      ],
+      "dependsOn": [
+        "g3-planner"
+      ],
+      "milestone": false,
+      "verification": "smoke",
+      "status": "pending",
+      "blocker": "",
+      "runToken": null,
+      "startedAt": null,
+      "evidenceIds": [],
+      "note": ""
+    },
+    {
+      "id": "g3-runner",
+      "title": "Single-world executor và fault injection harness",
+      "phase": "G3 Navigation",
+      "acceptance": [
+        "Run/attempt ownership, start/preflight/execute/collect/cleanup hoạt động trên scenario SITL thật.",
+        "Known failure/contact/infra trace được phân loại đúng và giữ mọi artifact; exit 0/1/2 đúng contract."
+      ],
+      "dependsOn": [
+        "g3-recovery",
+        "g1-oracle"
+      ],
+      "milestone": false,
+      "verification": "smoke",
+      "status": "pending",
+      "blocker": "",
+      "runToken": null,
+      "startedAt": null,
+      "evidenceIds": [],
+      "note": ""
+    },
+    {
+      "id": "g3-faults",
+      "title": "Safety/observer fault regression suite",
+      "phase": "G3 Navigation",
+      "acceptance": [
+        "A–D/E/F trong phạm vi G3 có oracle và evidence index; ML cases để G4.",
+        "Impossible-spawn/dynamic stress kiểm tra phân loại, không trộn với zero-collision navigation benchmark.",
+        "Shutdown/telemetry-loss không che unsafe event đã quan sát."
+      ],
+      "dependsOn": [
+        "g3-runner"
+      ],
+      "milestone": false,
+      "verification": "smoke",
+      "status": "pending",
+      "blocker": "",
+      "runToken": null,
+      "startedAt": null,
+      "evidenceIds": [],
+      "note": ""
+    },
+    {
+      "id": "g3-worlds",
+      "title": "World validator và seed split đóng băng",
+      "phase": "G3 Navigation",
+      "acceptance": [
+        "Oracle route bảo toàn footprint/margin, fixed-altitude connectivity và segment/corner collision; không chỉ grid-center A*.",
+        "Dev/test seeds cùng noise/assets/config được đóng băng trước test, rejection ledger không loại theo planner outcome.",
+        "Oracle route là efficiency reference, không gọi là tối ưu động lực học nếu chưa chứng minh."
+      ],
+      "dependsOn": [
+        "g3-runner"
+      ],
+      "milestone": false,
+      "verification": "smoke",
+      "status": "pending",
+      "blocker": "",
+      "runToken": null,
+      "startedAt": null,
+      "evidenceIds": [],
+      "note": ""
+    },
+    {
+      "id": "g3-batch",
+      "title": "Batch evaluator và chống làm đẹp mẫu số",
+      "phase": "G3 Navigation",
+      "acceptance": [
+        "50 world test hợp lệ chạy đủ first attempts; retries/infra/missing/duplicates báo riêng.",
+        "Wilson CI, outcome counts, clearance window, route time ratio, latency/deadline/RTF và artifact links được xuất thật.",
+        "Không unsafe/infra bị success hoặc overwrite; incomplete batch không exit 0."
+      ],
+      "dependsOn": [
+        "g3-faults",
+        "g3-worlds"
+      ],
+      "milestone": false,
+      "verification": "smoke",
+      "status": "pending",
+      "blocker": "",
+      "runToken": null,
+      "startedAt": null,
+      "evidenceIds": [],
+      "note": ""
+    },
+    {
+      "id": "g3-acceptance",
+      "title": "Gate G3: chấp nhận navigation sim-depth",
+      "phase": "G3 Navigation",
+      "acceptance": [
+        "Ít nhất 45/50 SUCCESS trên frozen navigation suite, zero unsafe event, navigation surface clearance>=0.5 m.",
+        "Time-to-goal/latency gates có protocol và calibration; required safety cases pass theo suite semantics.",
+        "Report/demo/raw evidence cùng revisions có thể tái lập; không tuyên bố xác suất tổng quát>=90% hoặc an toàn bay thật."
+      ],
+      "dependsOn": [
+        "g3-batch"
+      ],
+      "milestone": true,
+      "verification": "smoke",
+      "status": "pending",
+      "blocker": "",
+      "runToken": null,
+      "startedAt": null,
+      "evidenceIds": [],
+      "note": ""
+    },
+    {
+      "id": "g4-stereo",
+      "title": "Stereo SGBM và gate metric offline",
+      "phase": "G4 Depth thực dụng",
+      "acceptance": [
+        "Stereo pairs đồng bộ/rectified, baseline/intrinsics/unit valid, uncertainty/dropout được giữ.",
+        "So với sim truth offline theo near-field overestimation và latency; không dùng truth chỉnh online.",
+        "Chỉ bay khi source mới đủ safety bounds; rerun scenario áp dụng."
+      ],
+      "dependsOn": [
+        "g3-acceptance"
+      ],
+      "milestone": false,
+      "verification": "smoke",
+      "status": "pending",
+      "blocker": "",
+      "runToken": null,
+      "startedAt": null,
+      "evidenceIds": [],
+      "note": ""
+    },
+    {
+      "id": "g4-mono",
+      "title": "Monocular metric adapter và OOD safety gate",
+      "phase": "G4 Depth thực dụng",
+      "acceptance": [
+        "Exact checkpoint/license/preprocess/weights revision được pin; metric scale/focal sau resize/crop được chứng minh.",
+        "E18/E19/F06 offline pass trước control; relative depth không được so ngưỡng mét.",
+        "Không train/fine-tune hoặc tải weights khi chưa được phép; thiếu hardware/latency thì block, không fake fallback."
+      ],
+      "dependsOn": [
+        "g4-stereo"
+      ],
+      "milestone": false,
+      "verification": "smoke",
+      "status": "pending",
+      "blocker": "",
+      "runToken": null,
+      "startedAt": null,
+      "evidenceIds": [],
+      "note": ""
+    },
+    {
+      "id": "g4-acceptance",
+      "title": "Gate G4: so nguồn depth trên cùng worlds",
+      "phase": "G4 Depth thực dụng",
+      "acceptance": [
+        "Mỗi source được công bố đạt ít nhất 40/50 trên frozen 50 worlds, giữ zero unsafe event và clearance gate.",
+        "Báo accuracy/uncertainty/latency/RTF/source-specific failures và evidence riêng; kết quả sim-depth không được tái dùng để certify model."
+      ],
+      "dependsOn": [
+        "g4-mono"
+      ],
+      "milestone": true,
+      "verification": "smoke",
+      "status": "pending",
+      "blocker": "",
+      "runToken": null,
+      "startedAt": null,
+      "evidenceIds": [],
+      "note": ""
+    },
+    {
+      "id": "sim-delivery",
+      "title": "Bàn giao project mô phỏng và hướng dẫn tái lập",
+      "phase": "Bàn giao mô phỏng",
+      "acceptance": [
+        "README/setup/run/evaluate commands khớp sản phẩm, dependency pins và artifact provenance đầy đủ.",
+        "Demo thực, limitations và license/dependency notes; không phát hành weights/assets trái license.",
+        "Code/test/docs cùng revision, không placeholder/no-op và không gọi đó là bay thật."
+      ],
+      "dependsOn": [
+        "g4-acceptance"
+      ],
+      "milestone": true,
+      "verification": "smoke",
+      "status": "pending",
+      "blocker": "",
+      "runToken": null,
+      "startedAt": null,
+      "evidenceIds": [],
+      "note": ""
+    },
+    {
+      "id": "g5-decision",
+      "title": "Quyết định G5 tuỳ chọn: map, VIO, planner hay hardware",
+      "phase": "G5 Quyết định tuỳ chọn",
+      "acceptance": [
+        "Người dùng chọn một hướng và xác nhận phạm vi/tiêu chí mới; không tự mua hoặc triển khai hardware.",
+        "Thêm task triển khai có dependency/evidence thật sau quyết định; không coi task lựa chọn là đã tích hợp G5."
+      ],
+      "dependsOn": [
+        "sim-delivery"
+      ],
+      "milestone": false,
+      "verification": "inspection",
+      "status": "pending",
+      "blocker": "",
+      "runToken": null,
+      "startedAt": null,
+      "evidenceIds": [],
+      "note": ""
+    }
+  ],
+  "receipts": [
+    {
+      "id": "r_51743662-e7fc-4055-9fbd-c9fcd6c2b338",
+      "taskId": "prep-safety",
+      "runToken": "7f2d0134-dc54-44dc-8a4c-e308fce7c9a3",
+      "kind": "inspection",
+      "label": "Inspect safety contract coverage, scenario IDs and document links; no flight claim",
+      "toolName": "eval",
+      "toolCallId": "call_edf838cd1c0c46979ea139c84133ea45|fc_0d8e4a8fed4396ce016ae96a1f6d38819185f6c17cd4aa6530",
+      "sessionId": "01a19fb0-735f-769d-b6a1-73a8f41b42e8",
+      "at": "2026-11-03T04:59:16.435Z",
+      "outcome": "success",
+      "sha256": "8ac9e95d0143a031375dccef2162e19c9fbfcd7bbc33dcce1900765882702cc7"
+    },
+    {
+      "id": "r_b1ecfdc3-706c-45aa-8652-851b57674929",
+      "taskId": "prep-skills",
+      "runToken": "e12a9999-89fc-4fb9-86dd-89eb63c336e6",
+      "kind": "inspection",
+      "label": "Inspect ten existing skill targets and bounded OMP routing; no installation or activation claims",
+      "toolName": "eval",
+      "toolCallId": "call_c9495fd935cb4aed9b32150b5e988a69|fc_0480c78b8dd978db016ae96a9fcc7881919152870a730eade1",
+      "sessionId": "01a19fb0-735f-769d-b6a1-73a8f41b42e8",
+      "at": "2026-11-03T05:01:25.964Z",
+      "outcome": "success",
+      "sha256": "e9831334c2c8c61d3f6de5d6908ed512bad97f96d92bd3acc97823c8be097565"
+    },
+    {
+      "id": "r_22ba6b4e-dca0-4c75-985a-6975d26e0b07",
+      "taskId": "prep-roadmap",
+      "runToken": "f9ca246d-1f55-4ff6-9e10-ce85a4bdeb75",
+      "kind": "inspection",
+      "label": "Inspect full dependency DAG, preparation-only statuses and document links; native view existence only",
+      "toolName": "eval",
+      "toolCallId": "call_d5649929e3534e89af3f401126569919|fc_0480c78b8dd978db016ae96ad557848191bcdc270734a4e389",
+      "sessionId": "01a19fb0-735f-769d-b6a1-73a8f41b42e8",
+      "at": "2026-11-03T05:02:17.334Z",
+      "outcome": "success",
+      "sha256": "49e05e2159a65599f5a65528052bb3cfec459a13c3b4411d4d0820c79c4f2984"
+    }
+  ]
+}

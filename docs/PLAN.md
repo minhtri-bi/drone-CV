@@ -10,6 +10,7 @@
 - Bản này chuẩn hoá nội dung và sửa các rủi ro trong [phản biện](REVIEW.md). Không phải bản chép nguyên văn PDF.
 - [Danh mục scenario](SCENARIOS.md) giữ đủ 30 case gốc và thêm các case còn thiếu.
 - [Harness](HARNESS.md) quy định cách agent phát triển và cách evaluator chấm độc lập.
+- [Contract an toàn bổ sung](SAFETY.md) sửa contact/clearance theo phase, outcome precedence, coverage và thứ tự triển khai. Các sửa này chưa có runtime proof.
 
 ## 1. Mục tiêu và giới hạn
 
@@ -95,6 +96,7 @@ Tầng 0 điều phối; tầng 1–8 vẫn tương ứng PDF. Ban đầu có th
 - Quaternion phải chuyển basis và đúng thứ tự field; không hoán vị phần tử như vector.
 - Tất cả nội bộ dùng mét/radian/giây. Chỉ đổi cm tại adapter `ObstacleDistance`.
 - Bán kính/chiều cao gồm propellers, sai số pose, tracking và margin; lấy từ model/cấu hình, không đoán từ tên X500.
+- Phân biệt envelope vật lý để đo clearance với envelope inflate cho planning; không trừ margin hai lần. Contact support surface chỉ được miễn theo pair/phase allowlist đóng băng trong SAFETY.
 - Giữ toàn bộ dải độ cao mà swept volume có thể chạm. Chỉ loại floor/ceiling khi chứng minh chúng ngoài envelope.
 
 ### Contract depth và histogram
@@ -106,6 +108,7 @@ Tầng 0 điều phối; tầng 1–8 vẫn tương ứng PDF. Ban đầu có th
 5. Inflation theo footprint/swept volume trong không gian Cartesian trước khi chọn hướng. Không coi `atan(r/d)` là bảo đảm hình học.
 6. Dải 3D gộp thành lệnh 2.5D bảo thủ. Bay đổi độ cao cần thiết kế planner/safety mới.
 7. `ObstacleDistance` chỉ dùng cho debug Collision Prevention ở Position mode. Giữ message nội bộ riêng cho metadata/dải cao.
+8. Một ray hợp lệ không clear cả bin/corridor. Coverage phải đủ cho footprint/swept path theo sampling model; khoảng giữa ray, vùng occlusion và phần ngoài tầm tin cậy vẫn unknown.
 
 ### Contract vận tốc và độ trễ
 
@@ -124,6 +127,7 @@ v_limit = max(0, -a_brake * latency + sqrt((a_brake * latency)^2 + 2*a_brake*ava
 - Công thức không mô hình jerk, gió, vật tiến lại hoặc rung lắc. G2/G3 phải đo stopping envelope thực và dùng giới hạn bảo thủ hơn.
 - Giới hạn lệnh không xoá được quán tính hiện có. Supervisor kiểm tra velocity thật, side-slip và đường phanh.
 - p95 là metric hiệu năng, không phải bound an toàn. Frame quá deadline phải bị từ chối riêng.
+- Capture/sim age và monotonic wall progress là hai domain riêng. Đóng băng deadline finite cho sensor/pose/proposal/handoff; trace capture-to-publish và publish-to-tracking không được tính trùng delay. Calibration phải gắn workload/RTF/config.
 
 Thông số thăm dò từ PDF: camera 320×240 nếu cần; tầm 0.3–10 m; stale depth 0.3 s; setpoint/heartbeat mục tiêu 20 Hz; kẹt 5 s sim time; tối đa 3 recovery. Tất cả phải ghi vào config và đo lại, không coi là hằng số chứng nhận.
 
@@ -150,26 +154,28 @@ Các mục dưới là **công việc chưa triển khai**. Chỉ chuyển giai 
 | Gate | Công việc | Xong khi |
 | --- | --- | --- |
 | G0 — Geometry offline | NumPy depth, intrinsics, frames, histogram, braking | Test hành vi hình học và invalid input; chạy ảnh depth tổng hợp thật qua pipeline, nhìn được point cloud/histogram; A04, A05, B07, C08, E01–E08, E20 |
-| G1 — Stack/offboard | Pin môi trường, Jazzy bridge, PX4 status/ack, logger, mission tối thiểu | Cất cánh, bay vuông 5 m trong world trống, hold/land/disarm; bag + ULog; C02–C04, E09–E12, E21–E23, F09 |
+| G1 — Stack/offboard | Môi trường không arm; oracle/logger và supervisor tối thiểu; mission trống; calibration | Oracle contact/clearance và supervisor có trước flight. Bay vuông 5 m trong known-clear bootstrap volume, hold/land/disarm; đo stopping/delay; bag + ULog; C02–C04, E09–E12, E21–E23, F09 |
 | G2 — Perception | Projection bù pose, evidence-preserving filters, inflation, coverage | Replay bag và bay kiểm tra tường 10/10; nhóm A, E01–E08, E13–E17, E20, E24–E25; Collision Prevention chỉ là debug phụ |
-| G3 — Navigation/safety | Planner, state machine, độc lập safety, oracle và batch runner | Qua toàn bộ A–D, E01–E17, E20–E25, F01–F10 theo phạm vi sensor; ≥45/50 test world đóng băng, gate an toàn và báo cáo đầy đủ |
+| G3 — Navigation/safety | Planner, state machine, recovery, runner và batch dùng oracle có từ G1 | A–D, E01–E17, E20–E25, F01–F10 theo suite semantics trong SAFETY; ≥45/50 frozen navigation worlds, zero unsafe trong navigation, safety/stress report riêng |
 | G4 — Stereo/mono | Stereo hiệu chuẩn trước; DA2 Metric Hypersim Small là lựa chọn mono indoor ban đầu | Offline kiểm tra scale/uncertainty và latency; chạy cùng bộ 50 seed ≥40/50 như PDF, vẫn giữ gate an toàn; A09–A10, E18–E19, F06 |
 | G5 — Tuỳ chọn | Chọn một: global map/planner, VIO, benchmark EGO-Planner hoặc phần cứng | Thiết kế/gate mới theo nhánh; không gộp mọi hướng cùng lúc |
 
 G0 phải chạy không ROS/GPU. G1 là gate Linux/SITL thật đầu tiên; chưa có máy chạy tương thích thì ghi blocker, không chế log.
+
+Thứ tự chi tiết nằm trong native roadmap: G1 environment không arm, oracle/supervisor tĩnh, bootstrap flight, calibration, rồi G2 wall-stop. Không trì hoãn oracle/safety đến G3. Bootstrap không phải navigation acceptance.
 
 ## 5. Đánh giá và chống tự chấm dễ
 
 - Hai bộ tách biệt: development seeds để tune, test seeds đóng băng trước benchmark; không tune theo test failures.
 - 50 world phải hợp lệ theo footprint, fixed-altitude route, start/goal và geofence. A* biết map chỉ chạy trong evaluator.
 - Ghi mọi world bị generator loại, lý do và số lần thử; không sinh lại seed chỉ vì planner thất bại.
-- Success = goal hold đúng contract + không contact/geofence/clearance violation + telemetry đầy đủ + hoàn tất kết thúc nhiệm vụ.
-- Minimum clearance ≥0.5 m đo **từ envelope thân/propellers**, không phải từ tâm drone hoặc từ depth model.
-- Không va chạm trên bộ test là gate an toàn riêng; 45/50 tới đích không được bù cho một collision.
-- World unreachable trong negative suite: yêu cầu abort có kiểm soát, không yêu cầu tới đích, không gộp với navigation success.
-- Time-to-goal đo từ lúc vào NAVIGATE đến hết goal hold, không gồm takeoff/landing; giới hạn ≤2× tham chiếu khả thi của oracle, cùng speed limits và trạng thái bắt đầu. Giữ tỷ lệ bay thẳng như metric phụ để đối chiếu PDF, không áp cho đường vòng bắt buộc dài.
+- Success = goal hold đúng contract + không unsafe event toàn trial + telemetry đầy đủ + hoàn tất kết thúc nhiệm vụ.
+- Navigation clearance ≥0.5 m đo từ envelope vật lý thân/propellers trong NAVIGATE/RECOVER/GOAL_HOLD, gồm floor/ceiling. Takeoff/landing dùng envelope riêng; chỉ landing-gear/support-surface pair đã allowlist đúng phase được phép contact.
+- Navigation acceptance không có unsafe event; 45/50 tới đích không bù một collision. Giữ contact ledger toàn trial, cả sau goal và khi shutdown.
+- Navigation, safety-negative và stress-diagnostic là ba suite đóng băng trước run; negative/stress không cộng navigation success. Không chuyển suite sau khi thấy fail.
+- Time-to-goal đo từ lúc vào NAVIGATE đến hết goal hold, không gồm takeoff/landing; giới hạn ≤2× reference time khả thi cùng motion constraints. Nếu chưa có reference đúng dynamics, report path/detour nhưng gate time-efficiency chưa đạt. Grid-centre A* phải thêm continuous segment/footprint validation.
 - Tách compute/transport latency wall time, sim-time data age và tracking delay. Sim depth p95 capture-to-setpoint mục tiêu ≤100 ms; log deadline misses, không chỉ p95.
-- Report task success, safe abort, unsafe fail, infrastructure error, invalid world riêng; không giấu crash bằng cách loại khỏi mẫu số.
+- Report execution outcome và safety outcome riêng; unsafe đã quan sát được latch, không bị infra crash/telemetry loss ghi đè. Không giấu crash khỏi report hoặc coi thiếu observer là zero collision.
 - Wilson 95% CI đi kèm success rate. 45/50 có cận dưới khoảng 78.6%, chưa chứng minh ≥90% trên mọi world.
 - Đánh giá theo loại geometry, density, clearance và nhiễu; không chỉ average toàn bộ.
 - Điều kiện vật động/kính/dây mảnh là stress suite có giới hạn cảm biến; không tuyên bố được bảo vệ nếu chưa quan sát được.
@@ -178,6 +184,6 @@ G0 phải chạy không ROS/GPU. G1 là gate Linux/SITL thật đầu tiên; ch�
 
 1. Làm G0: pure NumPy geometry + braking + invalid-depth contract, kèm test biên có ý nghĩa.
 2. Xác định máy Linux/GPU và smoke image ứng viên để quyết định lock môi trường G1. Không tự cài Docker/WSL/dual boot.
-3. Chỉ khi G1 có log thật mới triển khai publisher/safety và perception bay liên tục.
+3. Triển khai oracle/logger và supervisor tối thiểu trước G1 flight; chỉ sau calibration mới mở perception wall-stop và navigation. Mọi numerical bound chưa đo vẫn là pending.
 
 Tài liệu và nguồn kỹ thuật: [REVIEW.md](REVIEW.md). Quy trình thao tác, evidence và phạm vi tự động hoá: [HARNESS.md](HARNESS.md).

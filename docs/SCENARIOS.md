@@ -12,6 +12,7 @@
 - Negative test pass khi lỗi được phát hiện và xử lý đúng; không cộng vào navigation success.
 - Thời gian nhiệm vụ dùng sim time; health/compute dùng monotonic wall time. Reset clock bắt đầu epoch mới.
 - Case kính/dây/thiếu sáng cần sensor model/noise phù hợp. Chỉ thay material trong simulator không chứng minh mô phỏng đúng lỗi camera thật.
+- Áp dụng [SAFETY.md](SAFETY.md): contact ledger toàn trial, navigation clearance theo phase, support-contact allowlist, unsafe latch và suite membership trước attempt.
 
 ## A. Perception — 10 case gốc
 
@@ -57,10 +58,10 @@
 
 | ID | Kích thích | Oracle bắt buộc |
 | --- | --- | --- |
-| D01 | Va chạm thân/propeller, planner không báo | Ground-truth contact/geometry ghi failure; self-reported goal không ghi đè collision |
-| D02 | Random world không có route đủ footprint | Validator loại trước trial; ghi rejection và seed; không loại sau vì planner fail |
-| D03 | Gazebo/PX4 treo/crash | Wall watchdog kết thúc process do run sở hữu; giữ log infra error; batch không được báo pass khi thiếu trial |
-| D04 | RTF tụt do tải máy | Mission timeout không rút ngắn theo wall time; compute latency/RTF/infra deadline vẫn báo riêng |
+| D01 | Va chạm thân/propeller, kể cả sau goal/đang land, planner không báo | Latch unsafe toàn trial; chỉ gear/support pair đúng phase/zone được allow; success hoặc infra error không ghi đè collision |
+| D02 | Random world có A* grid path nhưng segment cắt góc/khe không đủ footprint | Validator kiểm tra continuous swept route/start/goal trước trial; ghi rejection/seed, không loại theo planner outcome |
+| D03 | Gazebo/PX4 treo/crash, kể cả ngay sau collision | Wall watchdog bounded collect/cleanup process sở hữu; giữ cả unsafe latch và infra reason; batch thiếu trial không pass |
+| D04 | RTF tụt do tải máy | Sim age và monotonic wall progress báo riêng; workload vượt calibrated bound không tiếp tục motion theo dữ liệu cũ |
 | D05 | Drone ra biên hoặc nghiêng >60° | Evaluator fail trial, dừng có kiểm soát; không chờ timeout rồi gán infra error |
 
 ## E. Lỗ hổng runtime bổ sung — 25 case
@@ -79,14 +80,14 @@
 | E10 | QoS subscriber reliable gặp publisher best effort | Health báo không kết nối/incompatible; PREFLIGHT không qua chỉ vì thấy tên topic |
 | E11 | XRCE Agent restart, packet reorder, namespace/domain trùng | Discovery lại có kiểm soát; reject dữ liệu run/vehicle cũ; không tự arm khi reconnect |
 | E12 | Planner freeze nhưng bridge/safety thread còn heartbeat | Proposal hết hạn, không refresh timestamp cho lệnh cũ; safe behavior có trace nguồn lệnh |
-| E13 | Bin boundary, wrap 0°/360°, unknown kề valid, cm saturation | Inflate liên tục qua wrap, không tạo khe một-bin; cm/sentinel đúng, không overflow thành free |
+| E13 | Bin boundary/wrap, một ray free nhưng phần còn lại unknown, cm saturation | Không clear cả corridor từ một ray; sampling support/inflation không tạo khe, sentinel không overflow thành free |
 | E14 | Roll lớn, camera lệch tâm, propellers rộng hơn thân | Swept/rotation envelope và clearance dùng geometry thật, không chỉ sphere tại camera |
 | E15 | Side-slip, jerk limit, tracking chậm hơn cấu hình | Phanh theo actual motion và bound đo được; báo vi phạm envelope, không chỉ kẹp proposal |
 | E16 | Yaw scan sát tường, mặt trước hở nhưng cánh quạt chạm khi quay | Không scan nếu rotation envelope không đủ; abort thay vì “quay luôn an toàn” |
 | E17 | Quét 360° xong, vật đi vào hướng đã nhìn lúc đầu | Per-bin timestamp hết hạn bị chặn; không coi scan cũ là coverage mới |
 | E18 | Depth model relative hoặc metric sai scale/focal 2× | Offline gate không qua; không cho bật navigation theo ngưỡng mét dù ảnh depth nhìn hợp lý |
 | E19 | Model đo tốt AbsRel toàn ảnh nhưng quá xa ở vật gần/OOD | Đánh giá overestimation trong corridor/near-field và uncertainty; lỗi nguy hiểm không bị average che |
-| E20 | NaN/Inf/âm trong pose, velocity, command, `a_brake<=0` | Reject input/config; không lọt NaN qua phép so sánh; giữ NaN hợp lệ của unused PX4 fields tại adapter riêng |
+| E20 | NaN/Inf trong pose/velocity/command, distance âm, `a_brake<=0`; đối chứng vector có thành phần âm hợp lệ | Reject invalid physical input/config, chấp nhận signed-axis values đúng frame; NaN unused PX4 fields chỉ ở protocol adapter |
 | E21 | Land command bị từ chối hoặc không có ack | Không DONE; bounded retry/timeout, ghi outcome; không ngừng kiểm soát trước handoff thích hợp |
 | E22 | Camera mất và odometry cũng invalid | Không giả định zero-velocity là hover; thực hiện PX4 fallback đã test, ghi mất khả năng giữ vị trí |
 | E23 | Hai publisher setpoint, bridge restart khi vẫn airborne | Phát hiện owner conflict/restart; không tự nhận quyền/re-arm hoặc phát default position=(0,0,0) |
@@ -100,13 +101,13 @@
 | F01 | Cùng seed nhưng đổi model/world/plugin/PX4/config | Manifest phân biệt inputs; không gộp như cùng experiment hoặc cùng baseline |
 | F02 | Trial lỗi rồi retry nhiều lần | Giữ mọi attempt; report first-attempt và retry riêng; không chỉ chọn run thành công |
 | F03 | Thiếu seed, duplicate trial, telemetry mất cuối run | Không aggregate pass; batch incomplete có exit khác 0 và lý do, không fill bằng kết quả giả |
-| F04 | Contact sensor cấu hình sai/không có output | Health check oracle fail; kiểm tra chủ động known-contact và known-free trước batch |
-| F05 | Đích gần nhưng route bắt buộc vòng rất xa | Efficiency dùng route tham chiếu khả thi; không kết luận planner chậm chỉ vì so đường thẳng |
+| F04 | Contact sensor thiếu output/propeller mesh; landing support và body-wall contact đồng thời | Oracle health fail nếu thiếu coverage; gear/support đúng phase được allow, body/propeller-wall vẫn unsafe; clearance không double-count planning margin |
+| F05 | Goal gần nhưng route vòng dài hoặc time reference không khả thi động lực học | Continuous route/constraints được xác minh; chỉ report detour nếu chưa có time reference đúng, không tự bỏ gate time-efficiency |
 | F06 | Inference chậm, RTF thấp nhưng sim latency đẹp | Report wall compute/transport, sim age và RTF riêng; timeout/drop frame thật theo contract |
 | F07 | Ground-truth obstacle topic/map lọt vào planner | Topic/interface audit fail benchmark; oracle chỉ evaluator được đọc, không “sửa” bằng giấu trong report |
 | F08 | Agent sửa seed/threshold/oracle sau khi thấy fail | Dừng acceptance, yêu cầu quyết định người dùng và baseline mới; không tự làm dễ gate |
 | F09 | Máy cũ còn Gazebo/Agent, namespace trùng, asset tải thiếu | Preflight chỉ rõ conflict/asset; không kill process không sở hữu hoặc tải model mới âm thầm |
-| F10 | Dynamic obstacle xuất hiện trong quãng phanh không thể tránh | Label stress/unavoidable rõ ràng; không loại collision khỏi log hoặc tuyên bố safe guarantee cho tình huống bất khả thi |
+| F10 | Dynamic obstacle spawn trong quãng phanh không thể tránh, suite đã frozen | Stress report giữ unsafe outcome; test classifier có thể pass nhưng không cộng navigation success; không chuyển navigation failure sang stress sau run |
 
 ## Độ bao phủ theo giai đoạn
 

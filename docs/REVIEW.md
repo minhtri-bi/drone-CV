@@ -8,6 +8,19 @@ Giữ simulation-first, depth-first, không train, supervisor riêng và đánh 
 
 Các rủi ro dưới đây là **phân tích kỹ thuật**, không phải lỗi đã tái hiện trên runtime của repo. Repo chưa có runtime.
 
+Đợt chuẩn bị tiếp theo phát hiện thêm 8 lỗ hổng trong chính contract hiệu chỉnh; đã sửa thiết kế tại [SAFETY.md](SAFETY.md), không giả gọi đó là runtime fix:
+
+- Contact/clearance toàn chuyến bay mâu thuẫn với landing; cần phase contract và pair allowlist.
+- Oracle/supervisor đến quá muộn so với G1/G2; đã đổi dependency để có trước flight.
+- Collision có thể bị infra error ghi đè; cần safety latch độc lập execution outcome.
+- Unavoidable stress bị trộn với zero-collision navigation; cần frozen suite membership.
+- Clock/deadline và delay có thể khác domain hoặc cộng trùng; cần trace endpoints và calibration scope.
+- Một ray free có thể clear cả bin; cần coverage cho swept corridor.
+- Số âm hợp lệ của position/velocity có nguy cơ bị reject như invalid distance.
+- A* grid route không chứng minh continuous clearance hoặc dynamics-feasible time reference.
+
+Các task runtime tương ứng nằm trong native roadmap và vẫn pending.
+
 ## Những điểm cần sửa trước
 
 | Mức | Vấn đề trong PDF | Vì sao có thể fail | Quyết định | Scenario |
