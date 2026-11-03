@@ -1,97 +1,97 @@
-# Harness phát triển và đánh giá
+# Development and evaluation harness
 
-## 1. Hai harness khác nhau
+## 1. Two different harnesses
 
-1. **Coding-agent harness:** task nhỏ, contract rõ, evidence trước Git, quyền thao tác có giới hạn. Có hướng dẫn repo tại [`.omp/AGENTS.md`](../.omp/AGENTS.md).
-2. **Simulation-evaluation harness:** chạy scenario, inject fault, ghi log, oracle độc lập và aggregate. Phần SITL vẫn là đặc tả; đã có core/demo G0 và CI offline, **chưa có runner/evaluator/flight CI**.
+1. **Coding-agent harness:** small tasks, clear contracts, evidence before Git operations, and bounded operational permissions. Repository guidance is in [`.omp/AGENTS.md`](../.omp/AGENTS.md).
+2. **Simulation-evaluation harness:** runs scenarios, injects faults, records logs, and provides independent oracles and aggregation. The SITL portion remains a specification; the G0 core/demo and offline CI exist, but **there is no runner/evaluator/flight CI yet**.
 
-Không dùng LLM điều khiển drone trong control loop. State machine, planner, supervisor và judge runtime phải deterministic theo input/config.
+Do not use an LLM to control the drone in the control loop. The state machine, planner, supervisor, and runtime judge must be deterministic for a given input/configuration.
 
-## 2. Trạng thái có thể khẳng định hiện tại
+## 2. What can currently be claimed
 
-| Có | Chưa có |
+| Available | Not yet available |
 | --- | --- |
-| PDF/plan/contracts, native + portable roadmap, NumPy G0 core, pytest, synthetic demo và workflow CI offline | ROS nodes, simulator launcher, fault injector, rosbag dataset, scenario runner, acceptance flight CLI, CI flight benchmark |
+| PDF/plan/contracts, native + portable roadmap, NumPy G0 core, pytest, synthetic demo, and offline CI workflow | ROS nodes, simulator launcher, fault injector, rosbag dataset, scenario runner, flight acceptance CLI, flight benchmark CI |
 
-Không được đổi tên thiết kế thành “harness đã chạy”. Không dùng Markdown gate làm bảo đảm kỹ thuật: chỉ runner/CI thật mới enforce được.
+Do not relabel a design as a “harness that has run.” Do not treat Markdown gates as technical guarantees: only a real runner/CI can enforce them.
 
-Contract [SAFETY.md](SAFETY.md) là bổ sung bắt buộc: contact/clearance theo phase, suite membership trước run, unsafe latch, finite deadlines và oracle/supervisor có trước flight.
+The [SAFETY.md](SAFETY.md) contract is a mandatory supplement: phase-specific contact/clearance, suite membership before a run, an unsafe latch, finite deadlines, and an oracle/supervisor before flight.
 
 ## 3. Coding-agent workflow
 
 ### Task contract
 
-Mỗi yêu cầu triển khai cần:
+Each implementation request needs:
 
-- **Goal:** hành vi quan sát được, gate và scenario ID.
-- **Scope:** file/module được sửa và non-goals; đọc code thật trước khi chọn file.
-- **Inputs:** units, frame, encoding, clock domain, validity và config.
-- **Acceptance:** kích thích, oracle độc lập, điều kiện fail và evidence cần giữ.
-- **Verification:** command thật đã có trong repo hoặc command được thêm cùng feature; không ghi lệnh chưa tồn tại như đã chạy.
+- **Goal:** observable behavior, gate, and scenario ID.
+- **Scope:** files/modules that may change and non-goals; read the actual code before selecting files.
+- **Inputs:** units, frame, encoding, clock domain, validity, and configuration.
+- **Acceptance:** stimuli, independent oracle, failure conditions, and evidence to retain.
+- **Verification:** actual commands already in the repository or commands added with the feature; do not list nonexistent commands as having been run.
 
-Quy trình hữu hạn:
+Bounded workflow:
 
-1. Đọc PLAN và phần scenario liên quan; kiểm tra trạng thái local/remote trước thao tác Git.
-2. Chọn một vertical slice nhỏ, hoàn tất end-to-end; không mở hàng loạt module rỗng.
-3. Viết test biên/hành vi khi có nguy cơ thực; dùng fixture có đáp án hình học độc lập cho geometry.
-4. Implement, chạy test liên quan một lần sau sửa và smoke đúng đường chạy sản phẩm.
-5. Cập nhật contract/tài liệu nếu hành vi thay đổi. Báo rõ chưa chạy do thiếu môi trường.
-6. Commit phần thay đổi của task, push branch, tạo PR tiếng Anh, merge khi đủ gate và được người dùng cho phép.
+1. Read PLAN and the relevant scenario sections; check local/remote state before Git operations.
+2. Choose a small vertical slice and complete it end-to-end; do not create a collection of empty modules.
+3. Write boundary/behavioral tests where there is a real risk; use fixtures with independent geometric answers for geometry.
+4. Implement, run the relevant tests once after the changes, and smoke-test the actual product execution path.
+5. Update contracts/documentation if behavior changes. Clearly report checks not run because the environment is unavailable.
+6. Commit the task changes, push the branch, create an English-language PR, and merge when the gates are met and the user has authorized it.
 
-Tối đa ba lần sửa cho cùng một failure mà không có bằng chứng nguyên nhân mới; sau đó dừng vòng lặp và báo root cause/blocker. Không retry login, policy, dependency install hay network bất tận. Không tự thay tiêu chí để “xanh”.
+Allow at most three repair attempts for the same failure without new evidence of its cause; then stop the loop and report the root cause/blocker. Do not retry login, policy, dependency installation, or network operations indefinitely. Do not change criteria yourself to make checks “green.”
 
-### Ranh giới tự động hoá
+### Automation boundaries
 
-- Người dùng đã cho phép commit/push/merge các thay đổi thuộc yêu cầu project này. Chỉ thao tác repo `minhtri-bi/drone-CV`, branch của task và base `main` đã xác minh.
-- Quyền đó không cho phép force-push, reset/stash/clobber work lạ, xoá branch không sở hữu, đổi branch protection hoặc bypass required checks/review.
-- Không tự cấp quyền tài khoản, cài driver/WSL/Docker, đổi model provider hoặc chạy hardware thật.
-- Không tự lập lịch daemon hay vòng agent vô hạn. Không biến permission của task này thành quyền ở repo khác.
-- Safety thresholds, frozen test seeds và oracle không bị builder sửa để chữa failure. Thay contract cần quyết định người dùng, rationale và baseline mới.
-- Sau sửa docs-only: kiểm tra link/nội dung/PDF provenance; không bắt cài ROS chỉ để merge tài liệu.
-- Sau sửa điều khiển/safety: cần smoke SITL và fault injection liên quan. Unit tests hoặc simulator giả không thay thế bằng chứng đó.
-- Nếu có required checks hoặc review chưa đạt, PR giữ nguyên chờ; không dùng `--admin` để ép merge.
+- The user has authorized commit/push/merge for changes within this project request. Operate only on the verified `minhtri-bi/drone-CV` repository, task branch, and `main` base.
+- That permission does not authorize force-push, reset/stash/clobber of unfamiliar work, deletion of branches you do not own, changes to branch protection, or bypassing required checks/review.
+- Do not grant account permissions, install drivers/WSL/Docker, change the model provider, or run real hardware yourself.
+- Do not schedule daemons or unbounded agent loops yourself. Do not extend this task's permissions to another repository.
+- Builders must not change safety thresholds, frozen test seeds, or oracles to fix a failure. Contract changes require a user decision, rationale, and a new baseline.
+- After docs-only changes: check links/content/PDF provenance; do not require installing ROS just to merge documentation.
+- After control/safety changes: the relevant SITL smoke and fault injection are required. Unit tests or a fake simulator do not replace that evidence.
+- If required checks or reviews have not passed, leave the PR pending; do not use `--admin` to force a merge.
 
 ### Resume
 
-Đọc task/gate hiện tại, branch, PR/checks và evidence của đúng revision. Tái dùng kết quả chỉ khi code/config/input/environment liên quan không đổi. Không re-run hành động Git đã thành công chỉ vì agent vừa khởi động lại. Không coi lời kể phiên trước là flight log.
+Read the current task/gate, branch, PR/checks, and evidence for the exact revision. Reuse results only when the relevant code/configuration/input/environment is unchanged. Do not rerun successful Git operations just because the agent has restarted. Do not treat a previous session's narrative as a flight log.
 
-## 4. Thứ tự xây harness mô phỏng
+## 4. Simulation harness build order
 
-| Slice | Sản phẩm phải chạy được | Evidence để nhận |
+| Slice | Required runnable product | Evidence for acceptance |
 | --- | --- | --- |
-| H0 / G0 | Pure NumPy projection/frame transforms/validity/histogram và braking API, không ROS | Đáp án analytic ở optical/body/world frame; invalid/near/far, vật mảnh, wrap, braking biên; chạy fixture qua API thật |
-| H1a / G1 | Environment probe không arm; oracle/logger + supervisor/bridge tối thiểu trước flight | Clock/QoS/TF/versions; known-contact/free, phase allowlist, ownership/TTL và log sống |
-| H1b / G1 | Mission bootstrap trong known-clear volume rồi calibration braking/delay và fault handoff | Bag/ULog; arm/takeoff/square/hold/land/disarm; bounds/deadlines gắn config/workload; bootstrap không cộng navigation success |
-| H2 / G2 | Replay perception trên bag, rồi wall-stop dùng oracle và supervisor đã qua G1 | 10/10 wall-stop có logs, near evidence không bị filter xoá, dữ liệu mới/cũ được phân biệt |
-| H3a / G3 | Single-world runner dùng lại oracle G1, thêm lifecycle/fault injection | Một run wall/corridor tự chấm được; mọi nhánh bounded collect/cleanup đúng ownership |
-| H3b / G3 | Bounded planner/recovery + batch seeded worlds | Các case A–D/E/F đúng suite; manifest mỗi attempt, unsafe latch và report không thiếu seed |
-| H4 / G4 | Stereo/model adapter cùng input/output contract | Scale/focal/near-overestimation gate offline trước flight; so cùng seeds và measured latency |
+| H0 / G0 | Pure NumPy projection/frame transforms/validity/histogram and braking API, without ROS | Analytic answers in optical/body/world frames; invalid/near/far, thin objects, wrap, braking boundaries; fixtures run through the real API |
+| H1a / G1 | Unarmed environment probe; minimal oracle/logger + supervisor/bridge before flight | Clock/QoS/TF/versions; known-contact/free, phase allowlist, ownership/TTL, and live logging |
+| H1b / G1 | Mission bootstrap in a known-clear volume, then braking/delay calibration and fault handoff | Bag/ULog; arm/takeoff/square/hold/land/disarm; bounds/deadlines tied to configuration/workload; bootstrap does not count toward navigation success |
+| H2 / G2 | Perception replay on bags, then wall-stop using the oracle and supervisor that passed G1 | 10/10 wall-stops with logs, near evidence not removed by filters, and fresh/stale data distinguished |
+| H3a / G3 | Single-world runner reusing the G1 oracle, adding lifecycle/fault injection | One wall/corridor run can be evaluated automatically; every branch has bounded collection/cleanup with correct ownership |
+| H3b / G3 | Bounded planner/recovery + batch seeded worlds | Cases A–D/E/F in the correct suites; a manifest for every attempt, an unsafe latch, and a report with no missing seeds |
+| H4 / G4 | Stereo/model adapter with the same input/output contract | Offline scale/focal/near-overestimation gate before flight; comparison using the same seeds and measured latency |
 
-Không xây scheduler/distributed fleet/dashboard trước khi H3a có oracle hoạt động. H0 có thể làm ở Windows; H1 trở đi cần môi trường Linux được xác nhận.
+Do not build a scheduler/distributed fleet/dashboard before H3a has a working oracle. H0 can be implemented on Windows; H1 onward requires a validated Linux environment.
 
-## 5. Preflight và môi trường tái lập
+## 5. Preflight and reproducible environments
 
-Mỗi environment record cần: OS/architecture, CPU/RAM/GPU/driver, image digest, PX4 commit hoặc package version, `px4_msgs` revision, Agent version, ROS distro/RMW, Gazebo/plugins/assets revisions, Python/packages, camera calibration, DDS config và PX4 parameter export.
+Each environment record needs: OS/architecture, CPU/RAM/GPU/driver, image digest, PX4 commit or package version, `px4_msgs` revision, Agent version, ROS distro/RMW, Gazebo/plugins/assets revisions, Python/packages, camera calibration, DDS configuration, and PX4 parameter export.
 
-- Không dùng `latest`/`main` như lock; digest ứng viên ở PLAN chỉ pin image, không chứng minh mọi asset tải ngoài đã pin.
-- Không tự coi installed là working. G1 phải quan sát discovery, actual message rates, clock, units, TF và ack.
-- Trước batch phải có camera/odom mới, oracle telemetry, logger và supervisor; thiếu một thành phần thì không arm.
-- Mỗi run có namespace/domain/ports và process ownership riêng. Không chạy cleanup bằng kill mọi Gazebo/Docker trên máy.
-- Tách debug GUI và headless benchmark; pin physics step, sensor rates, noise settings, seed và RTF policy.
-- Một seed không bảo đảm bitwise determinism khi scheduler/GPU thay đổi; giữ repeated trials và environment identity.
+- Do not use `latest`/`main` as a lock; the candidate digest in PLAN only pins the image, not every externally downloaded asset.
+- Do not assume installed means working. G1 must observe discovery, actual message rates, clock, units, TF, and acknowledgments.
+- Before a batch, fresh camera/odom data, oracle telemetry, logger, and supervisor must be available; do not arm if any component is missing.
+- Each run has its own namespace/domain/ports and process ownership. Do not clean up by killing every Gazebo/Docker process on the machine.
+- Separate the debug GUI from headless benchmarks; pin the physics step, sensor rates, noise settings, seed, and RTF policy.
+- A seed does not guarantee bitwise determinism when the scheduler/GPU changes; retain repeated trials and environment identity.
 
-### Recipe smoke dẫn xuất và kết quả đã quan sát
+### Derived smoke recipe and observed results
 
-Image nền thiếu ROS camera bridge; [probe cũ](environments/g1-observation.json) là lịch sử, không phải blocker hiện tại. Sau phê duyệt, [image dẫn xuất](../docker/g1/Dockerfile) đã qua [smoke không arm](environments/g1-bridge-observation.json). Lock giữ base digest và 13 archive mới; không nâng cấp package nền, không cài lên host.
+The base image lacks the ROS camera bridge; the [old probe](environments/g1-observation.json) is historical, not a current blocker. After approval, the [derived image](../docker/g1/Dockerfile) passed an [unarmed smoke check](environments/g1-bridge-observation.json). The lock retains the base digest and 13 new archives; no base packages were upgraded and nothing was installed on the host.
 
-Chạy từ repo root trong PowerShell hoặc POSIX shell, chỉ khi đã có quyền dùng engine/download. Với Git Bash trên Windows, đặt `MSYS_NO_PATHCONV=1` trước các lệnh `docker exec` có đường dẫn Linux. Tên container đã tồn tại làm `docker run` thất bại; không tự xoá container lạ.
+Run from the repository root in PowerShell or a POSIX shell, only with permission to use the engine/downloads. With Git Bash on Windows, set `MSYS_NO_PATHCONV=1` before `docker exec` commands containing Linux paths. An existing container with the same name causes `docker run` to fail; do not delete unfamiliar containers yourself.
 
 ```sh
 docker build --platform linux/amd64 --tag drone-cv/g1-bridge:local --file docker/g1/Dockerfile docker/g1
 docker run -d --name drone-cv-g1 --label drone-cv.owner=manual-g1 --network none --cpus 4 --memory 6g --shm-size 256m --cap-drop ALL --security-opt no-new-privileges -e ROS_DOMAIN_ID=83 -e ROS_LOCALHOST_ONLY=1 -e GZ_PARTITION=drone_cv_g1_manual -e HEADLESS=1 -e PX4_SIM_MODEL=gz_x500_depth -e PX4_UXRCE_DDS_NS=drone_cv_g1 -e LIBGL_ALWAYS_SOFTWARE=1 drone-cv/g1-bridge:local sleep infinity
 ```
 
-Chạy bốn process sau ở bốn terminal riêng trong cùng container, theo thứ tự Agent, PX4, bridge, static TF. Chờ PX4 báo `Startup script returned successfully` trước probe:
+Run the following four processes in four separate terminals in the same container, in this order: Agent, PX4, bridge, static TF. Wait for PX4 to report `Startup script returned successfully` before probing:
 
 ```sh
 docker exec -i drone-cv-g1 /usr/local/bin/ros2-entrypoint.sh MicroXRCEAgent udp4 -p 8888 -v 4
@@ -109,7 +109,7 @@ docker exec -i drone-cv-g1 /usr/local/bin/ros2-entrypoint.sh ros2 run ros_gz_bri
 docker exec -i drone-cv-g1 /usr/local/bin/ros2-entrypoint.sh ros2 run tf2_ros static_transform_publisher --x 0.13233 --y 0 --z 0.26078 --qx -0.5 --qy 0.5 --qz -0.5 --qw 0.5 --frame-id drone_cv_g1/base_link --child-frame-id drone_cv_g1/camera_optical
 ```
 
-Ở terminal khác, copy hai observer chỉ đọc và chạy cửa sổ hữu hạn:
+In another terminal, copy the two read-only observers and run a finite observation window:
 
 ```sh
 docker cp scripts/g1_probe.py drone-cv-g1:/tmp/g1_probe.py
@@ -117,101 +117,101 @@ docker cp scripts/g1_ros_observer.py drone-cv-g1:/tmp/g1_ros_observer.py
 docker exec -i drone-cv-g1 /usr/local/bin/ros2-entrypoint.sh python3 /tmp/g1_probe.py --ros
 ```
 
-`--ros` yêu cầu `UXRCE_DDS_SYNCT=0` thực tế, Image/CameraInfo cùng stamp, encoding, intrinsics, optical TF, QoS, clock và odometry cùng sim-time. Không có control publisher. Exit 2 giữ observation thiếu; không bỏ qua để lấy video. Static TF là quan hệ bất biến, không phải pose động tại capture time.
+`--ros` requires an actual `UXRCE_DDS_SYNCT=0` setting, matching Image/CameraInfo stamps, encoding, intrinsics, optical TF, QoS, clock, and odometry in the same simulation-time domain. There is no control publisher. Exit 2 preserves an incomplete observation; do not bypass it to obtain video. Static TF is an invariant relationship, not a dynamic pose at capture time.
 
-Hai lỗi môi trường đã sửa: `GZ_CONFIG_PATH=/usr/share/gz` giữ native `gz sim` khi ROS vendor hooks có mặt; `PX4_PARAM_UXRCE_DDS_SYNCT=0` đặt Gazebo làm nguồn thời gian duy nhất trước khi DDS client khởi động. [PX4 yêu cầu chế độ này khi ROS dùng Gazebo clock](https://docs.px4.io/main/en/ros2/user_guide.html#ros-gazebo-and-px4-time-synchronization), thay vì đồng bộ OS time ở RTF khác 1. Failed windows trước thay đổi vẫn có trong evidence.
+Two environment faults were fixed: `GZ_CONFIG_PATH=/usr/share/gz` preserves native `gz sim` when ROS vendor hooks are present; `PX4_PARAM_UXRCE_DDS_SYNCT=0` makes Gazebo the sole time source before the DDS client starts. [PX4 requires this mode when ROS uses the Gazebo clock](https://docs.px4.io/main/en/ros2/user_guide.html#ros-gazebo-and-px4-time-synchronization), rather than synchronizing OS time at an RTF other than 1. Failed windows from before the changes remain in the evidence.
 
-Sau khi thu output, chỉ dừng/xoá container do chính run này tạo:
+After collecting output, stop/remove only the container created by this run:
 
 ```sh
 docker stop --timeout 10 drone-cv-g1
 docker rm drone-cv-g1
 ```
 
-Name/partition trong recipe là ví dụ cho một run; evidence ghi identity thực tế của run đã chạy. Không hứa bitwise-identical rebuild hoặc download còn tồn tại mãi: archive thiếu/lệch phải fail closed. Software rendering đạt khoảng 4.5 Hz camera wall-time trong cửa sổ cuối, chưa đạt flight performance/calibration. `+Inf` sensor chưa được chứng nhận free.
+The name/partition in the recipe is an example for one run; the evidence records the actual identity of the run performed. There is no promise of a bitwise-identical rebuild or perpetual download availability: missing/mismatched archives must fail closed. Software rendering achieved approximately 4.5 Hz camera wall-time frequency in the final window; flight performance/calibration has not been achieved. Sensor `+Inf` has not been certified as free.
 
-## 6. Contract runner/evaluator cần triển khai
+## 6. Runner/evaluator contract to implement
 
-### Vòng đời run
+### Run lifecycle
 
 ```mermaid
 stateDiagram-v2
     [*] --> VALIDATE
-    VALIDATE --> INVALID_WORLD: Route/start/goal không hợp lệ
-    VALIDATE --> START: World hợp lệ
-    START --> HEALTH: Khởi tạo process của run
-    HEALTH --> EXECUTE: Sensor + oracle + safety sẵn sàng
-    HEALTH --> COLLECT: Prerequisite/deadline lỗi
-    EXECUTE --> COLLECT: Goal hoặc outcome terminal
-    EXECUTE --> COLLECT: Mission timeout hoặc unsafe event
-    EXECUTE --> COLLECT: Mất simulator/oracle
+    VALIDATE --> INVALID_WORLD: Invalid route/start/goal
+    VALIDATE --> START: Valid world
+    START --> HEALTH: Initialize run-owned processes
+    HEALTH --> EXECUTE: Sensor + oracle + safety ready
+    HEALTH --> COLLECT: Prerequisite/deadline failure
+    EXECUTE --> COLLECT: Goal or terminal outcome
+    EXECUTE --> COLLECT: Mission timeout or unsafe event
+    EXECUTE --> COLLECT: Simulator/oracle loss
     COLLECT --> CLASSIFY: Flush bag + ULog + trace
     CLASSIFY --> CLEANUP
     INVALID_WORLD --> [*]
     CLEANUP --> [*]
 ```
 
-Executor không tự quyết success. Evaluator lấy geometry/contact từ Gazebo hoặc oracle geometry độc lập đã calibrate; status/odom từ PX4 để kiểm tra handoff. Missing telemetry không có nghĩa zero collision.
+The executor does not decide success itself. The evaluator obtains geometry/contact from Gazebo or an independent calibrated geometry oracle, and status/odom from PX4 to check handoff. Missing telemetry does not mean zero collisions.
 
-COLLECT là best-effort có deadline cho mọi nhánh terminal, không chỉ success. Ghi failure ban đầu trước khi thu log; lỗi collect/cleanup thêm reason chứ không ghi đè collision.
+COLLECT is deadline-bounded best effort for every terminal branch, not just success. Record the initial failure before collecting logs; collection/cleanup errors add reasons rather than overwrite a collision.
 
-### Input tối thiểu
+### Minimum inputs
 
-| Nhóm | Fields cần có và nghĩa |
+| Group | Required fields and meaning |
 | --- | --- |
 | Experiment | schema version, experiment ID, source revision, dirty flag, suite/gate, config hash, environment record |
 | Scenario | scenario ID, suite membership, world/noise seed, asset/world hash, start/goal ENU, physical/planning envelope, support-contact pair/phase allowlist, geofence, expected outcome class |
-| Run | run ID, attempt index, namespace/domain/ports, process ownership, sim epoch, wall start/end và sim start/end |
+| Run | run ID, attempt index, namespace/domain/ports, process ownership, sim epoch, wall start/end and sim start/end |
 | Policy | frozen seed set, validity validator revision, timeouts, speed/clearance limits, depth/command deadlines, retry cap |
 
-World seed và noise seed phải riêng. Run ID/attempt không ghi đè file cũ. IDs và paths không được dùng như raw shell command; nếu làm CLI về sau, truyền argv và kiểm tra path scope.
+World and noise seeds must be separate. Run IDs/attempts must not overwrite old files. IDs and paths must not be used as raw shell commands; if a CLI is implemented later, pass argv and validate path scope.
 
-### Trace tối thiểu
+### Minimum trace
 
-- Capture stamp/epoch/frame ID, receive monotonic time, preprocess/inference finish, safety decision, publish và tracking response.
-- Source sequence cho depth, pose, proposal và safety command; trạng thái fresh/stale/invalid với reason.
-- Actual pose/velocity, requested/safe setpoint, PX4 nav/arming state, ack, EKF reset và failsafe events.
-- Ground-truth contact, surface clearance, bounds, tilt, goal dwell và observer health.
-- Fault injection command, thời điểm yêu cầu và thời điểm áp dụng được xác nhận.
+- Capture stamp/epoch/frame ID, receive monotonic time, preprocess/inference finish, safety decision, publication, and tracking response.
+- Source sequences for depth, pose, proposal, and safety command; fresh/stale/invalid state with a reason.
+- Actual pose/velocity, requested/safe setpoint, PX4 nav/arming state, acknowledgments, EKF resets, and failsafe events.
+- Ground-truth contact, surface clearance, bounds, tilt, goal dwell, and observer health.
+- Fault injection command, requested time, and confirmed application time.
 
-Depth source/model không được thấy ground-truth distance để tự sửa online. Sim odometry được dùng trong giai đoạn lõi nhưng phải ghi rõ là localization lý tưởng, không gọi đó là VIO.
+The depth source/model must not see ground-truth distance to correct itself online. Simulation odometry may be used during the core stage, but must be explicitly recorded as ideal localization, not called VIO.
 
-### Safety outcome không gộp với execution outcome
+### Safety outcome is separate from execution outcome
 
-Giữ `safety_outcome` và `execution_outcome` riêng theo SAFETY S03. `UNSAFE_OBSERVED` được latch toàn attempt, kể cả nếu execution sau đó là `INFRA_ERROR`. `NO_VIOLATION_OBSERVED` chỉ cho phép success/safe abort khi observer đủ coverage và telemetry. Thiếu observer là `UNKNOWN`, không phải “an toàn”.
+Keep `safety_outcome` and `execution_outcome` separate under SAFETY S03. `UNSAFE_OBSERVED` is latched for the entire attempt, even if execution later becomes `INFRA_ERROR`. `NO_VIOLATION_OBSERVED` only permits success/safe abort when observer coverage and telemetry are sufficient. A missing observer means `UNKNOWN`, not “safe.”
 
-### Kết quả và exit contract
+### Results and exit contract
 
-| Outcome | Khi dùng | Có cộng navigation success? |
+| Outcome | When used | Counts toward navigation success? |
 | --- | --- | --- |
-| `SUCCESS` | Completed đúng goal/termination, observer đủ, không unsafe toàn trial; contact/clearance theo phase contract | Có |
-| `SAFE_ABORT` | Không hoàn thành goal nhưng dừng/handoff đúng, observer đủ và không vi phạm | Không |
-| `UNSAFE_FAIL` | Primary label cho unsafe đã latch: contact không allowlist, phase-clearance/geofence violation, lật/mất kiểm soát | Không; giữ cả execution/infra reasons |
-| `TASK_FAIL` | Timeout/không hoàn thành, chưa có unsafe event và log đủ | Không |
-| `INFRA_ERROR` | Simulator/oracle/recording không đủ để chấm; không xoá unsafe event đã biết | Không; batch incomplete nếu chưa có failure đủ kết luận |
-| `INVALID_WORLD` | Validator loại trước khi thực hiện trial | Không; báo generator rejection |
+| `SUCCESS` | Completed with the correct goal/termination, sufficient observer coverage, and no unsafe event throughout the trial; contact/clearance follows the phase contract | Yes |
+| `SAFE_ABORT` | Goal not completed, but stopping/handoff was correct, observer coverage was sufficient, and there was no violation | No |
+| `UNSAFE_FAIL` | Primary label for latched unsafe events: non-allowlisted contact, phase-clearance/geofence violation, overturning/loss of control | No; retain execution/infra reasons as well |
+| `TASK_FAIL` | Timeout/non-completion, with no unsafe event and sufficient logs | No |
+| `INFRA_ERROR` | Simulator/oracle/recording is insufficient for evaluation; does not erase known unsafe events | No; batch is incomplete unless an already observed failure is conclusive |
+| `INVALID_WORLD` | Rejected by the validator before executing the trial | No; report generator rejection |
 
-Negative safety và stress-diagnostic có suite membership/expected outcome đóng băng trước run theo SAFETY S04. PASS test phân loại không biến collision stress thành navigation success; không đổi suite sau failure. Chỉ navigation suite áp mục tiêu 45/50 và zero unsafe. Lỗi không được rơi về success mặc định.
+Negative safety and stress-diagnostic suites have their suite membership/expected outcomes frozen before the run under SAFETY S04. Passing a classification test does not turn a stress collision into navigation success; do not change suites after a failure. Only the navigation suite uses the 45/50 target and zero unsafe events. Errors must not fall back to success by default.
 
-CLI evaluator khi được viết phải phân biệt: `0` pass toàn bộ gate, `1` failure quan sát được, `2` invalid/incomplete evidence hoặc infra. Aggregate có unsafe event ưu tiên failure; nếu không có failure nhưng thiếu trial thì vẫn không pass.
+When implemented, the evaluator CLI must distinguish: `0` for passing the entire gate, `1` for an observed failure, and `2` for invalid/incomplete evidence or infrastructure problems. An unsafe event takes failure precedence in aggregation; without a failure, missing trials still prevent a pass.
 
-### Artifact layout dự kiến
+### Planned artifact layout
 
-Mỗi run lưu manifest, effective config, events/metrics, rosbag2, ULog và stdout/stderr của process sở hữu. Batch giữ seed list, rejected-world ledger, mọi attempt và report. Đặt artifacts lớn ngoài Git; chỉ commit fixture nhỏ có nguồn/license rõ.
+Each run stores its manifest, effective configuration, events/metrics, rosbag2, ULog, and stdout/stderr from owned processes. A batch retains the seed list, rejected-world ledger, every attempt, and the report. Keep large artifacts outside Git; commit only small fixtures with clear provenance/licenses.
 
-Report tối thiểu: numerator/denominator, Wilson CI, outcome counts, missing/invalid/infra counts, worst clearance, collision IDs, goal-time/route ratio, wall latency p50/p95/p99, deadline misses, sim data age, RTF và link tới raw evidence. Không có raw evidence thì không nhận benchmark.
+Minimum report: numerator/denominator, Wilson CI, outcome counts, missing/invalid/infra counts, worst clearance, collision IDs, goal-time/route ratio, wall latency p50/p95/p99, deadline misses, sim data age, RTF, and links to raw evidence. A benchmark without raw evidence is not accepted.
 
-## 7. Gate merge và acceptance
+## 7. Merge and acceptance gates
 
-- Source integrity: `python scripts/check_project.py` kiểm tra PDF, DAG, scenario IDs, links và portable roadmap; không thay thế test hành vi.
-- H0: unit/regression hành vi và offline smoke không cần simulator.
-- H1–H3: test phần thay đổi cộng SITL smoke đúng scenario. Nếu thiếu môi trường thì không merge với tuyên bố đã đạt flight gate.
-- Acceptance G3: 50 frozen navigation worlds hợp lệ, ≥45 success, zero unsafe, navigation clearance ≥0.5 m theo phase contract, performance gates, đủ required scenario theo suite và không trial thiếu.
-- Acceptance G4: mỗi source được công bố đạt ≥40/50 như PDF, không hạ contact/phase-clearance gate. Đổi source làm mất hiệu lực bằng chứng G3 cho source đó đến khi rerun.
-- Người dùng quyết định thay mục tiêu/phạm vi hoặc chuyển sang hardware. Một PR tài liệu được merge không đồng nghĩa hệ thống bay đã được chấp nhận.
+- Source integrity: `python scripts/check_project.py` checks the PDF, DAG, scenario IDs, links, and portable roadmap; it does not replace behavioral tests.
+- H0: behavioral unit/regression tests and offline smoke without a simulator.
+- H1–H3: tests for the changed components plus SITL smoke for the relevant scenario. If the environment is unavailable, do not merge with a claim that the flight gate has passed.
+- G3 acceptance: 50 valid frozen navigation worlds, ≥45 successes, zero unsafe events, navigation clearance ≥0.5 m under the phase contract, performance gates, all required scenarios for each suite, and no missing trials.
+- G4 acceptance: each source declared accepted must achieve ≥40/50 as in the PDF, without lowering the contact/phase-clearance gate. Changing the source invalidates G3 evidence for that source until rerun.
+- The user decides whether to change targets/scope or move to hardware. Merging a documentation PR does not mean the flight system has been accepted.
 
-## 8. Commands G0 và handoff G1
+## 8. G0 commands and G1 handoff
 
-`python -m pytest -q` chạy regression hành vi; `python scripts/g0_demo.py --output artifacts/<new-name>` chạy API thật và xuất SVG/NPZ/summary. Demo chỉ dùng dữ liệu tổng hợp; xem README về sampling support, independent local-clear certificate và giới hạn braking.
+`python -m pytest -q` runs behavioral regression tests; `python scripts/g0_demo.py --output artifacts/<new-name>` runs the real API and exports SVG/NPZ/summary. The demo uses only synthetic data; see README for sampling support, the independent local-clear certificate, and braking limitations.
 
-`g1-environment` đã qua smoke không arm trên image dẫn xuất đã pin. Ready tiếp theo là oracle/logger và supervisor tối thiểu; bootstrap flight/calibration vẫn pending và không được suy ra quyền arm từ roadmap. Container thử đã cleanup, Docker Desktop/images được giữ; không cài package lên host hoặc đổi driver/WSL.
+`g1-environment` passed an unarmed smoke check on the pinned derived image. The next ready items are the oracle/logger and minimal supervisor; bootstrap flight/calibration remains pending, and permission to arm must not be inferred from the roadmap. The test container was cleaned up, while Docker Desktop/images were retained; do not install packages on the host or change drivers/WSL.

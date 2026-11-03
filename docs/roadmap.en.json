@@ -1,0 +1,261 @@
+{
+  "prep-safety": {
+    "source_sha256": "b36e254e4c7dcf53c3ea33fd881ee083f709f778d84389354fbbc7f46b27741b",
+    "phase": "Preparation",
+    "title": "Repair safety contract gaps and dependency gates",
+    "acceptance": [
+      "Define contact/clearance by phase, without arbitrary collision exemptions.",
+      "A minimal oracle and supervisor must exist before flight/wall-stop; eliminate dependency cycles.",
+      "Latch unsafe outcomes; define deadlines, suite membership, and rollout scope."
+    ]
+  },
+  "prep-skills": {
+    "source_sha256": "318c4fd6d311a5af11e6498ae91023023cfcb50e9896e8889aaff2713246053f",
+    "phase": "Preparation",
+    "title": "Prepare the trigger-based OMP skill set",
+    "acceptance": [
+      "The router references only existing skills that have been read; do not copy bundles or change accounts/policies.",
+      "AGENTS documents the native roadmap and load-on-demand; do not assume an auto-hook or ROS skill is installed."
+    ]
+  },
+  "prep-roadmap": {
+    "source_sha256": "b55b349713ae4169555e4a6a36fd06710d50ff07bbdf56e0712579f059da1996",
+    "phase": "Preparation",
+    "title": "Complete the roadmap and operating documentation",
+    "acceptance": [
+      "The DAG covers G0–G4 and the G5 decision gate; only preparation is marked done.",
+      "The canonical JSON/view is created by the native tool; documentation links are valid; do not create fake flight receipts."
+    ]
+  },
+  "g0-contracts": {
+    "source_sha256": "c4ab950d2dbe649a2b62c6156236634bf142d86e292505318ed55b8bcb346c96",
+    "phase": "G0 Offline",
+    "title": "Offline depth validity, units, and clock contract",
+    "acceptance": [
+      "A real NumPy API distinguishes valid/too-close/no-return/unknown and meter/mm encodings.",
+      "Reject unreasonable configurations and invalid/future/stale input according to the clock epoch; tests E01/E04/E08/E20 have independent expected results.",
+      "Run fixtures through the API without ROS/GPU, without modifying caller input."
+    ]
+  },
+  "g0-geometry": {
+    "source_sha256": "2808508b020bf3991785415f2e9d8a2c6386d584d172a197574669195275fefc",
+    "phase": "G0 Offline",
+    "title": "Projection, frame transforms, and conservative coverage",
+    "acceptance": [
+      "Optical/FLU/ENU/NED projections and quaternions have analytic expected results, with correct intrinsics/cropping.",
+      "The 72x3 histogram preserves near evidence, unknown regions, and wraparound; footprint inflation does not create false gaps.",
+      "A04/A05/B07/C08/E02/E03/E05/E06/E07/E13 are demonstrated offline at the geometry level."
+    ]
+  },
+  "g0-safety": {
+    "source_sha256": "34ee7e4e5e26ac05af107dc965330b17452bdb422ac938d054aa01b9431e24a8",
+    "phase": "G0 Offline",
+    "title": "Offline braking envelope and command freshness",
+    "acceptance": [
+      "The braking-bound API checks distance/margin/latency/actual velocity and invalid configurations.",
+      "A heartbeat must not refresh a stale proposal; an unknown corridor does not authorize movement.",
+      "Boundary fixtures include d<=margin, a<=0, NaN, stale epochs, and velocity deviating from the intended direction; do not call this SITL calibration."
+    ]
+  },
+  "g0-demo": {
+    "source_sha256": "2bb25ccdbdeccbb9787a8a2c2db929d7fd7266e26c14bf0808f7528c91721dd4",
+    "phase": "G0 Offline",
+    "title": "Gate G0: reproducible offline smoke run",
+    "acceptance": [
+      "A real command runs synthetic depth through the core to a histogram/safe proposal and exports a viewable artifact.",
+      "Behavioral tests and the smoke run pass on an identified snapshot; no fake ROS node/runner."
+    ]
+  },
+  "g1-environment": {
+    "source_sha256": "e2b4b14283ce0aa5bb791d94d33078e3b96d2f40bdde1b5a87ab99299b4da2cf",
+    "phase": "G1 SITL Foundation",
+    "title": "Select and lock the Linux PX4/ROS/Gazebo environment",
+    "acceptance": [
+      "The user authorizes every required installation/download; explicitly block if a prerequisite is missing.",
+      "Pin the image/packages/firmware/messages/Agent/assets after the smoke run; do not infer them from the image name.",
+      "Actually observe X500 depth, camera encoding/CameraInfo, odometry, and clock/QoS/namespace, without arming yet."
+    ]
+  },
+  "g1-oracle": {
+    "source_sha256": "6b1e3dbcff807f06b69b0e8aa03b85b3eaee7e163f3281ebd3308e5011b6e4f2",
+    "phase": "G1 SITL Foundation",
+    "title": "Contact/clearance oracle and logger before flight",
+    "acceptance": [
+      "Known-free/known-contact fixtures demonstrate that the observer is live and that the geometry/propeller envelope and landing-contact allowlist are correct.",
+      "Record phase-aware clearance, a contact ledger, and raw logs; the planner must not read the oracle.",
+      "Missing oracle data must not become zero collisions; infrastructure outcomes must not overwrite the unsafe latch."
+    ]
+  },
+  "g1-supervisor": {
+    "source_sha256": "348cb68ac422f3dbe6377644f59c33a4ce1b24ee721f3863ea1d58d164d0b018",
+    "phase": "G1 SITL Foundation",
+    "title": "Minimal supervisor and single-owner Offboard bridge",
+    "acceptance": [
+      "The supervisor/bridge is independent of the planner/inference, with explicit command TTL/epoch/progress.",
+      "Priming/acknowledgment/mode/arming ownership, unused PX4 fields, and handoff have contracts appropriate to the firmware.",
+      "Stationary fault injection demonstrates that stale commands/owner conflicts do not authorize movement; do not treat this as a flight braking test."
+    ]
+  },
+  "g1-flight": {
+    "source_sha256": "1198aa0dcc020884879bc5fe4a26cad9e9f597de3e17f481a3e2a03a88755f36",
+    "phase": "G1 SITL Foundation",
+    "title": "Empty-world mission: takeoff, square, hold, land, disarm",
+    "acceptance": [
+      "In a known-clear test volume, fly a square with 5 m sides, hold at the goal, and land/disarm with real bag/ULog/acknowledgment evidence.",
+      "Use a bounded exploratory speed, an operator stop, and a supervisor; do not disable preflight checks.",
+      "Phase-aware floor/landing contact must not cause false failures; contact with any other obstacle always fails."
+    ]
+  },
+  "g1-calibration": {
+    "source_sha256": "6af4acbd80e7df7c9b636caa821509df2a8964b6610e951fe669ed387c207e4b",
+    "phase": "G1 SITL Foundation",
+    "title": "Gate G1: measure the stopping envelope and fault handoff",
+    "acceptance": [
+      "Measure delay/braking/jerk/tracking using actual motion and load levels; freeze bounds/deadlines together with the safety configuration.",
+      "Test C02–C04/E09–E12/E21–E23 on the components actually available; no reclaim when the bridge dies and PX4 exits Offboard.",
+      "Handle camera/pose loss according to a tested mode; do not promise unconditionally safe hovering/landing."
+    ]
+  },
+  "g2-adapter": {
+    "source_sha256": "0895720d45da60e5d75cb9436006224c70e5381a09656c491159c2778fd9e39f",
+    "phase": "G2 Perception",
+    "title": "Depth adapter and capture-time obstacle evidence",
+    "acceptance": [
+      "Verify sensor semantics/TF/calibration; preserve the capture-time pose and epoch.",
+      "Do not filter out near evidence; explicitly document finite-sampling/FOV/height-envelope limitations."
+    ]
+  },
+  "g2-replay": {
+    "source_sha256": "5a844156cc811da99b2996b4ca1381016669f0f84293b26665d72dd2a4679ad1",
+    "phase": "G2 Perception",
+    "title": "Bag replay and controlled sensor faults",
+    "acceptance": [
+      "Replay real bags in a new epoch; sensor dropout/blur/flicker has injection traces and an oracle.",
+      "For A01–A10/E01–E08/E13/E14/E24/E25, distinguish pure fixtures from sensor-specific SITL."
+    ]
+  },
+  "g2-wall": {
+    "source_sha256": "2432949efd815aa5692438007891b6cbfc67c67bbbb7e1751768e89871dcc6dc",
+    "phase": "G2 Perception",
+    "title": "Gate G2: 10/10 wall-stop runs through a real supervisor",
+    "acceptance": [
+      "10/10 wall approaches from outside the stopping envelope, with no contact/clearance violation according to the oracle.",
+      "Log actual velocity, wall/sim latency, and data age; Collision Prevention debugging must not count as Offboard protection."
+    ]
+  },
+  "g3-planner": {
+    "source_sha256": "ed858fbbcc28a0db87acfe1105c56d97a88963a2366b8e9f32c3c1f9730f1589",
+    "phase": "G3 Navigation",
+    "title": "Local planner with hysteresis and goal hold",
+    "acceptance": [
+      "A real planner produces velocity/yaw proposals with expiration times, without reading ground truth.",
+      "Test corridors/poles/goal yaw-wrap/oscillation; unknown regions in other directions must not be treated as free."
+    ]
+  },
+  "g3-recovery": {
+    "source_sha256": "330ff42ea064528220fdc5bdedfa36ecd45a8aad9c5885c0bf2182958a13bf2f",
+    "phase": "G3 Navigation",
+    "title": "Bounded recovery and mission transitions",
+    "acceptance": [
+      "B01–B05 and A08/E16/E17 have controlled runs; do not reverse blindly or turn when the envelope is unsafe.",
+      "Fix retries/state transitions/deadlines before testing; safe abort for an unreachable goal is a separate outcome."
+    ]
+  },
+  "g3-runner": {
+    "source_sha256": "a2177582ad23fb3dfcb820c1698bbd5fce5abb45ee145c4f6405bf9bfdf754bb",
+    "phase": "G3 Navigation",
+    "title": "Single-world executor and fault injection harness",
+    "acceptance": [
+      "Run/attempt ownership and start/preflight/execute/collect/cleanup work on real SITL scenarios.",
+      "Correctly classify known failure/contact/infrastructure traces and retain every artifact; exit codes 0/1/2 follow the contract."
+    ]
+  },
+  "g3-faults": {
+    "source_sha256": "160822542d85f4f6cc510fcddde5d1c9aab40f80c7ea52b0894425eee8bff039",
+    "phase": "G3 Navigation",
+    "title": "Safety/observer fault regression suite",
+    "acceptance": [
+      "A–D/E/F cases within G3 scope have an oracle and evidence index; leave ML cases for G4.",
+      "Impossible-spawn/dynamic stress tests check classification; do not mix them into the zero-collision navigation benchmark.",
+      "Shutdown/telemetry loss must not hide an already observed unsafe event."
+    ]
+  },
+  "g3-worlds": {
+    "source_sha256": "7b4c957ed8edbbf11c6175a0f484788258ca71506ed912b702af19a7f9623bbb",
+    "phase": "G3 Navigation",
+    "title": "World validator and frozen seed split",
+    "acceptance": [
+      "Oracle routes preserve the footprint/margin, fixed-altitude connectivity, and segment/corner collision checks; not just grid-center A*.",
+      "Freeze dev/test seeds together with noise/assets/configuration before testing; the rejection ledger must not exclude cases based on planner outcomes.",
+      "The oracle route is an efficiency reference; do not call it dynamically optimal without proof."
+    ]
+  },
+  "g3-batch": {
+    "source_sha256": "3e848714c0c5249af35a1e832db8f0ea083525f4ccc9315d13c6a41c073c816e",
+    "phase": "G3 Navigation",
+    "title": "Batch evaluator and protection against denominator manipulation",
+    "acceptance": [
+      "Run all first attempts for 50 valid test worlds; report retries/infrastructure failures/missing runs/duplicates separately.",
+      "Actually export Wilson CI, outcome counts, clearance window, route time ratio, latency/deadline/RTF, and artifact links.",
+      "Unsafe/infrastructure outcomes must not be marked as success or overwritten; an incomplete batch must not exit 0."
+    ]
+  },
+  "g3-acceptance": {
+    "source_sha256": "7120783f343f09eb8bb32bd082479065f668ced8add4e623dfa8d221740578de",
+    "phase": "G3 Navigation",
+    "title": "Gate G3: simulation-depth navigation acceptance",
+    "acceptance": [
+      "At least 45/50 SUCCESS on the frozen navigation suite, zero unsafe events, and navigation surface clearance>=0.5 m.",
+      "Time-to-goal/latency gates have a protocol and calibration; required safety cases pass according to suite semantics.",
+      "The report/demo/raw evidence and revisions are reproducible; do not claim a general probability>=90% or real-flight safety."
+    ]
+  },
+  "g4-stereo": {
+    "source_sha256": "b9cdae9ad10b61801f80106ca24b7c7bdd90b82b06921d584596bceae3fc4543",
+    "phase": "G4 Practical Depth",
+    "title": "Stereo SGBM and offline metric gate",
+    "acceptance": [
+      "Stereo pairs are synchronized/rectified, baseline/intrinsics/units are valid, and uncertainty/dropout is preserved.",
+      "Compare against simulation truth offline for near-field overestimation and latency; do not use truth for online adjustments.",
+      "Fly only when the new source meets the safety bounds; rerun applicable scenarios."
+    ]
+  },
+  "g4-mono": {
+    "source_sha256": "a18f43185271f63b68249f6e4f78d3e34e872fba6acad5bdbefb7f5472a7787e",
+    "phase": "G4 Practical Depth",
+    "title": "Monocular metric adapter and OOD safety gate",
+    "acceptance": [
+      "Pin the exact checkpoint/license/preprocessing/weights revision; demonstrate metric scale/focal length after resizing/cropping.",
+      "E18/E19/F06 pass offline before control; relative depth must not be compared against meter thresholds.",
+      "Do not train/fine-tune or download weights without authorization; block if hardware/latency prerequisites are missing, with no fake fallback."
+    ]
+  },
+  "g4-acceptance": {
+    "source_sha256": "3e0275424befeb568233c4b2966c51e60eac06943e061f2c006a8933da3c5580",
+    "phase": "G4 Practical Depth",
+    "title": "Gate G4: compare depth sources on the same worlds",
+    "acceptance": [
+      "Each reported source achieves at least 40/50 on the frozen 50 worlds, maintaining zero unsafe events and the clearance gate.",
+      "Report accuracy/uncertainty/latency/RTF/source-specific failures and separate evidence; simulation-depth results must not be reused to certify a model."
+    ]
+  },
+  "sim-delivery": {
+    "source_sha256": "1d9beff87643d0bbb8b1b316f768ae1edc238f558e52462027cc67f8544a30d2",
+    "phase": "Simulation Handoff",
+    "title": "Hand over the simulation project and reproduction instructions",
+    "acceptance": [
+      "README/setup/run/evaluate commands match the product, with complete dependency pins and artifact provenance.",
+      "Provide a real demo, limitations, and license/dependency notes; do not distribute weights/assets in violation of their licenses.",
+      "Code/tests/docs share the same revision, with no placeholders/no-ops, and must not be described as real flight."
+    ]
+  },
+  "g5-decision": {
+    "source_sha256": "eeefa25da4defca834a43afb9a34ef795a272b390d6cead595587c1627ea9e83",
+    "phase": "G5 Optional Decision",
+    "title": "Optional G5 decision: mapping, VIO, planner, or hardware",
+    "acceptance": [
+      "The user selects a direction and confirms the new scope/criteria; do not autonomously purchase or deploy hardware.",
+      "Add implementation tasks with real dependencies/evidence after the decision; do not treat the choice task as completed G5 integration."
+    ]
+  }
+}

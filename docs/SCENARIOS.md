@@ -1,116 +1,116 @@
-# Danh mục scenario và oracle
+# Scenario and oracle catalog
 
-**65 scenario được đặc tả; các fixture geometry/validity/braking G0 đã có test offline. Chưa chạy scenario bay SITL.** A–D là 30 case của PDF; E–F là 35 bổ sung. Mapping fixture/test G0 nằm trong test names và acceptance của native roadmap; không coi cả scenario tích hợp pass chỉ vì một fixture geometry đạt.
+**65 scenarios are specified; G0 geometry/validity/braking fixtures have offline tests. No SITL flight scenarios have been run.** A–D are the PDF's 30 cases; E–F add 35 cases. G0 fixture/test mappings are in the test names and native roadmap acceptance criteria; do not consider an entire integration scenario passed just because a geometry fixture passes.
 
-## Quy tắc chung
+## General rules
 
-- `PASS` theo oracle từng case, không theo log “success” do planner tự in.
-- Mỗi scenario phải pin geometry, footprint, seed, thời điểm inject, config, clock và deadline trước khi chạy.
-- Unknown không cho phép tịnh tiến vào corridor đó; quay tại chỗ chỉ được phép khi swept rotation envelope đủ clearance.
-- “Brake/hold” nghĩa là yêu cầu dừng trong stopping envelope **khả thi** đã đo; không hứa tránh va chạm với vật spawn bên trong quãng phanh.
-- “Fail closed” là reject dữ liệu/lệnh không hợp lệ và đi theo supervisor contract; không nhất thiết tắt động cơ hay dừng heartbeat ngay.
-- Negative test pass khi lỗi được phát hiện và xử lý đúng; không cộng vào navigation success.
-- Thời gian nhiệm vụ dùng sim time; health/compute dùng monotonic wall time. Reset clock bắt đầu epoch mới.
-- Case kính/dây/thiếu sáng cần sensor model/noise phù hợp. Chỉ thay material trong simulator không chứng minh mô phỏng đúng lỗi camera thật.
-- Áp dụng [SAFETY.md](SAFETY.md): contact ledger toàn trial, navigation clearance theo phase, support-contact allowlist, unsafe latch và suite membership trước attempt.
+- `PASS` is determined by each case's oracle, not a “success” log printed by the planner itself.
+- Each scenario must pin geometry, footprint, seed, injection time, configuration, clock, and deadline before running.
+- Unknown space does not permit translation into that corridor; in-place rotation is permitted only when the swept rotation envelope has sufficient clearance.
+- “Brake/hold” means requesting a stop within a measured, **feasible** stopping envelope; it does not promise collision avoidance for objects spawned inside the braking distance.
+- “Fail closed” means rejecting invalid data/commands and following the supervisor contract; it does not necessarily mean shutting down motors or stopping the heartbeat immediately.
+- A negative test passes when the fault is detected and handled correctly; it does not count toward navigation success.
+- Mission timing uses sim time; health/compute timing uses monotonic wall time. A clock reset starts a new epoch.
+- Glass/wire/low-light cases need an appropriate sensor model/noise. Merely changing a material in the simulator does not prove that real camera failures are modeled correctly.
+- Apply [SAFETY.md](SAFETY.md): a contact ledger for the entire trial, phase-specific navigation clearance, a support-contact allowlist, an unsafe latch, and suite membership set before the attempt.
 
-## A. Perception — 10 case gốc
+## A. Perception — 10 original cases
 
-| ID | Kích thích | Oracle bắt buộc |
+| ID | Stimulus | Required oracle |
 | --- | --- | --- |
-| A01 | Tường cách mũi camera 0.2 m, dưới min range | Bin quá gần/unknown bị chặn; không diễn giải NaN là free; không arm khi spawn unsafe |
-| A02 | World trống ngoài max range | Chỉ clear tới range khi adapter chứng minh `NO_RETURN`; unknown không trở thành clear |
-| A03 | Tăng tốc làm pitch/roll, sàn phẳng | Floor ngoài envelope không sinh obstacle giả; vật thật trong envelope vẫn được giữ |
-| A04 | Cột Ø5 cm cách 3 m | Với cấu hình sensor quan sát được cột, evidence sống qua reduction và hướng va chạm bị chặn |
-| A05 | Hai vách tạo khe 0.6 m | Nếu khe nhỏ hơn envelope + margin thì không đi; kiểm tra biên rộng hơn để tránh chặn tất cả |
-| A06 | Camera ngừng/rớt frame khi bay | Data age vượt deadline kích hoạt brake/bounded hold; stale frame không kéo dài quyền điều khiển |
-| A07 | Timestamp ngược, future stamp, một node sai `use_sim_time` | Reject khác clock/epoch; không có data age âm được coi fresh |
-| A08 | Goal ngang 90° hoặc sau lưng | Dừng/quay quan sát trước; không bay vào FOV chưa được kiểm chứng |
-| A09 | Depth flicker qua bag replay | Giữ phản ứng gần tức thời; không tạo free xuyên vật khi filter dùng history |
-| A10 | Vách ít texture, kính, tối với sensor fault phù hợp | Dropout/low confidence chặn hoặc giảm quyền di chuyển; không tuyên bố nhìn được kính chỉ vì sim depth sạch |
+| A01 | Wall 0.2 m in front of the camera, below minimum range | Too-near/unknown bins are blocked; NaN is not interpreted as free; do not arm at an unsafe spawn |
+| A02 | Empty world beyond maximum range | Clear only up to the range for which the adapter proves `NO_RETURN`; unknown does not become clear |
+| A03 | Acceleration causing pitch/roll, flat floor | Floor outside the envelope does not create false obstacles; real objects within the envelope are retained |
+| A04 | Ø5 cm pole at 3 m | With a sensor configuration capable of observing the pole, evidence survives reduction and the collision direction is blocked |
+| A05 | Two walls forming a 0.6 m gap | Do not enter if the gap is smaller than the envelope + margin; check a wider boundary case to avoid blocking everything |
+| A06 | Camera stops/drops frames in flight | Data age exceeding the deadline triggers braking/bounded hold; stale frames do not extend control authority |
+| A07 | Backward timestamp, future stamp, one node with incorrect `use_sim_time` | Reject different clocks/epochs; negative data age is never considered fresh |
+| A08 | Goal 90° to the side or behind | Stop/rotate to observe first; do not fly into an unverified FOV |
+| A09 | Depth flicker through bag replay | Retain a near-immediate response; history-based filtering must not create free space through an object |
+| A10 | Low-texture wall, glass, darkness with an appropriate sensor fault | Dropout/low confidence blocks or reduces movement authority; do not claim glass visibility just because simulation depth is clean |
 
-## B. Planner — 7 case gốc
+## B. Planner — 7 original cases
 
-| ID | Kích thích | Oracle bắt buộc |
+| ID | Stimulus | Required oracle |
 | --- | --- | --- |
-| B01 | Ngõ cụt/chữ U | Sau 5 s không tiến triển vào RECOVER; tối đa 3 lần; không lùi mù; safe abort nếu không tìm được lối |
-| B02 | Cột giữa hai lối đối xứng | Hysteresis giảm đảo trái/phải; case đảo >3 lần/2 s phải được phát hiện, không che oscillator |
-| B03 | Goal trong hộp kín | Reject bởi validator hoặc bounded safe abort ở negative suite; không success/fake goal |
-| B04 | Đến goal rồi chịu nhiễu pose nhỏ | Goal hold theo distance/speed/dwell; latch state, không bay vòng quanh |
-| B05 | Xà ngang/vật thấp chạm envelope | Mọi dải cắt swept volume đều chặn hướng; không chỉ đọc dải giữa |
-| B06 | Spawn hộp khi đang bay | Nếu ngoài stopping envelope thì brake trước planner; nếu bất khả thi thì ghi unsafe outcome, không claim guarantee |
-| B07 | Goal qua yaw ±π | Sai số góc shortest-path đúng, không quay gần 2π do wrap; biên ±π nhất quán |
+| B01 | Dead end/U-shape | Enter RECOVER after 5 s without progress; at most 3 attempts; no blind reverse; safe abort if no exit is found |
+| B02 | Pole between two symmetric routes | Hysteresis reduces left/right switching; >3 switches/2 s must be detected, not hide an oscillator |
+| B03 | Goal inside a sealed box | Validator rejection or bounded safe abort in the negative suite; no success/fake goal |
+| B04 | Reach the goal, then apply small pose noise | Goal hold follows distance/speed/dwell criteria; latch state, do not orbit |
+| B05 | Crossbar/low object intersecting the envelope | Every band intersecting the swept volume blocks the direction; do not read only the middle band |
+| B06 | Spawn a box during flight | If outside the stopping envelope, brake before the planner reacts; if avoidance is infeasible, record the unsafe outcome, do not claim a guarantee |
+| B07 | Goal across yaw ±π | Correct shortest-path angular error, no near-2π rotation due to wrap; consistent ±π boundaries |
 
-## C. Safety và điều khiển — 8 case gốc
+## C. Safety and control — 8 original cases
 
-| ID | Kích thích | Oracle bắt buộc |
+| ID | Stimulus | Required oracle |
 | --- | --- | --- |
-| C01 | Kill perception hoặc planner | Supervisor độc lập phát hiện mất progress/observation; không lặp proposal cũ |
-| C02 | Kill supervisor hoặc Offboard bridge | PX4 mất proof-of-life và thực hiện failsafe đã cấu hình; log đo thời điểm, mode và kết quả |
-| C03 | PX4 rời Offboard vì battery/geofence/RC | Mission nhường quyền; không re-enter/arm tự động hoặc tiếp tục setpoint can thiệp |
-| C04 | Arm/takeoff bị từ chối | Ack/status có lý do; retries hữu hạn; không gửi lặp vô hạn hay đánh dấu airborne giả |
-| C05 | EKF reset/odometry nhảy >1 m | Reset planner/history/goal transform thích hợp; không phát spike velocity hoặc dùng stale map |
-| C06 | Spawn cách tường 0.3 m | PREFLIGHT chặn nếu envelope cất cánh không an toàn; không chỉ xét tâm drone |
-| C07 | Goal xa, obstacles dày, command tốc độ cao | Speed bị bound theo latency/stopping distance; actual velocity và side-slip cũng được giám sát |
-| C08 | Trộn NED/ENU và FRD/FLU | Fixture vector/quaternion có đáp án hình học độc lập; positive-up/forward/yaw đúng cả output PX4 |
+| C01 | Kill perception or planner | Independent supervisor detects loss of progress/observation; no replay of old proposals |
+| C02 | Kill supervisor or Offboard bridge | PX4 loses proof-of-life and executes the configured failsafe; logs measure timing, mode, and outcome |
+| C03 | PX4 leaves Offboard due to battery/geofence/RC | Mission yields authority; no automatic re-entry/arming or continued interfering setpoints |
+| C04 | Arm/takeoff rejected | Acknowledgment/status provides a reason; finite retries; no unbounded resend or false airborne state |
+| C05 | EKF reset/odometry jump >1 m | Reset planner/history/goal transform as appropriate; no velocity spike or stale-map use |
+| C06 | Spawn 0.3 m from a wall | PREFLIGHT blocks if the takeoff envelope is unsafe; do not check only the drone center |
+| C07 | Distant goal, dense obstacles, high-speed command | Bound speed by latency/stopping distance; monitor actual velocity and side-slip as well |
+| C08 | Mix NED/ENU and FRD/FLU | Vector/quaternion fixtures have independent geometric answers; positive-up/forward/yaw are correct through PX4 output as well |
 
-## D. Đánh giá — 5 case gốc
+## D. Evaluation — 5 original cases
 
-| ID | Kích thích | Oracle bắt buộc |
+| ID | Stimulus | Required oracle |
 | --- | --- | --- |
-| D01 | Va chạm thân/propeller, kể cả sau goal/đang land, planner không báo | Latch unsafe toàn trial; chỉ gear/support pair đúng phase/zone được allow; success hoặc infra error không ghi đè collision |
-| D02 | Random world có A* grid path nhưng segment cắt góc/khe không đủ footprint | Validator kiểm tra continuous swept route/start/goal trước trial; ghi rejection/seed, không loại theo planner outcome |
-| D03 | Gazebo/PX4 treo/crash, kể cả ngay sau collision | Wall watchdog bounded collect/cleanup process sở hữu; giữ cả unsafe latch và infra reason; batch thiếu trial không pass |
-| D04 | RTF tụt do tải máy | Sim age và monotonic wall progress báo riêng; workload vượt calibrated bound không tiếp tục motion theo dữ liệu cũ |
-| D05 | Drone ra biên hoặc nghiêng >60° | Evaluator fail trial, dừng có kiểm soát; không chờ timeout rồi gán infra error |
+| D01 | Body/propeller collision, including after reaching the goal/during landing, unreported by the planner | Latch unsafe for the entire trial; allow only gear/support pairs in the correct phase/zone; success or infrastructure errors do not overwrite a collision |
+| D02 | Random world with an A* grid path, but segments cut corners/gaps lack footprint clearance | Validator checks the continuous swept route/start/goal before the trial; record rejection/seed, do not exclude based on planner outcome |
+| D03 | Gazebo/PX4 hangs/crashes, including immediately after a collision | Wall watchdog performs bounded collection/cleanup of owned processes; retain both the unsafe latch and infrastructure reason; a batch with missing trials does not pass |
+| D04 | RTF drops under machine load | Report sim age and monotonic wall progress separately; workload beyond the calibrated bound must not continue motion using old data |
+| D05 | Drone leaves bounds or tilts >60° | Evaluator fails the trial and performs a controlled stop; do not wait for timeout and then label it an infrastructure error |
 
-## E. Lỗ hổng runtime bổ sung — 25 case
+## E. Additional runtime gaps — 25 cases
 
-| ID | Kích thích | Oracle bắt buộc |
+| ID | Stimulus | Required oracle |
 | --- | --- | --- |
-| E01 | Boot với toàn NaN/0, không có frame history | Unknown chặn; “chưa từng thấy vật gần” không được suy ra free |
-| E02 | Dây ngang/obstacle chiếm <5% số pixel mỗi cột | Nếu sensor quan sát được, near evidence không bị percentile xoá; công bố giới hạn độ phân giải |
-| E03 | Vật mới gần ở frame thứ ba sau hai frame trống | Fast path chặn trong frame đầu có evidence, không đợi median đạt đa số |
-| E04 | Đổi `32FC1` mét sang `16UC1` mm; encoding lạ | Chuẩn hoá đúng đơn vị/invalid; encoding không hỗ trợ bị reject, không scale âm thầm |
-| E05 | Resize/crop ảnh nhưng CameraInfo cũ | Contract phát hiện mismatch; projection dùng intrinsics đã cập nhật, không tạo chiều sâu/khe giả |
-| E06 | Missing/stale TF, đổi extrinsics hoặc `frame_id` | Không xử lý với transform mặc định identity; fresh epoch hoặc invalid observation |
-| E07 | Camera/odom lệch thời gian trong lúc yaw nhanh | Interpolation đúng capture time hoặc reject; không dùng pose mới nhất tuỳ tiện |
-| E08 | Sim reset về t=0, rosbag seek/loop | Flush history, commands, sequence và TF thuộc epoch cũ; mission không tiếp tục ngoài ý muốn |
-| E09 | Pause sim trong khi process/heartbeat còn sống | Không dùng wall tick để giả tạo frame mới; watchdog nhận pause có chủ đích khác hang, resume phải tái xác minh |
-| E10 | QoS subscriber reliable gặp publisher best effort | Health báo không kết nối/incompatible; PREFLIGHT không qua chỉ vì thấy tên topic |
-| E11 | XRCE Agent restart, packet reorder, namespace/domain trùng | Discovery lại có kiểm soát; reject dữ liệu run/vehicle cũ; không tự arm khi reconnect |
-| E12 | Planner freeze nhưng bridge/safety thread còn heartbeat | Proposal hết hạn, không refresh timestamp cho lệnh cũ; safe behavior có trace nguồn lệnh |
-| E13 | Bin boundary/wrap, một ray free nhưng phần còn lại unknown, cm saturation | Không clear cả corridor từ một ray; sampling support/inflation không tạo khe, sentinel không overflow thành free |
-| E14 | Roll lớn, camera lệch tâm, propellers rộng hơn thân | Swept/rotation envelope và clearance dùng geometry thật, không chỉ sphere tại camera |
-| E15 | Side-slip, jerk limit, tracking chậm hơn cấu hình | Phanh theo actual motion và bound đo được; báo vi phạm envelope, không chỉ kẹp proposal |
-| E16 | Yaw scan sát tường, mặt trước hở nhưng cánh quạt chạm khi quay | Không scan nếu rotation envelope không đủ; abort thay vì “quay luôn an toàn” |
-| E17 | Quét 360° xong, vật đi vào hướng đã nhìn lúc đầu | Per-bin timestamp hết hạn bị chặn; không coi scan cũ là coverage mới |
-| E18 | Depth model relative hoặc metric sai scale/focal 2× | Offline gate không qua; không cho bật navigation theo ngưỡng mét dù ảnh depth nhìn hợp lý |
-| E19 | Model đo tốt AbsRel toàn ảnh nhưng quá xa ở vật gần/OOD | Đánh giá overestimation trong corridor/near-field và uncertainty; lỗi nguy hiểm không bị average che |
-| E20 | NaN/Inf trong pose/velocity/command, distance âm, `a_brake<=0`; đối chứng vector có thành phần âm hợp lệ | Reject invalid physical input/config, chấp nhận signed-axis values đúng frame; NaN unused PX4 fields chỉ ở protocol adapter |
-| E21 | Land command bị từ chối hoặc không có ack | Không DONE; bounded retry/timeout, ghi outcome; không ngừng kiểm soát trước handoff thích hợp |
-| E22 | Camera mất và odometry cũng invalid | Không giả định zero-velocity là hover; thực hiện PX4 fallback đã test, ghi mất khả năng giữ vị trí |
-| E23 | Hai publisher setpoint, bridge restart khi vẫn airborne | Phát hiện owner conflict/restart; không tự nhận quyền/re-arm hoặc phát default position=(0,0,0) |
-| E24 | Sàn dốc, bậc cao, gờ cửa, ceiling thấp | Filter không xoá vật cắt envelope; cố định altitude không được coi là clearance khỏi sàn |
-| E25 | Sensor lỗi theo mảng tương quan, motion blur, saturation | Unknown/uncertainty không thành free; noise Gaussian độc lập không là test duy nhất |
+| E01 | Boot with all NaN/0 and no frame history | Unknown blocks motion; “no near object has ever been seen” must not imply free space |
+| E02 | Horizontal wire/obstacle occupies <5% of pixels in each column | If observable by the sensor, near evidence is not removed by a percentile; disclose resolution limits |
+| E03 | New near object in the third frame after two empty frames | Fast path blocks in the first frame containing evidence, without waiting for a median majority |
+| E04 | Switch from `32FC1` meters to `16UC1` mm; unfamiliar encoding | Normalize units/invalid values correctly; reject unsupported encodings, no silent scaling |
+| E05 | Resize/crop an image while retaining old CameraInfo | Contract detects the mismatch; projection uses updated intrinsics, without creating false depth/gaps |
+| E06 | Missing/stale TF, changed extrinsics or `frame_id` | Do not process with an identity transform by default; use a fresh epoch or an invalid observation |
+| E07 | Camera/odom time offset during fast yaw | Interpolate at the correct capture time or reject; do not arbitrarily use the latest pose |
+| E08 | Sim resets to t=0, rosbag seek/loop | Flush history, commands, sequences, and TF from the old epoch; mission must not continue unintentionally |
+| E09 | Pause simulation while processes/heartbeat remain alive | Do not use wall ticks to fabricate fresh frames; watchdog distinguishes intentional pause from hang, and resumption requires revalidation |
+| E10 | Reliable QoS subscriber with a best-effort publisher | Health reports no connection/incompatibility; PREFLIGHT does not pass merely because a topic name is visible |
+| E11 | XRCE Agent restart, packet reordering, namespace/domain collision | Controlled rediscovery; reject old run/vehicle data; no automatic arming on reconnect |
+| E12 | Planner freezes while bridge/safety thread still sends a heartbeat | Proposal expires; do not refresh timestamps on old commands; safe behavior has command-source traces |
+| E13 | Bin boundary/wrap, one free ray with the remainder unknown, cm saturation | Do not clear an entire corridor from one ray; sampling support/inflation must not create gaps, and a sentinel must not overflow into free space |
+| E14 | Large roll, off-center camera, propellers wider than the body | Swept/rotation envelope and clearance use actual geometry, not just a sphere at the camera |
+| E15 | Side-slip, jerk limit, tracking slower than configured | Brake according to actual motion and measured bounds; report envelope violations, do not merely clamp proposals |
+| E16 | Yaw scan near a wall, front is clear but propeller contact occurs during rotation | Do not scan with an insufficient rotation envelope; abort instead of assuming “rotation is always safe” |
+| E17 | After a 360° scan, an object enters the direction observed at the start | Expired per-bin timestamps block motion; do not treat an old scan as fresh coverage |
+| E18 | Relative-depth model or metric model with scale/focal wrong by 2× | Offline gate fails; do not enable navigation using meter thresholds even if the depth image looks plausible |
+| E19 | Model has good full-image AbsRel but overestimates distance for near/OOD objects | Evaluate corridor/near-field overestimation and uncertainty; averages must not hide dangerous errors |
+| E20 | NaN/Inf in pose/velocity/command, negative distance, `a_brake<=0`; control case with valid negative vector components | Reject invalid physical inputs/configuration, accept signed-axis values in the correct frame; NaN in unused PX4 fields belongs only in the protocol adapter |
+| E21 | Land command rejected or no acknowledgment | Do not enter DONE; bounded retry/timeout, record the outcome; do not stop control before appropriate handoff |
+| E22 | Camera lost and odometry also invalid | Do not assume zero velocity means hover; execute the tested PX4 fallback and record loss of position-hold capability |
+| E23 | Two setpoint publishers, bridge restarts while still airborne | Detect ownership conflict/restart; do not automatically take authority/re-arm or publish default position=(0,0,0) |
+| E24 | Sloped floor, tall steps, doorway threshold, low ceiling | Filters must not remove objects intersecting the envelope; fixed altitude must not be treated as floor clearance |
+| E25 | Sensor faults in correlated patches, motion blur, saturation | Unknown/uncertainty does not become free; independent Gaussian noise must not be the only test |
 
-## F. Evaluator và tính trung thực — 10 case
+## F. Evaluator and integrity — 10 cases
 
-| ID | Kích thích | Oracle bắt buộc |
+| ID | Stimulus | Required oracle |
 | --- | --- | --- |
-| F01 | Cùng seed nhưng đổi model/world/plugin/PX4/config | Manifest phân biệt inputs; không gộp như cùng experiment hoặc cùng baseline |
-| F02 | Trial lỗi rồi retry nhiều lần | Giữ mọi attempt; report first-attempt và retry riêng; không chỉ chọn run thành công |
-| F03 | Thiếu seed, duplicate trial, telemetry mất cuối run | Không aggregate pass; batch incomplete có exit khác 0 và lý do, không fill bằng kết quả giả |
-| F04 | Contact sensor thiếu output/propeller mesh; landing support và body-wall contact đồng thời | Oracle health fail nếu thiếu coverage; gear/support đúng phase được allow, body/propeller-wall vẫn unsafe; clearance không double-count planning margin |
-| F05 | Goal gần nhưng route vòng dài hoặc time reference không khả thi động lực học | Continuous route/constraints được xác minh; chỉ report detour nếu chưa có time reference đúng, không tự bỏ gate time-efficiency |
-| F06 | Inference chậm, RTF thấp nhưng sim latency đẹp | Report wall compute/transport, sim age và RTF riêng; timeout/drop frame thật theo contract |
-| F07 | Ground-truth obstacle topic/map lọt vào planner | Topic/interface audit fail benchmark; oracle chỉ evaluator được đọc, không “sửa” bằng giấu trong report |
-| F08 | Agent sửa seed/threshold/oracle sau khi thấy fail | Dừng acceptance, yêu cầu quyết định người dùng và baseline mới; không tự làm dễ gate |
-| F09 | Máy cũ còn Gazebo/Agent, namespace trùng, asset tải thiếu | Preflight chỉ rõ conflict/asset; không kill process không sở hữu hoặc tải model mới âm thầm |
-| F10 | Dynamic obstacle spawn trong quãng phanh không thể tránh, suite đã frozen | Stress report giữ unsafe outcome; test classifier có thể pass nhưng không cộng navigation success; không chuyển navigation failure sang stress sau run |
+| F01 | Same seed but changed model/world/plugin/PX4/configuration | Manifest distinguishes inputs; do not combine them as the same experiment or baseline |
+| F02 | Trial fails, then is retried multiple times | Retain every attempt; report first attempts and retries separately; do not select only successful runs |
+| F03 | Missing seed, duplicate trial, telemetry lost at the end of a run | Do not aggregate to a pass; an incomplete batch has a nonzero exit and a reason, not fabricated results filling the gaps |
+| F04 | Contact sensor lacks output/propeller mesh; simultaneous landing support and body-wall contact | Oracle health fails if coverage is missing; gear/support in the correct phase is allowed, body/propeller-wall contact remains unsafe; clearance does not double-count the planning margin |
+| F05 | Nearby goal but long detour route or dynamically infeasible time reference | Verify continuous route/constraints; report only detour if a valid time reference is unavailable, without silently dropping the time-efficiency gate |
+| F06 | Slow inference, low RTF, but apparently good sim latency | Report wall compute/transport, sim age, and RTF separately; apply actual timeouts/frame drops under the contract |
+| F07 | Ground-truth obstacle topic/map leaks into the planner | Topic/interface audit fails the benchmark; only the evaluator may read the oracle, do not “fix” it by hiding it in the report |
+| F08 | Agent changes seed/threshold/oracle after seeing a failure | Stop acceptance, require a user decision and a new baseline; do not weaken the gate yourself |
+| F09 | Machine retains old Gazebo/Agent processes, namespace collision, incomplete asset download | Preflight identifies the conflict/asset; do not kill unowned processes or silently download a new model |
+| F10 | Dynamic obstacle spawns within unavoidable braking distance, suite already frozen | Stress report retains the unsafe outcome; classifier test may pass but does not count toward navigation success; do not reclassify a navigation failure as stress after the run |
 
-## Độ bao phủ theo giai đoạn
+## Coverage by stage
 
-Mapping gate nằm trong [PLAN.md](PLAN.md). Case E18–E19 chỉ bắt buộc khi có source depth học máy; F06 cần khi benchmark latency và đặc biệt ở G4. Các case còn lại được mở dần nhưng phải hoàn tất trước khi công bố G3 trong phạm vi tĩnh.
+Gate mappings are in [PLAN.md](PLAN.md). Cases E18–E19 are required only for learned depth sources; F06 is needed for latency benchmarks, especially at G4. The remaining cases are enabled incrementally but must be completed before claiming G3 within the static scope.
 
-Các bài test A–C pass về xử lý lỗi không làm tăng số world navigation thành công. Nhóm D/F kiểm tra chính bộ chấm; evaluator hỏng thì cả batch không có giá trị acceptance.
+Passing A–C fault-handling tests does not increase the number of successful navigation worlds. Groups D/F test the evaluator itself; a broken evaluator invalidates the entire batch for acceptance.
