@@ -4,6 +4,7 @@ This script never publishes or arms. Exit 2 means partial/incomplete environment
 not a successful flight gate. Source the image's ros2-entrypoint.sh first.
 """
 
+import argparse
 import base64
 import hashlib
 import json
@@ -61,6 +62,16 @@ def depth_summary(message: dict) -> dict:
             "no_return_semantics_certified": False}
 
 
+def timestamp_evidence(stamps: list[int]) -> dict:
+    pairs = list(zip(stamps, stamps[1:]))
+    return {
+        "strictly_increasing_stamps": len(stamps) > 1 and all(a < b for a, b in pairs),
+        "duplicate_stamps": sum(a == b for a, b in pairs),
+        "backward_events": [{"previous_us": a, "current_us": b}
+                            for a, b in pairs if b < a],
+    }
+
+
 def observe_dds(seconds: float = 6) -> dict:
     import rclpy
     from px4_msgs.msg import VehicleOdometry, VehicleStatus
@@ -98,8 +109,7 @@ def observe_dds(seconds: float = 6) -> dict:
             stamps = [v["timestamp_us"] for v in values]
             result[label] = {"count": len(values), "wall_window_s": elapsed,
                              "wall_rate_hz": len(values)/elapsed,
-                             "strictly_increasing_stamps": len(stamps) > 1 and all(
-                                 a < b for a, b in zip(stamps, stamps[1:])),
+                             **timestamp_evidence(stamps),
                              "first": values[0] if values else None,
                              "last": values[-1] if values else None}
         result["all_observed_disarmed"] = bool(samples["status"]) and not any(
@@ -120,6 +130,9 @@ def observe_dds(seconds: float = 6) -> dict:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--ros", action="store_true", help="Observe bridged ROS camera, sim clock and optical TF")
+    args = parser.parse_args()
     report = {"probe": "read-only G1 environment, never flight acceptance",
               "control_publishers_created": 0, "arming_commands_sent": 0,
               "namespace": NAMESPACE, "versions": {}, "assets_sha256": {}}
@@ -138,9 +151,20 @@ def main() -> None:
     report["depth"] = depth_summary(topic_json("/depth_camera"))
     report["camera_info"] = topic_json("/camera_info")
     report["world_stats"] = topic_json("/stats")
+    report["dds_connection"] = command(["px4-uxrce_dds_client", "status"])
+    report["dds_timestamp_sync_parameter"] = command(["px4-param", "show", "-q", "UXRCE_DDS_SYNCT"])
     report["dds"] = observe_dds()
     report["commander_status"] = command(["px4-commander", "status"])
+    if args.ros:
+        from g1_ros_observer import observe_ros
+        report["ros_camera"] = observe_ros()
     missing = []
+    if args.ros:
+        if report["dds_timestamp_sync_parameter"].get("stdout", "").strip() != "0":
+            missing.append("Gazebo ROS clock mode requires UXRCE_DDS_SYNCT=0")
+    elif (report["dds_connection"]["exit"] != 0 or
+          "timesync converged: true" not in report["dds_connection"].get("stdout", "")):
+        missing.append("OS clock mode requires converged DDS time synchronization")
     if report["bridge"]["exit"] != 0:
         missing.append("ros_gz_bridge missing: no ROS image/CameraInfo/clock bridge")
     if not report["dds"]["all_observed_disarmed"]:
@@ -149,10 +173,14 @@ def main() -> None:
         missing.append("no advancing DDS odometry")
     if not report["dds"]["ros_camera_topics"]:
         missing.append("no ROS camera topics; camera QoS/clock/frame alignment unverified")
+    if args.ros and not report["ros_camera"]["all_checks_pass"]:
+        missing.extend(f"ROS camera contract: {name}" for name, passed in
+                       report["ros_camera"]["checks"].items() if not passed)
     report["blockers"] = missing
     report["observation_complete"] = not missing
     report["acceptance_evaluated"] = False
-    report["scope_note"] = "Gazebo Transport sensor evidence and DDS only; not a ROS camera adapter or aligned-clock proof"
+    report["scope_note"] = ("Read-only sensor/DDS environment observations, not flight acceptance; "
+                            "capture-time odometry mapping and calibrated control remain later requirements")
     print(json.dumps(report, indent=2, allow_nan=False))
     raise SystemExit(2 if missing else 0)
 

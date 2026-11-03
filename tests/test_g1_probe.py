@@ -37,3 +37,11 @@ def test_wrong_depth_byte_count_is_not_interpreted():
 def test_reject_wrong_image_format_stride_and_shape(fields):
     with pytest.raises(ValueError, match="metadata"):
         PROBE.depth_summary({**message([1]), **fields})
+
+
+def test_timestamp_duplicates_and_backsteps_are_not_hidden_as_progress():
+    result = PROBE.timestamp_evidence([10, 10, 8, 12])
+    assert not result["strictly_increasing_stamps"]
+    assert result["duplicate_stamps"] == 1
+    assert result["backward_events"] == [{"previous_us": 10, "current_us": 8}]
+    assert PROBE.timestamp_evidence([8, 10, 12])["strictly_increasing_stamps"]

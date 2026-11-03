@@ -4,7 +4,7 @@ Drone tránh vật cản bằng computer vision, **mô phỏng trước** với 
 
 ## Trạng thái
 
-Repo đã có **G0 offline chạy được**: metric depth/validity, capture-time projection, frame/quaternion transforms, histogram 72×3 bảo thủ, braking và command freshness. Có pytest và workflow CI; **chưa có flight runtime, simulator launcher hoặc evaluator SITL**.
+Repo đã có **G0 offline chạy được**: metric depth/validity, capture-time projection, frame/quaternion transforms, histogram 72×3 bảo thủ, braking và command freshness. **G1 environment đã qua smoke không arm** với camera/clock/TF ROS và PX4 DDS trên image dẫn xuất đã pin. Có pytest và workflow CI; chưa có oracle, supervisor, flight runtime hoặc evaluator SITL.
 
 Mục tiêu lõi: ≥45/50 frozen navigation worlds tới đích, zero unsafe, navigation clearance ≥0.5 m theo phase contract.
 Đây là mục tiêu chưa đạt, không phải kết quả benchmark.
@@ -62,20 +62,22 @@ Ba scene thật qua API: wall 6 m, dây ngang một hàng pixel ở 2 m, và unk
 2. Đọc [REP-103](https://www.ros.org/reps/rep-0103.html) và [REP-118](https://www.ros.org/reps/rep-0118.html), đối chiếu `tests/test_geometry.py`.
 3. Đọc công thức braking trong PLAN rồi chạy `tests/test_safety.py` và demo; so output scene wall/wire/unknown.
 
-## G1: đã chạy smoke không arm, gate còn blocked
+## G1: environment đã qua, flight gate chưa đạt
 
-Sau khi người dùng cho phép mở Docker Desktop và tải image, đã chạy đúng digest ở Linux/amd64, container `--network none`, 4 CPU/6 GiB, software rendering, không host mount và không control publisher.
+Sau phê duyệt Docker/image và bridge, đã build [image dẫn xuất](docker/g1/Dockerfile) từ digest cố định. [Dependency lock](docker/g1/packages.lock.json) pin version và SHA-256 của 13 package mới; installer không nâng cấp package nền và từ chối archive lệch lock.
 
-- PX4 package `1.18.0~beta1-noble`, firmware commit `61907962c9220437ec01a98fa26bfbf5cbb254b5`; Gazebo Sim `8.15.0`; ROS 2 Jazzy.
-- Model `gz_x500_depth` thật; depth Gazebo `R_FLOAT32` 640×480, CameraInfo và `/clock` có dữ liệu.
-- DDS `/drone_cv_g1/fmu/out/vehicle_odometry` có timestamp tăng; status quan sát đều **Disarmed**. QoS publisher BEST_EFFORT/TRANSIENT_LOCAL.
-- Thiếu `ros_gz_bridge` trong image: chưa có camera/CameraInfo/clock ROS, chưa xác minh camera QoS hoặc alignment frame/time. **Không đánh dấu G1 done.**
-- Depth camera cấu hình 30 Hz sim-time nhưng các cửa sổ wall-time thực chỉ khoảng 6 Hz trong cấu hình CPU thử; RTF thấp. Đây là smoke, chưa là profile hoặc calibration.
+- PX4 package `1.18.0~beta1-noble`, firmware `61907962c9220437ec01a98fa26bfbf5cbb254b5`; Gazebo Sim `8.15.0`; ROS 2 Jazzy; bridge `1.0.24-1noble.20260920.234644`.
+- X500 depth thật, ROS `32FC1` 640×480, 35 cặp Image/CameraInfo cùng stamp trong cửa sổ 8 giây; optical TF khớp SDF.
+- Gazebo `/clock` là clock duy nhất: `UXRCE_DDS_SYNCT=0`, observer/bridge dùng `use_sim_time=true`, không thay stamp bằng wall-time. Raw PX4 odometry nằm trong cùng cửa sổ sim-time và tăng nghiêm ngặt.
+- DDS status luôn **Disarmed**; không tạo control publisher hoặc gửi arm. Container network none, 4 CPU/6 GiB, software rendering, không host mount.
+- Camera đạt khoảng 4.5 Hz wall-time trong cửa sổ này, không phải 30 Hz thực hoặc performance/calibration acceptance.
 
-[Environment evidence](docs/environments/g1-observation.json) giữ version, model hashes, sensor metadata và blocker. Không có flight acceptance hay chứng nhận `+Inf` sensor luôn là free.
-`scripts/g1_probe.py` là observer chỉ đọc, chạy **bên trong container có Agent/PX4/Gazebo đang chạy**, sau khi source `/usr/local/bin/ros2-entrypoint.sh`; không publish/arm, exit 2 khi observation thiếu.
-Container/process do run sở hữu đã dừng và xoá sau probe; Docker Desktop và image đã tải được giữ lại. Không cài thêm package, đổi driver/WSL hoặc quyền.
-Để tiếp tục cần phê duyệt image dẫn xuất bổ sung bridge đã pin, hoặc môi trường bridge tương thích đã có; không tự cài lên host.
+[Evidence mới](docs/environments/g1-bridge-observation.json) giữ pins, QoS, encoding, intrinsics, TF, clock và hai cửa sổ thất bại trước khi sửa clock policy. [Probe image nền](docs/environments/g1-observation.json) vẫn giữ nguyên lịch sử thiếu bridge.
+
+`scripts/g1_probe.py --ros` cùng `scripts/g1_ros_observer.py` là observer chỉ đọc bên trong container đang chạy Agent/PX4/Gazebo/bridge/TF; exit 2 khi observation thiếu. [Recipe đã chạy và giới hạn](docs/HARNESS.md#recipe-smoke-dẫn-xuất-và-kết-quả-đã-quan-sát).
+
+Container/process do run sở hữu đã dừng và xoá; Docker Desktop/images được giữ lại. Không cài package lên host, đổi driver/WSL hoặc quyền.
+Chỉ `g1-environment` đạt: oracle/logger và supervisor vẫn phải có trước bootstrap flight; calibration vẫn pending. Không chứng nhận `+Inf` là free, capture-time pose interpolation hoặc tránh vật cản thành công.
 
 ## Nguyên tắc
 

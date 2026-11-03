@@ -1,0 +1,89 @@
+{
+  "schema": 1,
+  "platform": "linux/amd64",
+  "base_image": "px4io/px4-sitl-gazebo-ros2@sha256:2c01c89215a5f541d3a819c1bd2115ff27c9423679f3738dbb4096271d77084b",
+  "sources": [
+    "http://packages.ros.org/ros2/ubuntu noble/main",
+    "http://archive.ubuntu.com/ubuntu noble/universe"
+  ],
+  "packages": [
+    {
+      "name": "cppzmq-dev",
+      "version": "4.10.0-1build1",
+      "architecture": "amd64",
+      "sha256": "81375971369a7856a6007a8f4a4b84ecf59a1c03aadb391b204a9100a3909173"
+    },
+    {
+      "name": "ros-jazzy-actuator-msgs",
+      "version": "0.0.1-4noble.20260911.102005",
+      "architecture": "amd64",
+      "sha256": "96e7e0fb3dfbee3a8f1b7e38c76098167e33c10da1cf6a9e8f989465e02a410c"
+    },
+    {
+      "name": "ros-jazzy-gps-msgs",
+      "version": "3.1.1-1noble.20260911.103001",
+      "architecture": "amd64",
+      "sha256": "171e01927a95da34e35375270c9fdd5574dc5b71ed533d5064d7c66ab5c36e9b"
+    },
+    {
+      "name": "ros-jazzy-gz-cmake-vendor",
+      "version": "0.0.12-1noble.20260618.173318",
+      "architecture": "amd64",
+      "sha256": "7b5f2a8de8d4fe9f6062cd04bd040aa3741654d1c6569169a0e99cc87aaa91c6"
+    },
+    {
+      "name": "ros-jazzy-gz-math-vendor",
+      "version": "0.0.11-1noble.20260905.031649",
+      "architecture": "amd64",
+      "sha256": "c86e7f8b65e59b25c8b93d513b6c4de7b7d03d4248b85e243c258b77f7d96376"
+    },
+    {
+      "name": "ros-jazzy-gz-msgs-vendor",
+      "version": "0.0.8-1noble.20260905.033532",
+      "architecture": "amd64",
+      "sha256": "02a4bf2fc1c16c660597e2254ccdf9cf2f6c07aebcfd54a433b54763ab7be643"
+    },
+    {
+      "name": "ros-jazzy-gz-tools-vendor",
+      "version": "0.0.8-1noble.20260820.143431",
+      "architecture": "amd64",
+      "sha256": "c86c1d56c1bba87132472b35c2fd4820bbec1a71db521e2493d76dd1b2a2dc82"
+    },
+    {
+      "name": "ros-jazzy-gz-transport-vendor",
+      "version": "0.0.9-1noble.20260905.065154",
+      "architecture": "amd64",
+      "sha256": "efc36510482c2ff7334bcd8716a80c3e5f333f21b9cad0509ad31a1d6d722132"
+    },
+    {
+      "name": "ros-jazzy-gz-utils-vendor",
+      "version": "0.0.5-1noble.20260618.173807",
+      "architecture": "amd64",
+      "sha256": "fe029b8f86b605bc71057500c4f2a812034fde9c248603e9ce8989c0ea7c4761"
+    },
+    {
+      "name": "ros-jazzy-marine-acoustic-msgs",
+      "version": "2.1.0-2noble.20260911.112832",
+      "architecture": "amd64",
+      "sha256": "207369313af1fdc31416946f93c5410910d4ab2b9f470d6a52d96cc7025bdd53"
+    },
+    {
+      "name": "ros-jazzy-ros-gz-bridge",
+      "version": "1.0.24-1noble.20260920.234644",
+      "architecture": "amd64",
+      "sha256": "b3b13a1b621b352b799d9d2981c9508cd37e4af4d7ab2ecec2687822f93ae761"
+    },
+    {
+      "name": "ros-jazzy-ros-gz-interfaces",
+      "version": "1.0.24-1noble.20260911.110630",
+      "architecture": "amd64",
+      "sha256": "d8de8e4e8f5c1de92fa88614e3d8f620a55ecdb67f893ebe539445b4c0dd4c4b"
+    },
+    {
+      "name": "ros-jazzy-vision-msgs",
+      "version": "4.1.1-3noble.20260911.140407",
+      "architecture": "amd64",
+      "sha256": "e0d076f78ae39203b39c6146434546162de33e9f6dace8ef6bc9189bb1546eff"
+    }
+  ]
+}

@@ -80,27 +80,55 @@ Mỗi environment record cần: OS/architecture, CPU/RAM/GPU/driver, image diges
 - Tách debug GUI và headless benchmark; pin physics step, sensor rates, noise settings, seed và RTF policy.
 - Một seed không bảo đảm bitwise determinism khi scheduler/GPU thay đổi; giữ repeated trials và environment identity.
 
-### Recipe smoke ứng viên và kết quả đã quan sát
+### Recipe smoke dẫn xuất và kết quả đã quan sát
 
-Recipe dưới từ nhà cung cấp cho X500 mặc định. Lần thử thực tế đã chọn `PX4_SIM_MODEL=gz_x500_depth`, domain 83/namespace `/drone_cv_g1`, network none và software rendering; xem [environment evidence](environments/g1-observation.json). PX4/Agent/depth Gazebo/DDS chạy, nhưng image thiếu ROS camera bridge; đây chưa là G1 acceptance.
+Image nền thiếu ROS camera bridge; [probe cũ](environments/g1-observation.json) là lịch sử, không phải blocker hiện tại. Sau phê duyệt, [image dẫn xuất](../docker/g1/Dockerfile) đã qua [smoke không arm](environments/g1-bridge-observation.json). Lock giữ base digest và 13 archive mới; không nâng cấp package nền, không cài lên host.
 
-Chỉ chạy khi có quyền mở engine/tải image, không arm. Chạy trong terminal riêng:
+Chạy từ repo root trong PowerShell hoặc POSIX shell, chỉ khi đã có quyền dùng engine/download. Với Git Bash trên Windows, đặt `MSYS_NO_PATHCONV=1` trước các lệnh `docker exec` có đường dẫn Linux. Tên container đã tồn tại làm `docker run` thất bại; không tự xoá container lạ.
 
 ```sh
-docker run --rm -it --name drone-cv-smoke px4io/px4-sitl-gazebo-ros2@sha256:2c01c89215a5f541d3a819c1bd2115ff27c9423679f3738dbb4096271d77084b MicroXRCEAgent udp4 -p 8888
+docker build --platform linux/amd64 --tag drone-cv/g1-bridge:local --file docker/g1/Dockerfile docker/g1
+docker run -d --name drone-cv-g1 --label drone-cv.owner=manual-g1 --network none --cpus 4 --memory 6g --shm-size 256m --cap-drop ALL --security-opt no-new-privileges -e ROS_DOMAIN_ID=83 -e ROS_LOCALHOST_ONLY=1 -e GZ_PARTITION=drone_cv_g1_manual -e HEADLESS=1 -e PX4_SIM_MODEL=gz_x500_depth -e PX4_UXRCE_DDS_NS=drone_cv_g1 -e LIBGL_ALWAYS_SOFTWARE=1 drone-cv/g1-bridge:local sleep infinity
+```
+
+Chạy bốn process sau ở bốn terminal riêng trong cùng container, theo thứ tự Agent, PX4, bridge, static TF. Chờ PX4 báo `Startup script returned successfully` trước probe:
+
+```sh
+docker exec -i drone-cv-g1 /usr/local/bin/ros2-entrypoint.sh MicroXRCEAgent udp4 -p 8888 -v 4
 ```
 
 ```sh
-docker exec -it drone-cv-smoke /usr/local/bin/ros2-entrypoint.sh env HEADLESS=1 px4-gazebo
+docker exec -i drone-cv-g1 /usr/local/bin/ros2-entrypoint.sh px4-gazebo
 ```
 
 ```sh
-docker exec -it drone-cv-smoke /usr/local/bin/ros2-entrypoint.sh ros2 topic list
+docker exec -i drone-cv-g1 /usr/local/bin/ros2-entrypoint.sh ros2 run ros_gz_bridge parameter_bridge --ros-args -r __node:=drone_cv_g1_camera_bridge -p config_file:=/opt/drone_cv/g1/bridge.yaml -p use_sim_time:=true -p override_timestamps_with_wall_time:=false
 ```
 
-Các lệnh recipe chọn X500 mặc định; lần probe đã xác minh env `PX4_SIM_MODEL=gz_x500_depth` qua wrapper và startup `SYS_AUTOSTART=4002`, không đoán flags. Với source build, lệnh riêng là `make px4_sitl gz_x500_depth` trong checkout PX4 đã pin.
+```sh
+docker exec -i drone-cv-g1 /usr/local/bin/ros2-entrypoint.sh ros2 run tf2_ros static_transform_publisher --x 0.13233 --y 0 --z 0.26078 --qx -0.5 --qy 0.5 --qz -0.5 --qw 0.5 --frame-id drone_cv_g1/base_link --child-frame-id drone_cv_g1/camera_optical
+```
 
-Chỉ thấy topic names chưa đủ qua G1. Kiểm tra rates/encoding/clock/QoS, pose và camera frames, firmware/messages, rồi mới chạy mission. Không disable preflight checks để lấy video demo.
+Ở terminal khác, copy hai observer chỉ đọc và chạy cửa sổ hữu hạn:
+
+```sh
+docker cp scripts/g1_probe.py drone-cv-g1:/tmp/g1_probe.py
+docker cp scripts/g1_ros_observer.py drone-cv-g1:/tmp/g1_ros_observer.py
+docker exec -i drone-cv-g1 /usr/local/bin/ros2-entrypoint.sh python3 /tmp/g1_probe.py --ros
+```
+
+`--ros` yêu cầu `UXRCE_DDS_SYNCT=0` thực tế, Image/CameraInfo cùng stamp, encoding, intrinsics, optical TF, QoS, clock và odometry cùng sim-time. Không có control publisher. Exit 2 giữ observation thiếu; không bỏ qua để lấy video. Static TF là quan hệ bất biến, không phải pose động tại capture time.
+
+Hai lỗi môi trường đã sửa: `GZ_CONFIG_PATH=/usr/share/gz` giữ native `gz sim` khi ROS vendor hooks có mặt; `PX4_PARAM_UXRCE_DDS_SYNCT=0` đặt Gazebo làm nguồn thời gian duy nhất trước khi DDS client khởi động. [PX4 yêu cầu chế độ này khi ROS dùng Gazebo clock](https://docs.px4.io/main/en/ros2/user_guide.html#ros-gazebo-and-px4-time-synchronization), thay vì đồng bộ OS time ở RTF khác 1. Failed windows trước thay đổi vẫn có trong evidence.
+
+Sau khi thu output, chỉ dừng/xoá container do chính run này tạo:
+
+```sh
+docker stop --timeout 10 drone-cv-g1
+docker rm drone-cv-g1
+```
+
+Name/partition trong recipe là ví dụ cho một run; evidence ghi identity thực tế của run đã chạy. Không hứa bitwise-identical rebuild hoặc download còn tồn tại mãi: archive thiếu/lệch phải fail closed. Software rendering đạt khoảng 4.5 Hz camera wall-time trong cửa sổ cuối, chưa đạt flight performance/calibration. `+Inf` sensor chưa được chứng nhận free.
 
 ## 6. Contract runner/evaluator cần triển khai
 
@@ -186,4 +214,4 @@ Report tối thiểu: numerator/denominator, Wilson CI, outcome counts, missing/
 
 `python -m pytest -q` chạy regression hành vi; `python scripts/g0_demo.py --output artifacts/<new-name>` chạy API thật và xuất SVG/NPZ/summary. Demo chỉ dùng dữ liệu tổng hợp; xem README về sampling support, independent local-clear certificate và giới hạn braking.
 
-`g1-environment` vẫn blocked sau unarmed smoke thật: pinned image không có `ros_gz_bridge`, camera/clock mới quan sát ở Gazebo Transport, chưa có ROS frame/time alignment. Container thử đã cleanup; không cài package ngoài quyền được cấp. Sau khi bridge prerequisite được giải quyết và gate đạt, mới mở oracle/supervisor, bootstrap flight và calibration theo native roadmap.
+`g1-environment` đã qua smoke không arm trên image dẫn xuất đã pin. Ready tiếp theo là oracle/logger và supervisor tối thiểu; bootstrap flight/calibration vẫn pending và không được suy ra quyền arm từ roadmap. Container thử đã cleanup, Docker Desktop/images được giữ; không cài package lên host hoặc đổi driver/WSL.

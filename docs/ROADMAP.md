@@ -4,7 +4,7 @@
 
 Bản đọc độc lập OMP, sinh từ `.omp/roadmap/roadmap.json`; không chứa workspace binding hoặc receipts.
 
-Revision: 29. Một task done không chứng nhận các gate sau đã đạt.
+Revision: 33. Một task done không chứng nhận các gate sau đã đạt.
 
 ## Chuẩn bị
 
@@ -67,13 +67,11 @@ Status: **done**. Dependencies: `g0-safety`.
 
 ### `g1-environment` — Chọn và lock môi trường Linux PX4/ROS/Gazebo
 
-Status: **blocked**. Dependencies: `prep-roadmap`.
+Status: **done**. Dependencies: `prep-roadmap`.
 
 - Người dùng cho phép mọi install/download cần thiết; thiếu prerequisite thì block rõ.
 - Image/packages/firmware/messages/Agent/assets được pin sau smoke, không suy luận từ tên image.
 - X500 depth, camera encoding/CameraInfo, odom, clock/QoS/namespace được quan sát thật, chưa arm.
-
-Blocker: Approved Docker/image work succeeded: Docker Linux engine29.7.2, pinned amd64 image, PX4 1.18.0~beta1 (61907962c9220437ec01a98fa26bfbf5cbb254b5), Gazebo8.15.0, Agent running, unarmed gz_x500_depth, real R_FLOAT32 640x480 depth/CameraInfo/Gazebo clock and advancing namespaced DDS odometry observed. New blocker: image lacks ros_gz_bridge (package/executable absent), no ROS camera topics or ROS /clock; ROS camera QoS/frame/time alignment not verified. Probe exits2 partial, does not certify G1. No extra package install authorized. Need approval for a repo-owned derived image adding pinned ros-jazzy-ros-gz-bridge and appropriate version lock, or an existing approved bridge environment. No arming or control publishing performed.
 
 ### `g1-oracle` — Oracle contact/clearance và logger trước chuyến bay
 

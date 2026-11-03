@@ -48,7 +48,7 @@ Image `px4io/px4-sitl-gazebo-ros2` tồn tại và nhà cung cấp mô tả có 
 px4io/px4-sitl-gazebo-ros2@sha256:2c01c89215a5f541d3a819c1bd2115ff27c9423679f3738dbb4096271d77084b
 ```
 
-Image đã pull đúng digest và chạy unarmed X500 depth trên Docker Linux/amd64. [Probe G1](environments/g1-observation.json) xác nhận PX4 package `1.18.0~beta1`, Gazebo8.15.0, camera Gazebo và DDS odometry, nhưng **thiếu ros_gz_bridge** nên chưa đạt ROS camera/clock/frame contract. Không gọi đây là full G1 environment lock. Nếu sửa DDS topics/firmware phải build messages tương ứng; không mặc định nội dung image đủ mọi bridge.
+Image nền đã chạy unarmed X500 depth nhưng thiếu ROS bridge; giữ [probe lịch sử](environments/g1-observation.json). Sau phê duyệt bổ sung bridge, [image dẫn xuất](../docker/g1/Dockerfile) đã qua [environment smoke](environments/g1-bridge-observation.json): ROS Image/CameraInfo, optical TF và Gazebo `/clock` khớp raw PX4 odometry khi `UXRCE_DDS_SYNCT=0`. Dependency lock pin 13 archive và không upgrade nền; firmware/messages/assets/Agent được ghi nhận thực tế. Đây chỉ là `g1-environment`, chưa phải flight/calibration G1. Nếu sửa DDS topics/firmware phải build messages tương ứng.
 
 ## 3. Pipeline và ranh giới an toàn
 
@@ -183,7 +183,7 @@ Thứ tự chi tiết nằm trong native roadmap: G1 environment không arm, ora
 ## 6. Việc làm ngay
 
 1. Chạy core G0 bằng `python -m pytest -q` và `python scripts/g0_demo.py --output artifacts/<new-name>`; không dùng fixture synthetic để chứng nhận sensor/flight stack.
-2. Xác định máy Linux/GPU và smoke image ứng viên để quyết định lock môi trường G1. Không tự cài Docker/WSL/dual boot.
+2. Environment Linux/SITL không arm đã smoke và lock; giữ nguyên clock policy, assets và dependency lock. Không tự cài Docker/WSL/dual boot hoặc suy ra performance từ smoke software rendering.
 3. Triển khai oracle/logger và supervisor tối thiểu trước G1 flight; chỉ sau calibration mới mở perception wall-stop và navigation. Mọi numerical bound chưa đo vẫn là pending.
 
 Tài liệu và nguồn kỹ thuật: [REVIEW.md](REVIEW.md). Quy trình thao tác, evidence và phạm vi tự động hoá: [HARNESS.md](HARNESS.md).
