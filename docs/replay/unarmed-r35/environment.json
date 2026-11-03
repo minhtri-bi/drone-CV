@@ -1,0 +1,71 @@
+{
+  "scope": "Unarmed stationary sensor integration; no navigation or flight acceptance.",
+  "image": {
+    "tag": "drone-cv/g1-bridge:local",
+    "id": "sha256:061a39905d2d84d40859bb46b67048241b6dacf2ed3983889da7f5fd3e718285",
+    "repo_digests": [
+      "drone-cv/g1-bridge@sha256:061a39905d2d84d40859bb46b67048241b6dacf2ed3983889da7f5fd3e718285"
+    ]
+  },
+  "base_image_digest": "sha256:2c01c89215a5f541d3a819c1bd2115ff27c9423679f3738dbb4096271d77084b",
+  "px4_firmware": "61907962c9220437ec01a98fa26bfbf5cbb254b5",
+  "gazebo": "8.15.0",
+  "ros_distribution": "jazzy",
+  "rosbag2_version": "0.26.11",
+  "storage_id": "sqlite3",
+  "host_plotting_matplotlib": "3.9.0",
+  "resources": {
+    "network": "none",
+    "nano_cpus": 4000000000,
+    "memory_bytes": 6442450944,
+    "shm_bytes": 268435456,
+    "cap_drop": [
+      "ALL"
+    ],
+    "security_opt": [
+      "no-new-privileges"
+    ],
+    "host_mount_count": 0
+  },
+  "runtime_policy": {
+    "uxrce_dds_synct": 0,
+    "ros_domain_id": 84,
+    "ros_localhost_only": true,
+    "software_rendering": true,
+    "arming_commands_sent": 0,
+    "control_publishers_created": 0
+  },
+  "fixture_world_sha256": "42db61b68dc49a95c15153e7ff538122b67f457389e6b7888baf1449c9e3868d",
+  "fixture_sha256": "c1c0abc87013463f80849b72d130da547ac1c438a4d16e962d760a4cef0d5c15",
+  "owned_cleanup": {
+    "container": "drone-cv-replay-r35",
+    "stopped_and_removed": true,
+    "supervised_client_exit_137": "Expected when the owned container was stopped; recording and replay had already completed.",
+    "docker_desktop_and_images_retained": true
+  },
+  "failed_attempts": [
+    {
+      "recording": "recording-01-incomplete.tar.gz",
+      "reason": "Jazzy TopicMetadata requires an explicit id; recorder failed before frame capture."
+    },
+    {
+      "recording": "recording-02-failed-geometry.tar.gz",
+      "report": "failed-geometry-report.json",
+      "reason": "Legacy model-origin camera TF and a grader that incorrectly treated an interior ground ROI as the physical floor edge. Preserved, not reclassified as a pass."
+    }
+  ],
+  "final_recording": "recording-03.tar.gz",
+  "final_replay": "report.json",
+  "criteria_changes": "None: 20 frames, 95% pair/support, 50 ms pose gap, 3 px erosion, p95 <= 0.10 m and maximum <= 0.20 m. Physical surface bounds and body-frame origin were corrected from SDF before fresh recording and grading.",
+  "source_base_commit": "258aca2a7a4b4f4ddb91964397f692362f0a1a41",
+  "source_sha256": {
+    "scripts/g1_ros_observer.py": "b3eac14bb65915fe45bac0580ce5b1b7f5eb947c408819ee7409ebbd65bfa5c3",
+    "spike/freespace/camera.py": "eba9ab2a2552a3d1ba858672bc97dfe0b8989f4be936ed5aefc9bd54cf67377e",
+    "spike/freespace/capture_pose.py": "c6280ef80f572fe5f624c8693f57b1f63302a7a14f1929412ea9ef78fcd89384",
+    "spike/freespace/record_sensor_bag.py": "dd4e2b4cf64fb8491e1c5165ad2fc82f171c641df35646f607289c05f5d5261f",
+    "spike/freespace/replay_fixture.py": "ecbea7c627aa6a9d02841a6bc3eafced37a64a52a3d77720f0fc6d7e39574cb4",
+    "spike/freespace/replay_fixture.json": "c1c0abc87013463f80849b72d130da547ac1c438a4d16e962d760a4cef0d5c15",
+    "spike/freespace/replay_bag.py": "775a4bb2c0b8466681a956abf7fd1e7b8886b3f09be043536f91ba5fa066223e",
+    "spike/freespace/plot_bag_replay.py": "e7752e2fef25b38e3ff5d745ac97c18bec8a22e21adb152ba5c35d04a25c1293"
+  }
+}

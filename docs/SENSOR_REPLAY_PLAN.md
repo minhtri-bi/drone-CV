@@ -1,6 +1,6 @@
 # Plan: replay real Gazebo depth through the offline freespace spike
 
-**Status:** Draft for user review. No implementation or simulator execution authorized by this document alone.
+**Status:** Implemented and exercised after user approval. See [observed results and reproducible artifacts](SENSOR_REPLAY_RESULTS.md); current task status remains in the native roadmap.
 
 ## Goal
 
@@ -12,7 +12,7 @@ Record an unarmed Gazebo sensor sequence, replay it through the perception spike
 
 - PR #5 established a pinned X500 depth/ROS camera/clock environment; PR #7 integrated the corrected offline freespace spike.
 - ROS depth is `32FC1`, 640×480, with the pinned optical mount and CameraInfo. Gazebo `/clock` is the common time source; `UXRCE_DDS_SYNCT=0`.
-- The spike's capture pose currently represents yaw-only level flight. Real capture orientation must not silently discard roll/pitch.
+- At planning time, the spike's capture pose represented yaw-only level flight. The implemented boundary now preserves roll/pitch; this does not create a tilted-flight collision certificate.
 - The spike has simulation-time TTL and sampled geometric gating, not a live wall-progress watchdog or continuous-volume safety proof.
 - Native roadmap flight/calibration and G2 acceptance remain pending. This experiment will not mark those tasks complete.
 
@@ -24,14 +24,14 @@ Record an unarmed Gazebo sensor sequence, replay it through the perception spike
 
 ## Roadmap alignment and branch
 
-- Native task: `prep-sensor-replay`; status **pending**, added at roadmap revision 34.
+- Native task: `prep-sensor-replay`, added at roadmap revision 34. Its implementation and evidence are limited to this unarmed preparation branch.
 - Required completed prerequisites: `g1-environment` and `g0-demo`.
 - This is an unarmed preparation branch, not an early start or completion of `g2-adapter` or `g2-replay`.
 - No existing dependency is removed or relaxed. The dashed edge below means optional artifact reuse after revalidation, not a new mandatory dependency or gate waiver.
 
 ```mermaid
 flowchart TD
-    E["g1-environment — done"] --> U["prep-sensor-replay — pending<br/>Unarmed recording + offline geometry"]
+    E["g1-environment — done"] --> U["prep-sensor-replay<br/>Stationary integration exercised"]
     D["g0-demo — done"] --> U
     E --> O["g1-oracle — pending"]
     E --> S["g1-supervisor — pending"]
@@ -97,20 +97,20 @@ Planning and implementation are separate: publishing this draft and adding the p
 | A5 | The stationary real-data query exposes its blind zone instead of obtaining a fabricated ALLOWED result. | Gating summary and sample-status visualization; a blocked query is expected here. |
 | A6 | Original synthetic liveness and the three gating fixes remain intact; replay never creates a control publisher. | Existing regressions, changed-path tests and inspection of runtime interfaces. |
 
-### Proposed numeric checks for review
+### Approved numeric checks
 
-These are draft acquisition/geometry checks, **not measured flight-safety bounds**:
+These acquisition/geometry checks are **not measured flight-safety bounds**:
 
 - Evaluate at least 20 accepted frames after a declared 2-second wall-time warmup. At least 95% of post-warmup depth frames must have matching CameraInfo and valid bracketing odometry; report every exclusion.
 - Require adjacent odometry samples bracketing capture time to be no more than 50 ms apart in simulation time. Larger gaps are rejected, not extrapolated.
 - Use front-facing, off-axis and horizontal target surfaces within 2–5 m optical Z. Freeze target regions from declared geometry, with a 3-pixel edge exclusion, before inspecting depth errors.
-- For each target and evaluated frame, require at least 95% finite valid support within its declared region. Proposed point-to-surface error limits: p95 <= 0.10 m and maximum <= 0.20 m. Report every target/frame, missing support and outlier; pooled averages cannot hide a failure.
+- For each target and evaluated frame, require at least 95% finite valid support within its declared region. Point-to-surface error limits: p95 <= 0.10 m and maximum <= 0.20 m. Report every target/frame, missing support and outlier; pooled averages cannot hide a failure.
 
 The error limits are initial integration checks for pixel discretization plus localization/alignment error, not proof of calibrated extrinsics or safe clearance. Review them against fixture geometry, pixel scale and independently established pose uncertainty before grading. If they are not defensible, revise this plan explicitly rather than relaxing them after a failed overlay. Configured sensor far clip is not itself a trusted detection-range bound.
 
-## Proposed code scope
+## Implemented code scope
 
-These are implementation locations to confirm, not commands or files claimed to exist:
+The [results](SENSOR_REPLAY_RESULTS.md) identify the actual recorder, pure capture-pose boundary, grader, bag replay and plotting entry points:
 
 - Reuse `docker/g1/bridge.yaml` and the current environment recipe; add only fixture/recording configuration actually needed.
 - Add a bag-to-spike adapter/replay entry point under `spike/freespace/`, keeping ROS imports outside the NumPy-only core.
@@ -122,6 +122,6 @@ These are implementation locations to confirm, not commands or files claimed to 
 
 Deliver code, the small fixture, raw bag provenance, replay outputs/figures, exercised checks and remaining blockers. Keep authored artifacts in English and user discussion in Vietnamese.
 
-The roadmap now contains the explicit pending preparation branch, and the repository agent rules require plan-to-roadmap alignment. No live bag has been captured, no runtime implementation has been changed and no task has been completed by this planning update. This draft may be published for review; runtime implementation waits for user review.
+After explicit user approval, the implementation captured a fresh unarmed bag and exercised the frozen numeric criteria. The results preserve failed attempts and explain SDF-derived body-origin and physical-surface grader corrections. No G1 flight/calibration or G2 task was completed by this preparation slice, and no dependency was relaxed.
 
 After this step, decide separately whether to collect sensor history with a camera-only rig or proceed to the G1 oracle/supervisor work. **No positive real-data navigation handoff is claimed until a valid moving observation history has actually been collected and tested.**

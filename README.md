@@ -6,6 +6,8 @@ Computer-vision obstacle avoidance for drones, **simulation first**, using PX4 S
 
 The repository has a **working offline G0 implementation**: metric depth/validity, capture-time projection, frame/quaternion transforms, a conservative 72×3 histogram, braking and command freshness. **The G1 environment passed an unarmed smoke run** with ROS camera/clock/TF and PX4 DDS on a pinned derived image. Pytest and a CI workflow are available; the oracle, supervisor, flight runtime and SITL evaluator are not implemented.
 
+The [unarmed sensor replay](docs/SENSOR_REPLAY_RESULTS.md) also passed stationary integration: 152 real Gazebo frames paired at capture time, independent target checks and six injected fault variants. Its movement query remains STOP; there is no real-data navigation result.
+
 Core target: reach the goal in ≥45/50 frozen navigation worlds, with zero unsafe events and navigation clearance ≥0.5 m under the phase contract.
 This target has not been achieved; it is not a benchmark result.
 
@@ -19,6 +21,7 @@ This target has not been achieved; it is not a benchmark result.
 6. [OMP skills and roadmap](docs/OMP.md): 10 trigger-loaded skills, without installing another bundle.
 7. [Repository agent instructions](.omp/AGENTS.md): invariants and automation scope.
 8. [Offline seen-free spike](spike/freespace/README.md): synthetic perception liveness, near-hazard retention and sampled-coverage limits; not flight acceptance.
+9. [Unarmed sensor replay results](docs/SENSOR_REPLAY_RESULTS.md): immutable bags, capture-time adapter, independent geometry, fault outcomes and replay commands.
 
 [Original PDF, preserved byte for byte](docs/source/drone-obstacle-avoidance-plan.pdf).
 The plan records its source, checksum and relationship to the revised documents.
@@ -30,7 +33,7 @@ Use `/roadmap status` or `/roadmap view` in OMP; the offline canvas is generated
 Current status and acceptance criteria live in JSON; the [English portable view](docs/ROADMAP.md) uses the same state with a hash-bound [display translation](docs/roadmap.en.json). Do not edit generated Markdown manually.
 This roadmap covers the simulation scope; it is neither an estimate of effort percentages nor flight certification.
 
-The [unarmed sensor-recording/replay plan](docs/SENSOR_REPLAY_PLAN.md) is a pending preparation branch after the completed environment and G0 demo, not permission to start flight or claim G2 acceptance.
+The [unarmed sensor-recording/replay plan](docs/SENSOR_REPLAY_PLAN.md) is an implemented preparation branch after the environment and G0 demo, not permission to start flight or claim G2 acceptance.
 
 ## Run G0 now
 
@@ -70,7 +73,7 @@ These are **synthetic fixtures**, not flight data or a real-obstacle avoidance b
 After Docker/image and bridge approval, the [derived image](docker/g1/Dockerfile) was built from a fixed digest. The [dependency lock](docker/g1/packages.lock.json) pins versions and SHA-256 hashes for 13 added packages; the installer does not upgrade base packages and rejects archives that differ from the lock.
 
 - PX4 package `1.18.0~beta1-noble`, firmware `61907962c9220437ec01a98fa26bfbf5cbb254b5`; Gazebo Sim `8.15.0`; ROS 2 Jazzy; bridge `1.0.24-1noble.20260920.234644`.
-- Actual X500 simulated depth, ROS `32FC1` at 640×480, 35 Image/CameraInfo pairs with matching stamps in an 8-second window; optical TF matches the SDF.
+- Historical environment check: X500 simulated depth, ROS `32FC1` at 640×480, and 35 Image/CameraInfo pairs with matching stamps in an 8-second window. Its TF used the outer-model origin; the [unarmed replay](docs/SENSOR_REPLAY_RESULTS.md#failures-preserved-not-relabeled) subsequently corrected the body-relative z offset by 0.24 m. The old observation remains preserved, not a body-frame calibration certificate.
 - Gazebo `/clock` is the only clock: `UXRCE_DDS_SYNCT=0`, observer/bridge use `use_sim_time=true`, and wall time does not replace sensor stamps. Raw PX4 odometry falls within the same sim-time window and increases strictly.
 - DDS status remained **Disarmed**; no control publisher was created and no arm command was sent. The container used network none, 4 CPUs/6 GiB, software rendering and no host mounts.
 - The camera reached approximately 4.5 Hz in wall time during this window, not a real 30 Hz rate or performance/calibration acceptance.
@@ -80,7 +83,7 @@ After Docker/image and bridge approval, the [derived image](docker/g1/Dockerfile
 `scripts/g1_probe.py --ros` and `scripts/g1_ros_observer.py` are read-only observers inside the container running Agent/PX4/Gazebo/bridge/TF; they exit with code 2 when observations are missing. See the [executed recipe and its limits](docs/HARNESS.md#derived-smoke-recipe-and-observed-results).
 
 Run-owned containers/processes were stopped and removed; Docker Desktop and the images were retained. No host packages, drivers, WSL configuration or permissions were changed.
-Only `g1-environment` passed: oracle/logger and supervisor are still required before bootstrap flight; calibration remains pending. This does not certify `+Inf` as free space, capture-time pose interpolation or successful obstacle avoidance.
+The G1 flight gate remains pending: oracle/logger and supervisor are required before bootstrap flight, and calibration remains pending. The separate unarmed replay validates capture-time interpolation and stationary geometry; neither experiment certifies `+Inf` as free space or successful obstacle avoidance.
 
 ## Principles
 

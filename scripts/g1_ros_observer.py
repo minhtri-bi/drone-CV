@@ -14,7 +14,7 @@ BODY = "drone_cv_g1/base_link"
 
 
 def sensor_translation() -> list[float]:
-    """Derive this pinned model's zero-RPY sensor origin, not a guessed offset."""
+    """Derive sensor origin relative to base_link, including the merged base pose."""
     base = Path("/opt/px4-gazebo/share/gz/models")
     model = ET.parse(base/"x500_depth/model.sdf")
     include = next(entry for entry in model.findall(".//include")
@@ -23,9 +23,10 @@ def sensor_translation() -> list[float]:
     camera = ET.parse(base/"OakD-Lite/model.sdf")
     sensor = camera.find(".//sensor[@name='StereoOV7251']")
     offset = [float(v) for v in sensor.findtext("pose").split()]
-    if mount[3:] != [0, 0, 0] or offset[3:] != [0, 0, 0]:
+    body = [float(v) for v in ET.parse(base/"x500_base/model.sdf").findtext("model/pose").split()]
+    if any(value[3:] != [0, 0, 0] for value in (mount, offset, body)):
         raise ValueError("model rotation changed; zero-RPY extrinsics no longer apply")
-    return [a+b for a, b in zip(mount[:3], offset[:3])]
+    return [a+b-c for a, b, c in zip(mount[:3], offset[:3], body[:3])]
 
 
 def image_record(message) -> dict:

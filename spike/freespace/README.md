@@ -2,9 +2,9 @@
 
 A Python/NumPy experiment with posed synthetic depth frames. It demonstrates a short move that is allowed by accumulated perception evidence, rather than a gate that always stops.
 
-**Experimental only:** this is outside the `drone_cv` package. It is not a planner, ROS adapter, supervisor, flight controller, or continuous-volume safety certificate. G1 flight and G2 acceptance remain pending.
+**Experimental only:** this is outside the `drone_cv` package. It is not a planner, live ROS perception node, supervisor, flight controller, or continuous-volume safety certificate. G1 flight and G2 acceptance remain pending.
 
-## Run
+## Run the synthetic spike
 
 Use the project's existing Python 3.12, NumPy 2.0.0 and pytest 8.2.2 environment. No ROS, PX4, Docker or GPU is required.
 
@@ -35,13 +35,25 @@ The experiment and plot scripts write inside the selected directory and can over
 
 | File | Role |
 | --- | --- |
-| `camera.py` | Pinhole intrinsics, optical/body/world transforms, level-flight poses and the X500-like camera mount. |
+| `camera.py` | Pinhole transforms and capture poses with optional full orientation. The historical synthetic mount is not the corrected real bag's body-relative mount. |
 | `scene.py` | Synthetic box/cylinder/ground ray caster and a separate geometric collision grader. |
 | `capture.py` | Posed frame histories, optional depth noise and odometry pose perturbations. |
 | `evidence.py` | Retained depth evidence, sampled swept-envelope queries and decisions. Does not import scene ground truth. |
 | `experiments.py` | Seeded obstacle sweeps and takeoff/blind-zone strategies. |
 | `plots.py` | English-language scenario and blind-zone figures. |
 | `tests/test_freespace.py` | Geometry, liveness, obstacle, freshness and gating regressions. |
+| `capture_pose.py` | Pure PX4 capture-time interpolation, frame conversion, depth decoding and recorded intrinsics. |
+| `record_sensor_bag.py` | Bounded unarmed ROS recording; no control publisher. |
+| `replay_fixture.py`, `replay_fixture.json` | Frozen fixture and independent target grader; never imported by the evidence gate. |
+| `replay_bag.py` | Actual rosbag CDR decoding, capture-time pairing, geometry and six explicit fault variants. |
+| `plot_bag_replay.py` | Reproducible real point-cloud/target and stationary-query figures. |
+
+## Real stationary Gazebo replay
+
+The [observed experiment and commands](../../docs/SENSOR_REPLAY_RESULTS.md) provide immutable raw bags and per-target/frame results. Actual bag decoding uses the pinned ROS image; pure tests and synthetic experiments still do not need ROS. The accepted bag paired 152 frames and stayed Disarmed. Its query returns STOP for near-floor returns with a remaining blind zone, not ALLOWED navigation.
+
+The real path derives a 0.02078 m body-relative camera z from the merged SDF, uses `no_return_certified=False`, and preserves full capture orientation. The old synthetic fixtures retain their declared 0.26078 m model-like mount so their results are not silently recast as calibrated body-frame data.
+
 
 ## Evidence and decisions
 

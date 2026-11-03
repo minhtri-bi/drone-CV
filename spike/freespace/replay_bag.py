@@ -1,0 +1,242 @@
+"""Replay a recorded unarmed bag. ROS imports stay inside the bag decoder."""
+
+import argparse
+from collections import Counter, defaultdict
+import hashlib
+import json
+from pathlib import Path
+
+import numpy as np
+
+from camera import Mount
+from capture_pose import (OdomSample, camera_from_info, decode_depth, interpolate_pose,
+                          quaternion_rotation)
+from evidence import EvidenceStore, Frame, SensorProfile, decide, swept_envelope
+from replay_fixture import aligned_camera, grade_frame
+
+
+def stamp_ns(stamp):
+    return int(stamp.sec)*1_000_000_000+int(stamp.nanosec)
+
+
+def read_bag(path):
+    import rosbag2_py
+    from rclpy.serialization import deserialize_message
+    from rosidl_runtime_py.utilities import get_message
+    reader = rosbag2_py.SequentialReader()
+    reader.open(rosbag2_py.StorageOptions(uri=str(path), storage_id="sqlite3"),
+                rosbag2_py.ConverterOptions("cdr", "cdr"))
+    types = {item.name: get_message(item.type) for item in reader.get_all_topics_and_types()}
+    records = []
+    while reader.has_next():
+        topic, payload, recorded_ns = reader.read_next()
+        records.append((topic, deserialize_message(payload, types[topic]), recorded_ns))
+    return records
+
+
+def validate_tf(message, expected_translation):
+    for transform in message.transforms:
+        if (transform.header.frame_id == "drone_cv_g1/base_link"
+                and transform.child_frame_id == "drone_cv_g1/camera_optical"):
+            p, q = transform.transform.translation, transform.transform.rotation
+            mount = Mount((float(p.x), float(p.y), float(p.z)))
+            actual = quaternion_rotation([q.w, q.x, q.y, q.z])
+            if (not np.allclose(mount.translation_flu, expected_translation, atol=1e-8, rtol=0)
+                    or not np.allclose(actual, mount.body_from_optical(), atol=1e-8, rtol=0)):
+                raise ValueError("STATIC_TF_CHANGED")
+            return mount
+    raise ValueError("OPTICAL_TF_MISSING")
+
+
+def collect(records, fixture, fault=None):
+    """Decode events into independent epochs; never interpolate or fuse across reset."""
+    epochs = defaultdict(lambda: {"odom": [], "infos": {}, "images": [], "clocks": []})
+    rejected = Counter()
+    epoch, last_clock, reset, last_odom = 0, None, None, None
+    mount, calibration = None, None
+    last_image = None
+    odom_seen, image_seen = 0, 0
+    odom_total = sum(topic.endswith("vehicle_odometry") for topic, _, _ in records)
+    for topic, message, recorded_ns in records:
+        if topic == "/tf_static" and fault != "missing_tf":
+            candidate = validate_tf(message, fixture["camera_translation_flu"])
+            if mount is not None and candidate != mount:
+                epoch += 1
+            mount = candidate
+        elif topic == "/clock":
+            value = stamp_ns(message.clock)
+            if last_clock is not None and value < last_clock:
+                epoch, last_odom, reset, last_image = epoch+1, None, None, None
+            last_clock = value
+            epochs[epoch]["clocks"].append(value)
+        elif topic.endswith("vehicle_odometry"):
+            odom_seen += 1
+            if fault == "pose_gap" and odom_seen not in (1, odom_total):
+                continue
+            counter = int(message.reset_counter)
+            if fault == "reset_counter" and odom_seen >= odom_total//2:
+                counter = (counter+1) % 256
+            if reset is not None and counter != reset:
+                epoch, last_odom, last_image = epoch+1, None, None
+            reset = counter
+            try:
+                sample = OdomSample(int(message.timestamp_sample)*1000, tuple(message.position),
+                                    tuple(message.q), counter, int(message.pose_frame))
+                if last_odom is not None and sample.timestamp_ns <= last_odom:
+                    raise ValueError("NONMONOTONIC_ODOMETRY")
+                epochs[epoch]["odom"].append(sample)
+                last_odom = sample.timestamp_ns
+            except ValueError as error:
+                epoch, last_odom, reset, last_image = epoch+1, None, None, None
+                rejected[str(error)] += 1
+        elif topic.endswith("camera_info") and fault != "missing_info":
+            signature = (message.width, message.height, tuple(message.k), tuple(message.d),
+                         message.header.frame_id, message.distortion_model,
+                         message.binning_x, message.binning_y, message.roi.x_offset,
+                         message.roi.y_offset, message.roi.width, message.roi.height)
+            if calibration is not None and signature != calibration:
+                epoch, last_odom, last_image = epoch+1, None, None
+            calibration = signature
+            epochs[epoch]["infos"][stamp_ns(message.header.stamp)] = message
+        elif topic.endswith("image_raw"):
+            image_seen += 1
+            value = stamp_ns(message.header.stamp)
+            if fault == "future_stamps":
+                value += 1_000_000_000_000
+            elif fault == "backward_stamps":
+                value = 1 if image_seen > 1 else value
+            if last_image is not None and value <= last_image:
+                epoch, last_odom, reset = epoch+1, None, None
+            last_image = value
+            epochs[epoch]["images"].append((value, message, recorded_ns))
+    return epochs, mount, rejected
+
+
+def evaluate(records, manifest, fixture, output=None, fault=None):
+    epochs, mount, rejected = collect(records, fixture, fault)
+    reports, gates = [], []
+    accepted, considered, previous_stamp = 0, 0, None
+    preview = None
+    warmup = manifest["warmup_end_sim_ns"]
+    for epoch_id, group in sorted(epochs.items()):
+        store, last_pose = None, None
+        previous_stamp = None
+        max_clock = max(group["clocks"]) if group["clocks"] else None
+        min_clock = min(group["clocks"]) if group["clocks"] else None
+        for capture_ns, image, _ in group["images"]:
+            if capture_ns < warmup and fault != "backward_stamps":
+                continue
+            considered += 1
+            try:
+                if mount is None:
+                    raise ValueError("OPTICAL_TF_MISSING")
+                if previous_stamp is not None and capture_ns <= previous_stamp:
+                    raise ValueError("NONMONOTONIC_IMAGE")
+                previous_stamp = capture_ns
+                if max_clock is None or not min_clock <= capture_ns <= max_clock:
+                    raise ValueError("CAPTURE_OUTSIDE_CLOCK_EPOCH")
+                info = group["infos"].get(capture_ns)
+                if info is None:
+                    raise ValueError("CAMERA_INFO_MISSING")
+                camera = camera_from_info(info, mount)
+                depth = decode_depth(image)
+                if depth.shape != (camera.intrinsics.height, camera.intrinsics.width):
+                    raise ValueError("DEPTH_CALIBRATION_MISMATCH")
+                pose = interpolate_pose(group["odom"], capture_ns, fixture["max_pose_gap_ns"])
+                if store is None:
+                    store = EvidenceStore(camera, SensorProfile(no_return_certified=False))
+                store = store.add(Frame(depth, pose, f"bag-epoch-{epoch_id}", capture_ns/1e9, accepted))
+                geometry = grade_frame(depth, camera, pose, manifest["world_from_odom"], fixture)
+                reports.append({"stamp_ns": capture_ns, "epoch": epoch_id, **geometry})
+                accepted += 1
+                last_pose = pose
+                preview = (depth, camera, pose)
+            except ValueError as error:
+                rejected[str(error)] += 1
+        if store is not None:
+            # A stationary bag cannot certify the rear swept envelope; report STOP honestly.
+            envelope = swept_envelope(last_pose, 1.0)
+            decision, samples, status = decide(store, envelope, epoch=f"bag-epoch-{epoch_id}",
+                                               now_s=max_clock/1e9, ttl_s=10.0)
+            stale, _, _ = decide(store, envelope, epoch=f"bag-epoch-{epoch_id}",
+                                  now_s=max_clock/1e9+11.0, ttl_s=10.0)
+            gates.append({"epoch": epoch_id, "allowed": decision.allowed, "reason": decision.reason,
+                          "counts": decision.counts, "frames_used": decision.frames_used,
+                          "epoch_frames": len(store.frames), "stale_reason": stale.reason})
+            if output is not None and preview is not None:
+                depth, camera, pose = preview
+                rotation, origin = aligned_camera(camera, pose, manifest["world_from_odom"])
+                k = camera.intrinsics
+                v, u = np.mgrid[:k.height, :k.width]
+                valid = np.isfinite(depth) & (depth >= camera.near_m) & (depth <= camera.far_m)
+                rays = np.stack(((u-k.cx)/k.fx, (v-k.cy)/k.fy, np.ones_like(u)), axis=-1)
+                points = origin + (rays[valid]*depth[valid, None]) @ rotation.T
+                np.savez_compressed(output / "preview.npz", depth=depth, points_world=points[::10],
+                                    samples=samples, status=status)
+    pair_fraction = accepted/considered if considered else 0.0
+    geometry_pass = bool(reports) and all(row["all_pass"] for row in reports)
+    stationary_stop = bool(gates) and all(not row["allowed"] for row in gates)
+    checks = {"minimum_frames": accepted >= fixture["minimum_frames"],
+              "paired_fraction": pair_fraction >= fixture["minimum_pair_fraction"],
+              "all_target_frames_pass": geometry_pass, "stationary_query_blocked": stationary_stop,
+              "stale_evidence_blocked": bool(gates) and all(row["stale_reason"] == "NO_FRESH_FRAMES" for row in gates),
+              "no_cross_epoch_history": all(row["frames_used"] <= row["epoch_frames"] for row in gates)}
+    return {"fault": fault, "checks": checks, "all_checks_pass": all(checks.values()),
+            "accepted_frames": accepted, "considered_frames": considered,
+            "pair_fraction": pair_fraction, "rejected": dict(rejected), "geometry": reports,
+            "gates": gates, "no_return_certified": False, "scope": "unarmed stationary geometry only"}
+
+
+def fault_passes(name, variant):
+    gates, rejected = variant["gates"], variant["rejected"]
+    if any(row["allowed"] for row in gates):
+        return False
+    if name == "reset_counter":
+        return (len(gates) >= 2 and variant["accepted_frames"] > 0
+                and variant["checks"]["no_cross_epoch_history"])
+    expected = {"missing_info": "CAMERA_INFO_MISSING",
+                "missing_tf": "OPTICAL_TF_MISSING",
+                "future_stamps": "CAPTURE_OUTSIDE_CLOCK_EPOCH"}
+    if name in expected:
+        return variant["accepted_frames"] == 0 and rejected.get(expected[name], 0) > 0
+    if name == "pose_gap":
+        return variant["accepted_frames"] <= 2 and sum(rejected.values()) > 0
+    if name == "backward_stamps":
+        return variant["accepted_frames"] <= 1 and sum(rejected.values()) > 0
+    raise ValueError("UNKNOWN_FAULT_VARIANT")
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--recording", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    args.output.mkdir(parents=True, exist_ok=False)
+    manifest = json.loads((args.recording / "manifest.json").read_text())
+    fixture_bytes = (args.recording / "fixture.json").read_bytes()
+    if not manifest["complete"] or not manifest["all_observed_disarmed"]:
+        raise ValueError("RECORDING_INCOMPLETE_OR_ARMED")
+    if hashlib.sha256(fixture_bytes).hexdigest() != manifest["fixture_sha256"]:
+        raise ValueError("FIXTURE_HASH_MISMATCH")
+    for name, identity in manifest["bag_files"].items():
+        if hashlib.sha256((args.recording / name).read_bytes()).hexdigest() != identity["sha256"]:
+            raise ValueError("BAG_HASH_MISMATCH")
+    fixture = json.loads(fixture_bytes)
+    records = read_bag(args.recording / "bag")
+    report = evaluate(records, manifest, fixture, args.output)
+    faults = {}
+    for name in ("missing_info", "missing_tf", "pose_gap", "backward_stamps", "future_stamps", "reset_counter"):
+        variant = evaluate(records, manifest, fixture, fault=name)
+        faults[name] = {key: variant[key] for key in ("accepted_frames", "considered_frames", "rejected", "gates", "checks")}
+        faults[name]["fault_pass"] = fault_passes(name, variant)
+    report["fault_variants"] = faults
+    report["fault_variants_note"] = "In-memory derived event variants; original bag remains unchanged. Not new sensor recordings."
+    report["checks"]["fault_variants_pass"] = all(row["fault_pass"] for row in faults.values())
+    report["all_checks_pass"] = all(report["checks"].values())
+    (args.output / "report.json").write_text(json.dumps(report, indent=2, allow_nan=False)+"\n")
+    print(json.dumps({key: report[key] for key in ("all_checks_pass", "checks", "accepted_frames", "pair_fraction", "rejected", "gates")}))
+    return 0 if report["all_checks_pass"] else 2
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

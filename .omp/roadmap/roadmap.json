@@ -5,8 +5,8 @@
   "root": "C:\\Users\\TRI\\drone-CV",
   "title": "Drone-CV: simulation-first obstacle avoidance",
   "goal": "Sửa contract an toàn trước; chuẩn bị OMP; triển khai G0–G4 với oracle độc lập, đạt ít nhất 45/50 world tĩnh ở G3, không unsafe event trong acceptance suite, không tuyên bố bay thật.",
-  "revision": 34,
-  "updatedAt": "2026-11-03T12:25:06.151Z",
+  "revision": 37,
+  "updatedAt": "2026-11-03T13:19:02.314Z",
   "tasks": [
     {
       "id": "prep-safety",
@@ -602,12 +602,14 @@
       ],
       "milestone": false,
       "verification": "smoke",
-      "status": "pending",
+      "status": "done",
       "blocker": "",
-      "runToken": null,
-      "startedAt": null,
-      "evidenceIds": [],
-      "note": ""
+      "runToken": "84689968-384b-4295-9f17-d10b01be33d3",
+      "startedAt": "2026-11-03T12:34:13.084Z",
+      "evidenceIds": [
+        "r_ce185760-36f3-4672-8dad-a301074474db"
+      ],
+      "note": "Fresh 30.0508 s unarmed recording; 152/152 post-warmup frames paired with timestamp_sample/full orientation. Every declared target/frame passes unchanged 95% support, 0.10 m p95 and 0.20 m maximum limits; six explicit fault variants and stale gating pass. 117 offline tests pass. Corrected merged-SDF body origin and physical-surface grading before fresh capture; prior failures and raw bags remain preserved with archive readback hashes. English results, source-bound provenance, replay commands and inspected figures are in docs/SENSOR_REPLAY_RESULTS.md and docs/replay/unarmed-r35/. Stationary STOP remains honest; no control publisher, arming, flight, G1 calibration/G2 completion or dependency relaxation. Owned container removed; Docker/images retained."
     }
   ],
   "receipts": [
@@ -766,6 +768,19 @@
       "at": "2026-11-03T07:01:55.588Z",
       "outcome": "success",
       "sha256": "27be53e73ada85de6659099b45448e735d2e11558df90bb2c680351d9bd9cb37"
+    },
+    {
+      "id": "r_ce185760-36f3-4672-8dad-a301074474db",
+      "taskId": "prep-sensor-replay",
+      "runToken": "84689968-384b-4295-9f17-d10b01be33d3",
+      "kind": "smoke",
+      "label": "Decode the fresh unarmed Gazebo bag, grade every target/frame under unchanged numeric limits, and execute six explicit fault variants without control publishers.",
+      "toolName": "eval",
+      "toolCallId": "call_d3fb8c9f99b64e0b9d1eebfe7832203f|fc_0c4d684d093f31f4016ae9dc87dbe08191a5605f6f925c6805",
+      "sessionId": "01a19fb0-735f-769d-b6a1-73a8f41b42e8",
+      "at": "2026-11-03T13:09:32.003Z",
+      "outcome": "success",
+      "sha256": "de1cb5e4de45e42f7b2c099047df60540675d6bbd72cff4fcf7f602d0ffed4b2"
     }
   ]
 }
