@@ -1,0 +1,62 @@
+{
+  "1. Clear corridor, 2 m approach": {
+    "allowed": true,
+    "reason": "ALLOWED",
+    "counts": {
+      "FREE": 6633,
+      "OBSTACLE": 0,
+      "OCCLUDED": 0,
+      "UNSEEN": 0
+    }
+  },
+  "2. Same position, no history": {
+    "allowed": false,
+    "reason": "UNSEEN_VOLUME",
+    "counts": {
+      "FREE": 2575,
+      "OBSTACLE": 0,
+      "OCCLUDED": 0,
+      "UNSEEN": 4058
+    }
+  },
+  "3. Box across the path": {
+    "allowed": false,
+    "reason": "OBSTACLE_IN_ENVELOPE",
+    "counts": {
+      "FREE": 4909,
+      "OBSTACLE": 452,
+      "OCCLUDED": 1272,
+      "UNSEEN": 0
+    }
+  },
+  "4. A 5 cm pole in the envelope": {
+    "allowed": false,
+    "reason": "OBSTACLE_IN_ENVELOPE",
+    "counts": {
+      "FREE": 6478,
+      "OBSTACLE": 75,
+      "OCCLUDED": 80,
+      "UNSEEN": 0
+    }
+  },
+  "5. New obstacle after clear history": {
+    "allowed": false,
+    "reason": "OBSTACLE_IN_ENVELOPE",
+    "counts": {
+      "FREE": 5068,
+      "OBSTACLE": 224,
+      "OCCLUDED": 1341,
+      "UNSEEN": 0
+    }
+  },
+  "6. Sideways into unseen space": {
+    "allowed": false,
+    "reason": "UNSEEN_VOLUME",
+    "counts": {
+      "FREE": 6606,
+      "OBSTACLE": 0,
+      "OCCLUDED": 0,
+      "UNSEEN": 1917
+    }
+  }
+}

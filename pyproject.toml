@@ -16,6 +16,6 @@ dev = ["pytest==8.2.2"]
 where = ["src"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["tests", "spike/freespace/tests"]
 pythonpath = ["src"]
 addopts = "--strict-markers"
