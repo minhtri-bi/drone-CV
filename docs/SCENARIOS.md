@@ -1,6 +1,6 @@
 # Danh mục scenario và oracle
 
-**Trạng thái: 65 scenario được đặc tả, chưa có scenario nào được chạy trong repo.** A–D là 30 case của PDF; E–F là 35 case bổ sung. Mỗi hàng phải trở thành test/fixture hoặc SITL scenario ở gate phù hợp, không phải một dấu tick mặc định.
+**65 scenario được đặc tả; các fixture geometry/validity/braking G0 đã có test offline. Chưa chạy scenario bay SITL.** A–D là 30 case của PDF; E–F là 35 bổ sung. Mapping fixture/test G0 nằm trong test names và acceptance của native roadmap; không coi cả scenario tích hợp pass chỉ vì một fixture geometry đạt.
 
 ## Quy tắc chung
 

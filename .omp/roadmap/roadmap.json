@@ -5,8 +5,8 @@
   "root": "C:\\Users\\TRI\\drone-CV",
   "title": "Drone-CV: simulation-first obstacle avoidance",
   "goal": "Sửa contract an toàn trước; chuẩn bị OMP; triển khai G0–G4 với oracle độc lập, đạt ít nhất 45/50 world tĩnh ở G3, không unsafe event trong acceptance suite, không tuyên bố bay thật.",
-  "revision": 10,
-  "updatedAt": "2026-11-03T05:02:22.233Z",
+  "revision": 26,
+  "updatedAt": "2026-11-03T05:31:20.548Z",
   "tasks": [
     {
       "id": "prep-safety",
@@ -87,12 +87,14 @@
       ],
       "milestone": false,
       "verification": "smoke",
-      "status": "pending",
+      "status": "done",
       "blocker": "",
-      "runToken": null,
-      "startedAt": null,
-      "evidenceIds": [],
-      "note": ""
+      "runToken": "dad54673-6202-4b40-aa45-4c45c17ee84a",
+      "startedAt": "2026-11-03T05:14:45.776Z",
+      "evidenceIds": [
+        "r_19292f7b-b825-4386-b32a-d201681ed7b8"
+      ],
+      "note": "15 depth/clock regressions pass; actual API smoke converts 16UC1 to unknown/too-close/4m and rejects epoch reset. Verified encoding/dtype/config, opt-in REP117 near/far, immutable outputs and caller input preservation. No ROS/GPU or flight evidence."
     },
     {
       "id": "g0-geometry",
@@ -108,12 +110,14 @@
       ],
       "milestone": false,
       "verification": "smoke",
-      "status": "pending",
+      "status": "done",
       "blocker": "",
-      "runToken": null,
-      "startedAt": null,
-      "evidenceIds": [],
-      "note": ""
+      "runToken": "c898c2df-fad0-4269-893b-34dcd5a2aa55",
+      "startedAt": "2026-11-03T05:17:05.745Z",
+      "evidenceIds": [
+        "r_78aefe68-d633-40b6-ad4c-3729c7a9f98c"
+      ],
+      "note": "17 geometry regressions pass: analytic axes/quaternion basis, optical Z, crop/resize, stale/mismatched pose, wrap, new thin wire, pole, narrow gap, unknown/support holes and certificate conflict. Real API smoke changes forward middle-band free path from 4m to 1.75m on first one-row wire. 72x3 swept boxes cover whole 5deg sectors under explicit verified pixel-cone model. Local-clear sphere is explicit independent synthetic evidence, not inferred camera clearance; no SITL/sensor guarantee."
     },
     {
       "id": "g0-safety",
@@ -129,12 +133,14 @@
       ],
       "milestone": false,
       "verification": "smoke",
-      "status": "pending",
+      "status": "done",
       "blocker": "",
-      "runToken": null,
-      "startedAt": null,
-      "evidenceIds": [],
-      "note": ""
+      "runToken": "fa91313e-e1d9-4341-9c53-3977c3ac1240",
+      "startedAt": "2026-11-03T05:22:45.852Z",
+      "evidenceIds": [
+        "r_0cd9ba95-a437-4d56-a87b-51dcba17ff44"
+      ],
+      "note": "16 braking/freshness regressions and actual API smoke pass: finite domain, d<=margin, independent stopping integration, speed clamp, signed reverse requires coverage, stale/old-epoch proposal rejection, measured side-slip/overspeed braking, stop-before-turn, vertical motion/origin mismatch rejection. Zero velocity is a request, not hover/calibration proof. No PX4 publishing or yaw-envelope guarantee."
     },
     {
       "id": "g0-demo",
@@ -149,12 +155,14 @@
       ],
       "milestone": true,
       "verification": "smoke",
-      "status": "pending",
+      "status": "done",
       "blocker": "",
-      "runToken": null,
-      "startedAt": null,
-      "evidenceIds": [],
-      "note": ""
+      "runToken": "f0c7063c-b237-4d63-8aa4-1e16cbbc0bfb",
+      "startedAt": "2026-11-03T05:24:13.296Z",
+      "evidenceIds": [
+        "r_a8817f34-bce7-4072-aa0c-80191d4a560b"
+      ],
+      "note": "G0 offline complete: 48 behavioral tests passed on unchanged core; final real CLI produces SVG, NPZ point clouds/histograms and JSON decisions. Wall 4m free =>3m/s cap; new one-row wire =>1.75m middle-band free and1.715m/s; unknown boot/stale proposal request zero motion. Final SVG visually inspected in existing Chromium with readable panel spacing. Added two-OS PR CI and integrity/portable-roadmap command; hosted CI not yet claimed. No ROS node, simulated flight logs or PX4 calibration fabricated."
     },
     {
       "id": "g1-environment",
@@ -170,10 +178,10 @@
       ],
       "milestone": false,
       "verification": "smoke",
-      "status": "pending",
-      "blocker": "",
-      "runToken": null,
-      "startedAt": null,
+      "status": "blocked",
+      "blocker": "Host probe: Docker client present but docker version cannot connect to dockerDesktopLinuxEngine named pipe; WSL Ubuntu runs Linux 6.18.33.2 but command -v finds no ros2/gz/px4/MicroXRCEAgent and no /opt/ros/jazzy. No image pull/install/daemon or driver/policy change performed. Need operator-started Linux Docker engine and explicit image download approval, or an available preinstalled Linux PX4/Jazzy/Harmonic stack before environment smoke/lock. G0 CPU work remains actionable.",
+      "runToken": "f5743aea-6530-4150-9957-8f3ece755a7b",
+      "startedAt": "2026-11-03T05:20:11.167Z",
       "evidenceIds": [],
       "note": ""
     },
@@ -615,6 +623,84 @@
       "at": "2026-11-03T05:02:17.334Z",
       "outcome": "success",
       "sha256": "49e05e2159a65599f5a65528052bb3cfec459a13c3b4411d4d0820c79c4f2984"
+    },
+    {
+      "id": "r_19292f7b-b825-4386-b32a-d201681ed7b8",
+      "taskId": "g0-contracts",
+      "runToken": "dad54673-6202-4b40-aa45-4c45c17ee84a",
+      "kind": "smoke",
+      "label": "Run depth/clock regressions and exercise metric normalization through actual API",
+      "toolName": "bash",
+      "toolCallId": "call_e1830621e3b249bca3dab214e3ced38c|fc_046f468ed09e2e03016ae96e42d6ec8191a2944117bcd41d50",
+      "sessionId": "01a19fb0-735f-769d-b6a1-73a8f41b42e8",
+      "at": "2026-11-03T05:16:57.220Z",
+      "outcome": "success",
+      "sha256": "76af1dbfcadf119f0bfff5a94f5f5ca7a941132fe277fb757637dde55c57ab67"
+    },
+    {
+      "id": "r_78aefe68-d633-40b6-ad4c-3729c7a9f98c",
+      "taskId": "g0-geometry",
+      "runToken": "c898c2df-fad0-4269-893b-34dcd5a2aa55",
+      "kind": "smoke",
+      "label": "Run analytic geometry regressions and a clean-versus-new-wire swept-corridor smoke",
+      "toolName": "eval",
+      "toolCallId": "call_41cb4304403d42599b7fd4c9b98832a0|fc_046f468ed09e2e03016ae96f4515f08191ad9b6958496461af",
+      "sessionId": "01a19fb0-735f-769d-b6a1-73a8f41b42e8",
+      "at": "2026-11-03T05:21:21.104Z",
+      "outcome": "success",
+      "sha256": "1b974caeca26354ce150b8b418d26fa88a01f0d8eab9d84d56fd935813aed142"
+    },
+    {
+      "id": "r_0cd9ba95-a437-4d56-a87b-51dcba17ff44",
+      "taskId": "g0-safety",
+      "runToken": "fa91313e-e1d9-4341-9c53-3977c3ac1240",
+      "kind": "smoke",
+      "label": "Run stopping-distance regressions and actual fresh/stale/side-slip decision API smoke",
+      "toolName": "eval",
+      "toolCallId": "call_c0a08a440efa45e295984ef0d50335ca|fc_046f468ed09e2e03016ae96fb5df8c8191bb17a5c0b42dd2a6",
+      "sessionId": "01a19fb0-735f-769d-b6a1-73a8f41b42e8",
+      "at": "2026-11-03T05:23:08.617Z",
+      "outcome": "success",
+      "sha256": "da2b2abf475c4a5f03f62e750c96480355a325c172b1a5f2ed7605c9c633adfe"
+    },
+    {
+      "id": "r_5b01df49-de8e-4672-89a4-df63ec0fb75a",
+      "taskId": "g0-demo",
+      "runToken": "f0c7063c-b237-4d63-8aa4-1e16cbbc0bfb",
+      "kind": "smoke",
+      "label": "Run integrity CLI, complete behavioral tests and executable synthetic depth-to-safe-velocity artifact demo",
+      "toolName": "bash",
+      "toolCallId": "call_a8aad07f9cc5412cb4a2995e5fdad40b|fc_046f468ed09e2e03016ae9705e2b5c8191b5454f90ea8d6c81",
+      "sessionId": "01a19fb0-735f-769d-b6a1-73a8f41b42e8",
+      "at": "2026-11-03T05:25:58.684Z",
+      "outcome": "success",
+      "sha256": "b5ca768bb874c9abb7f2b072be8e8eac1a13c39691a30597c0444291e2d3ca3c"
+    },
+    {
+      "id": "r_1192c21f-a859-4d1b-bd57-a823f2548ac4",
+      "taskId": "g0-demo",
+      "runToken": "f0c7063c-b237-4d63-8aa4-1e16cbbc0bfb",
+      "kind": "smoke",
+      "label": "Verify final CLI/preview implementation, complete tests and integrity after documentation updates",
+      "toolName": "bash",
+      "toolCallId": "call_eec318ba1472479eb671637ff947466c|fc_046f468ed09e2e03016ae97149a43481919df4129c52a0ead2",
+      "sessionId": "01a19fb0-735f-769d-b6a1-73a8f41b42e8",
+      "at": "2026-11-03T05:29:53.417Z",
+      "outcome": "success",
+      "sha256": "4767c60ae1a16e288e63e2b76811b4ac1db271d15395ca504bb639d7ddd96980"
+    },
+    {
+      "id": "r_a8817f34-bce7-4072-aa0c-80191d4a560b",
+      "taskId": "g0-demo",
+      "runToken": "f0c7063c-b237-4d63-8aa4-1e16cbbc0bfb",
+      "kind": "smoke",
+      "label": "Exercise final demo CLI and artifacts after improving standalone SVG label spacing; core tests unchanged",
+      "toolName": "bash",
+      "toolCallId": "call_84bc137eb9fa445d988551f23b760ee3|fc_046f468ed09e2e03016ae9719c60c08191961dd659c7bcf2d5",
+      "sessionId": "01a19fb0-735f-769d-b6a1-73a8f41b42e8",
+      "at": "2026-11-03T05:31:09.670Z",
+      "outcome": "success",
+      "sha256": "224d37d1aca2d946c69c0378973cc2be04d422f6a1fdf422e3fcb5ed52fa9ef3"
     }
   ]
 }

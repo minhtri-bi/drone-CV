@@ -25,10 +25,10 @@ Skills đã được đọc để chọn, không chỉ suy luận từ tên. Cá
 
 ## Cách agent dùng trong OMP
 
-1. Đọc native roadmap khi bắt đầu/resume; chọn task ready thật. Không tự start toàn G0–G4 vì user chỉ yêu cầu chuẩn bị.
-2. Đọc phần contract liên quan trong PLAN/SAFETY/SCENARIOS/HARNESS.
+1. Đọc native roadmap khi bắt đầu/resume; chọn task ready thật theo scope người dùng. Task blocked không được giả complete để mở dependency.
+2. Đọc phần contract liên quan đúng gate, không bắt G0 đọc toàn bộ acceptance G3.
 3. Chọn **ít skill nhất** từ router theo trigger. Nạp bằng `read` với `skill://<name>`, không giả có slash command Claude.
-4. Đọc rule ngôn ngữ hiện có khi thực sự bắt đầu code. Hiện repo chưa có package/test/runner; không tự khai chúng đã tồn tại.
+4. Đọc rule ngôn ngữ khi code. Repo đã có NumPy package, pytest và demo offline; chưa có ROS/SITL runner.
 5. Bám acceptance của task, implement đúng scope, arm verification ngay trước công cụ kiểm chứng thật.
 6. Complete bằng receipt current-run khi tiêu chí đạt; thiếu prerequisite thì block với lý do. Git dùng gate riêng trong HARNESS.
 
@@ -45,8 +45,8 @@ Ví dụ routing:
 - Canvas offline: `.omp/roadmap/index.html`, sinh tự động; không sửa tay và không commit generated view.
 - `/roadmap status` xem focus; `/roadmap view` lấy đường dẫn canvas. Đây là native OMP commands, không chạy qua shell.
 - Update bằng `project_roadmap`: `read`, `start`, `arm`, tool verification thật, `complete` với receipt. Revision conflict thì read/reconcile.
-- 27 task ban đầu bao phủ preparation, G0–G4, bàn giao mô phỏng và decision gate G5. Đồ thị dependency và acceptance nằm trong JSON, không có bảng trạng thái thứ hai trong Markdown.
-- Chỉ ba task `prep-*` được hoàn tất trong đợt chuẩn bị này. Các task triển khai còn pending; G5 chỉ là quyết định tuỳ chọn sau bàn giao.
+- 27 task bao phủ preparation, G0–G4, bàn giao mô phỏng và decision G5. JSON là nguồn trạng thái duy nhất.
+- Bản đọc portable `docs/ROADMAP.md` sinh bằng `python scripts/check_project.py --export-roadmap`; CI chặn view cũ. Không sửa progress bằng Markdown.
 - State có project-root binding và receipt metadata của workspace. Clone/chuyển root khác không được sửa binding/receipt tay để giả resume; dùng native read và xử lý theo lỗi thật.
 
 Không tự Graphify index, cài MCP, thêm watcher/daemon hay chạy model khác để làm roadmap. Canvas là view tiến độ, không là giấy chứng nhận simulator đang hoạt động.

@@ -114,4 +114,4 @@ Một ray `NO_RETURN` không chứng minh toàn bộ bin 5° hoặc toàn hành 
 
 ## Trạng thái đóng lỗ hổng
 
-S01–S08 được đóng ở **mức contract** trong đợt chuẩn bị này. Runtime proof được phân bổ tới task/scenario nêu trên và vẫn pending. Deadline numerical, environment lock, stopping calibration và oracle geometry không được coi đã có trước khi task tương ứng chạy thật.
+S01–S08 được đóng ở mức contract. Core G0 đã kiểm chứng units/frames, synthetic swept-volume coverage, clock/freshness và constant-deceleration bounds qua code/test/demo; không chứng minh sensor hoặc PX4 thực tuân thủ mô hình. Các proof bay, numerical deadlines/bounds thực, environment lock, stopping calibration và oracle geometry SITL vẫn pending tại task tương ứng.
