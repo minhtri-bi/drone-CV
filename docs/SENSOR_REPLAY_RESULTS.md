@@ -89,7 +89,7 @@ docker stop drone-cv-replay-check
 docker rm drone-cv-replay-check
 ```
 
-The reader verifies fixture and bag hashes, pairs actual CDR messages and exercises the variants. Legacy analysis exits zero when diagnostic processing completes, not when the current acquisition profile passes. Strict replay of a new schema-two recording exits nonzero if provenance or a required check fails. Replaying a saved bag does not require Gazebo, PX4, DDS or a graphics driver to run.
+The reader verifies fixture and bag hashes, pairs actual CDR messages and exercises the variants. Legacy analysis exempts only the unavailable alignment-provenance check from its exit decision; geometry, pairing, fault and decode failures still return nonzero. Strict replay exits nonzero if provenance or any required check fails. Replaying a saved bag does not require Gazebo, PX4, DDS or a graphics driver to run.
 
 Optional plotting uses the existing host NumPy 2.0.0 / matplotlib 3.9.0 environment, not ROS:
 

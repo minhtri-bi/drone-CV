@@ -10,6 +10,8 @@ The [unarmed sensor replay](docs/SENSOR_REPLAY_RESULTS.md) also passed stationar
 
 The [integrity repair](docs/SENSOR_REPLAY_INTEGRITY.md) adds a fresh 136-frame replay with snapshot-time/reset-bound alignment, receive-wall health evidence and a real camera-stream loss refusal. Historical unbound bags remain diagnostic-only under the new profile.
 
+The [model-profile and rolling-TTL preparation](docs/PREPARATION_RESULTS.md) also ran: pinned collision/rotor bounds, 96 explicit synthetic coverage cases, and a 90 s Disarmed recording spanning 19.328 s sim. Old evidence expires while fresh frames remain. These diagnostics do not authorize movement or complete G1/G2.
+
 Core target: reach the goal in ≥45/50 frozen navigation worlds, with zero unsafe events and navigation clearance ≥0.5 m under the phase contract.
 This target has not been achieved; it is not a benchmark result.
 

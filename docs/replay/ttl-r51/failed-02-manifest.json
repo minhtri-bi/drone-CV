@@ -1,0 +1,355 @@
+{
+  "recording_schema": 3,
+  "scope": "unarmed acquisition only",
+  "control_publishers_created": 0,
+  "arming_commands_sent": 0,
+  "fixture_sha256": "43cf088bdc7ed07d2528646ae81c6f352a7db9d8d57cf7ed019c5aa1bf8c54d2",
+  "policy_sha256": "41088a4ae90de95aaf22d91925f855ce44b32ffdcc79da395a059d151790b077",
+  "all_observed_disarmed": true,
+  "complete": false,
+  "storage_id": "sqlite3",
+  "world_from_odom": [
+    [
+      0.9942926061755752,
+      -0.1066861141450207,
+      -0.0005351198167041305,
+      0.03069482573315083
+    ],
+    [
+      0.10668637795315093,
+      0.9942926004820725,
+      0.000491310324764466,
+      0.027431402965356934
+    ],
+    [
+      0.00047964968473179076,
+      -0.0005455962182661468,
+      0.9999997361304385,
+      0.2518308436499186
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "alignment": {
+    "clock_epoch": 0,
+    "reset_counter": 12,
+    "capture_ns": 152336000000,
+    "max_pose_gap_ns": 50000000,
+    "world_body": [
+      [
+        1.0,
+        -8.651691037676095e-18,
+        5.395178246511511e-09,
+        1.144462378888495e-09
+      ],
+      [
+        8.651690859493494e-18,
+        1.0,
+        3.3026267480905755e-17,
+        2.373671349987057e-19
+      ],
+      [
+        -5.395178246511511e-09,
+        -3.302626743422834e-17,
+        1.0,
+        0.22699981265774744
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "pose_samples": [
+      {
+        "timestamp_ns": 152332000000,
+        "position_ned": [
+          -0.02409839816391468,
+          -0.03343706950545311,
+          0.024845927953720093
+        ],
+        "quaternion_wxyz": [
+          0.6683243842947246,
+          0.0003636622714777032,
+          3.961030257891276e-06,
+          0.7438698710736575
+        ],
+        "reset_counter": 12,
+        "pose_frame": 1
+      },
+      {
+        "timestamp_ns": 152340000000,
+        "position_ned": [
+          -0.023874765262007713,
+          -0.03347913920879364,
+          0.024810224771499634
+        ],
+        "quaternion_wxyz": [
+          0.6683233793405338,
+          0.0003627560118557491,
+          3.873181761643751e-06,
+          0.7438707744090525
+        ],
+        "reset_counter": 12,
+        "pose_frame": 1
+      }
+    ]
+  },
+  "alignment_source": {
+    "gazebo_pose_snapshot": {
+      "header": {
+        "stamp": {
+          "sec": "152",
+          "nsec": 336000000
+        }
+      },
+      "pose": [
+        {
+          "name": "x500_depth_0",
+          "id": 18,
+          "position": {
+            "x": -1.5038040027426763e-10,
+            "y": -7.688937060418675e-18,
+            "z": -0.013000187342252556
+          },
+          "orientation": {
+            "x": -1.6513133728783523e-17,
+            "y": 2.6975891232557554e-09,
+            "z": 4.325845474292397e-18,
+            "w": 1
+          }
+        },
+        {
+          "name": "base_link",
+          "id": 19,
+          "position": {
+            "z": 0.24
+          },
+          "orientation": {
+            "w": 1
+          }
+        },
+        {
+          "name": "rotor_0",
+          "id": 37,
+          "position": {
+            "x": 0.17400000000000002,
+            "y": -0.174,
+            "z": 0.3000000000000001
+          },
+          "orientation": {
+            "x": 4.5417092665887005e-34,
+            "y": 7.143326480705756e-35,
+            "z": -1.2190150618695687e-21,
+            "w": 1
+          }
+        },
+        {
+          "name": "rotor_1",
+          "id": 41,
+          "position": {
+            "x": -0.17400000000000002,
+            "y": 0.174,
+            "z": 0.3000000000000001
+          },
+          "orientation": {
+            "x": -1.9601251238402635e-33,
+            "y": 7.143326480728885e-35,
+            "z": -2.103837227499601e-20,
+            "w": 1
+          }
+        },
+        {
+          "name": "rotor_2",
+          "id": 45,
+          "position": {
+            "x": 0.17400000000000002,
+            "y": 0.174,
+            "z": 0.3000000000000001
+          },
+          "orientation": {
+            "x": 3.2693634939519387e-34,
+            "y": 7.143326480700769e-35,
+            "z": 3.055562893017817e-21,
+            "w": 1
+          }
+        },
+        {
+          "name": "rotor_3",
+          "id": 49,
+          "position": {
+            "x": -0.17400000000000002,
+            "y": -0.174,
+            "z": 0.3000000000000001
+          },
+          "orientation": {
+            "x": -2.0377692334242827e-33,
+            "y": 7.143326480704979e-35,
+            "z": -5.521235116423902e-22,
+            "w": 1
+          }
+        },
+        {
+          "name": "camera_link",
+          "id": 53,
+          "position": {
+            "x": 0.11999999999999998,
+            "y": 0.03,
+            "z": 0.242
+          },
+          "orientation": {
+            "y": 7.143326480704334e-35,
+            "w": 1
+          }
+        }
+      ]
+    },
+    "note": "Capture-time bracket; frozen before recording; not fitted to depth."
+  },
+  "publishers": {
+    "/drone_cv_g1/camera/depth/image_raw": [
+      {
+        "type": "sensor_msgs/msg/Image",
+        "reliability": "BEST_EFFORT",
+        "durability": "VOLATILE",
+        "history": null,
+        "depth": null,
+        "source": "DDS discovery; null means unavailable"
+      }
+    ],
+    "/drone_cv_g1/camera/depth/camera_info": [
+      {
+        "type": "sensor_msgs/msg/CameraInfo",
+        "reliability": "BEST_EFFORT",
+        "durability": "VOLATILE",
+        "history": null,
+        "depth": null,
+        "source": "DDS discovery; null means unavailable"
+      }
+    ],
+    "/clock": [
+      {
+        "type": "rosgraph_msgs/msg/Clock",
+        "reliability": "BEST_EFFORT",
+        "durability": "VOLATILE",
+        "history": null,
+        "depth": null,
+        "source": "DDS discovery; null means unavailable"
+      }
+    ],
+    "/tf_static": [
+      {
+        "type": "tf2_msgs/msg/TFMessage",
+        "reliability": "RELIABLE",
+        "durability": "TRANSIENT_LOCAL",
+        "history": null,
+        "depth": null,
+        "source": "DDS discovery; null means unavailable"
+      }
+    ],
+    "/drone_cv_g1/fmu/out/vehicle_odometry": [
+      {
+        "type": "px4_msgs/msg/VehicleOdometry",
+        "reliability": "BEST_EFFORT",
+        "durability": "TRANSIENT_LOCAL",
+        "history": null,
+        "depth": null,
+        "source": "DDS discovery; null means unavailable"
+      }
+    ],
+    "/drone_cv_g1/fmu/out/vehicle_status_v4": [
+      {
+        "type": "px4_msgs/msg/VehicleStatus",
+        "reliability": "BEST_EFFORT",
+        "durability": "TRANSIENT_LOCAL",
+        "history": null,
+        "depth": null,
+        "source": "DDS discovery; null means unavailable"
+      }
+    ]
+  },
+  "subscribers": {
+    "/drone_cv_g1/camera/depth/image_raw": {
+      "reliability": "BEST_EFFORT",
+      "durability": "VOLATILE",
+      "history": "KEEP_LAST",
+      "depth": 100,
+      "source": "requested subscriber configuration"
+    },
+    "/drone_cv_g1/camera/depth/camera_info": {
+      "reliability": "BEST_EFFORT",
+      "durability": "VOLATILE",
+      "history": "KEEP_LAST",
+      "depth": 100,
+      "source": "requested subscriber configuration"
+    },
+    "/clock": {
+      "reliability": "BEST_EFFORT",
+      "durability": "VOLATILE",
+      "history": "KEEP_LAST",
+      "depth": 100,
+      "source": "requested subscriber configuration"
+    },
+    "/tf_static": {
+      "reliability": "RELIABLE",
+      "durability": "TRANSIENT_LOCAL",
+      "history": "KEEP_LAST",
+      "depth": 10,
+      "source": "requested subscriber configuration"
+    },
+    "/drone_cv_g1/fmu/out/vehicle_odometry": {
+      "reliability": "BEST_EFFORT",
+      "durability": "VOLATILE",
+      "history": "KEEP_LAST",
+      "depth": 100,
+      "source": "requested subscriber configuration"
+    },
+    "/drone_cv_g1/fmu/out/vehicle_status_v4": {
+      "reliability": "BEST_EFFORT",
+      "durability": "VOLATILE",
+      "history": "KEEP_LAST",
+      "depth": 100,
+      "source": "requested subscriber configuration"
+    }
+  },
+  "record_start_wall_monotonic_ns": 681801993005,
+  "record_start_sim_ns": 152352000000,
+  "warmup_end_sim_ns": 152760000000,
+  "failure": "ValueError: STREAM_PROGRESS_STALLED:/clock",
+  "recorded_wall_s": 65.944829765,
+  "record_end_wall_monotonic_ns": 747746822770,
+  "record_end_sim_ns": 165892000000,
+  "topic_counts": {
+    "/drone_cv_g1/camera/depth/image_raw": 338,
+    "/drone_cv_g1/camera/depth/camera_info": 411,
+    "/clock": 3396,
+    "/tf_static": 1,
+    "/drone_cv_g1/fmu/out/vehicle_odometry": 1352,
+    "/drone_cv_g1/fmu/out/vehicle_status_v4": 28
+  },
+  "topics": {
+    "/drone_cv_g1/camera/depth/image_raw": "sensor_msgs/msg/Image",
+    "/drone_cv_g1/camera/depth/camera_info": "sensor_msgs/msg/CameraInfo",
+    "/clock": "rosgraph_msgs/msg/Clock",
+    "/tf_static": "tf2_msgs/msg/TFMessage",
+    "/drone_cv_g1/fmu/out/vehicle_odometry": "px4_msgs/msg/VehicleOdometry",
+    "/drone_cv_g1/fmu/out/vehicle_status_v4": "px4_msgs/msg/VehicleStatus"
+  },
+  "warmup_wall_s": 2.0,
+  "bag_files": {
+    "bag/bag_0.db3": {
+      "bytes": 416468992,
+      "sha256": "ea1749a09351ee5ea97a2e36d946f01ef0b35d6f438706ed023e5dd5f201e119"
+    },
+    "bag/metadata.yaml": {
+      "bytes": 1956,
+      "sha256": "d5ff6ed7864bab170584643e77a3912bd4806694e7a4e107d26e1b2c87e9548c"
+    }
+  },
+  "receive_progress_sha256": "d36a1e23a54c2d64a65513a63f0c70c0b1d540340c1d9bb7c3fa8026c3a149c4"
+}

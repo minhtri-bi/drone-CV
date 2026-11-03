@@ -2,7 +2,7 @@
 
 ## Authority and scope
 
-The user approved adding this plan to the native roadmap and continuing implementation. Work proceeds one preparation slice at a time. No arming, control publisher, vehicle teleportation, host installation, model/account changes or flight acceptance is authorized by this plan.
+The user approved adding this plan to the native roadmap and continuing implementation, then explicitly authorized both remaining model-profile and rolling-TTL tasks. The [exercised preparation results](PREPARATION_RESULTS.md) record their scope and limitations. No arming, control publisher, vehicle teleportation, host installation, model/account changes or flight acceptance is authorized by this plan.
 
 The existing stationary replay result remains historical evidence. It is not a calibrated body envelope or a positive navigation result. Raw bags, their manifests, hashes and failed attempts stay byte-identical; new diagnostics and acquisitions use new paths.
 
@@ -29,7 +29,7 @@ Solid edges are native dependencies for these branches or existing gate relation
 Prerequisite: completed `prep-sensor-replay`.
 
 - Bracket Gazebo alignment time using PX4 `timestamp_sample` poses; require the same reset/clock epoch, a finite pose gap and no extrapolation. Record alignment timestamp, reset identity and provenance. A changed epoch invalidates world grading rather than reusing the old transform.
-- Track monotonic receive progress for required dynamic streams throughout recording, including status. Use declared finite acquisition freshness limits, distinct from unmeasured flight-control deadlines. Keep static TF latched rather than requiring it to republish periodically.
+- Track monotonic-wall clock progress and simulation age of every other dynamic required stream. Reject excessive lead relative to the latest delivered clock under an explicit acquisition-only allowance. These checks are not calibrated flight deadlines; static TF remains latched.
 - Record publisher and subscriber QoS, total wall/sim duration, mean RTF and available receive-wall diagnostics. Report image gaps, calibration pairing versus image availability and estimator variance. Do not fabricate missing historical per-message wall stamps, reset provenance or minimum windowed RTF.
 - Verify evidence file hashes and archive member/fixture identities through the existing cross-platform integrity command, which already runs in CI. Do not add an ad-hoc CDR implementation as a second production decoder.
 - Exercise real pinned-schema bag reading, explicit alignment-reset/skew rejection and recording stream-loss failures. Preserve previous bags as legacy evidence; do not silently upgrade their manifest schema or claim new-profile admission.

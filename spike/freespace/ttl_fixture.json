@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "world_name": "default",
+  "model_name": "x500_depth_0",
+  "spawn_xyz_rpy": [0, 0, 0.25, 0, 0, 0],
+  "camera_translation_flu": [0.13233, 0.0, 0.02078],
+  "record_wall_s": 90.0,
+  "warmup_wall_s": 2.0,
+  "max_output_bytes": 1073741824,
+  "minimum_record_sim_s": 15.0,
+  "evidence_ttl_sim_s": 10.0,
+  "minimum_frames": 20,
+  "minimum_pair_fraction": 0.95,
+  "max_pose_gap_ns": 50000000,
+  "edge_pixels": 3,
+  "minimum_target_support": 0.95,
+  "p95_error_m": 0.10,
+  "maximum_error_m": 0.20,
+  "boxes": [
+    {"name": "front_target", "lo": [3.5, -0.3, 0.2], "hi": [3.7, 0.3, 0.9]},
+    {"name": "offaxis_target", "lo": [4.5, 1.0, 0.2], "hi": [4.7, 1.8, 0.9]}
+  ],
+  "targets": [
+    {"name": "front", "axis": 0, "coordinate": 3.5, "lo": [3.5, -0.3, 0.25], "hi": [3.5, 0.3, 0.8], "surface_lo": [3.5, -0.3, 0.2], "surface_hi": [3.5, 0.3, 0.9]},
+    {"name": "offaxis", "axis": 0, "coordinate": 4.5, "lo": [4.5, 1.05, 0.25], "hi": [4.5, 1.75, 0.8], "surface_lo": [4.5, 1.0, 0.2], "surface_hi": [4.5, 1.8, 0.9]},
+    {"name": "horizontal", "axis": 2, "coordinate": 0.0, "lo": [2.25, -0.4, 0.0], "hi": [2.75, 0.4, 0.0], "surface_lo": [-250.0, -250.0, 0.0], "surface_hi": [250.0, 250.0, 0.0]}
+  ]
+}

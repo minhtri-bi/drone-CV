@@ -4,7 +4,7 @@
 
 This implements `prep-replay-integrity` from the approved [repair plan](SENSOR_REPLAY_REPAIR_PLAN.md). It hardens the unarmed recording and offline replay boundary, not the flight controller or navigation envelope. No arming, control publisher, vehicle relocation, host installation or safety-threshold relaxation occurred.
 
-`prep-model-profile` and `prep-ttl-replay` are separate pending tasks. Physical geometry/contact acceptance, supervisor, flight and calibration remain unimplemented. The historical capsule is still diagnostic, not a calibrated movement certificate.
+At the r39 snapshot, `prep-model-profile` and `prep-ttl-replay` were pending. Their later [exercised preparation results](PREPARATION_RESULTS.md) do not complete physical contact/oracle, supervisor, flight or calibration acceptance. The historical capsule remains diagnostic, not a movement certificate.
 
 ## Exercised results
 
@@ -17,6 +17,16 @@ A fresh acquisition ran for **30.0174 s wall / 6.344 s sim** in the retained pin
 - A reset injected halfway preserves the earlier valid epoch but invalidates all later world grading: 61 accepted earlier frames, 74 `ALIGNMENT_EPOCH_INVALIDATED` rejections and one boundary clock rejection. It never reuses the old transform in the new epoch. Counter wrap/return cannot restore it.
 - Missing CameraInfo/TF, excessive pose gaps and backward/future image stamps remain rejected. All six explicit variants pass their negative checks. Their event streams are derived in memory; they are not new sensor recordings.
 - The stationary query remains **STOP / `OBSTACLE_IN_ENVELOPE`**, with 3,432 UNSEEN samples. Stale-all returns `NO_FRESH_FRAMES`. This is not positive real-data navigation.
+
+Passing the original integration limits did **not** mean equal geometry accuracy:
+
+| Target | r35 worst frame p95 | r39 first frame p95 | r39 worst frame p95 | r39 maximum error |
+| --- | ---: | ---: | ---: | ---: |
+| Front | 0.016582 m | 0.014709 m | 0.039870 m | 0.039893 m |
+| Off-axis | 0.016493 m | 0.014874 m | 0.039851 m | 0.039862 m |
+| Horizontal floor | 0.022381 m | 0.001994 m | 0.019794 m | 0.019801 m |
+
+Front p95 worsened by about 2.4 times between these independent recordings. Recorded odometry peak-to-peak E displacement reached 0.049471 m during this 6.344 s stationary acquisition; N/D spans were 0.021610/0.031003 m. This nearly consumes the historical illustrative 0.05 m horizontal pose allowance, while the evidence TTL is 10 s. A short stationary span is neither a worst-case relative-pose bound nor permission to keep that allowance for navigation. Model-profile experiments must expose this observed floor and leave the calibrated pose/tracking/angular budgets unresolved.
 
 ### Real stream-loss fault
 
@@ -38,9 +48,9 @@ The manifest stores the snapshot body transform, actual bracket samples, capture
 
 The recorder aborts a reset after alignment rather than publishing a deceptively complete recording. The replay can still retain pre-reset valid data in an explicitly injected negative variant. World target geometry remains grader-only, outside the evidence gate.
 
-## Acquisition progress policy
+## Historical r39 acquisition progress policy
 
-[`recording_policy.json`](../spike/freespace/recording_policy.json) declares finite monotonic-wall progress limits:
+The policy archived inside `replay/integrity-r39/recording-01.tar.gz` used these finite monotonic-wall limits. It is preserved as historical input, not the current RTF-independent policy:
 
 | Dynamic stream | Maximum source-progress silence |
 | --- | ---: |
@@ -52,7 +62,11 @@ The recorder aborts a reset after alignment rather than publishing a deceptively
 
 These limits detect acquisition failure under the observed slow software-rendered fixture. They are **not calibrated flight-control freshness or braking deadlines**. A duplicate source stamp cannot refresh health. Backward stamps fail explicitly. Static TF is latched and is not required to republish periodically.
 
+Follow-up review identified the 3 s status wall deadline as RTF-sensitive: a roughly 0.504 s simulation period consumes most of it near RTF 0.21. Current schema-three acquisition uses one wall watchdog for clock progress and simulation-age checks for the other streams. The old 3 s fixture clock deadline was redundant and has been removed from new fixtures. Old bags retain their exact declared policy.
+
 The receive sidecar stores actual source stamps, monotonic receive times, ROS storage times, topic sequences and seeded-cache labels. The manifest records requested subscriber QoS and discovered publisher QoS. No fictitious QoS is inserted into legacy rosbag metadata.
+
+DDS discovery's `history=UNKNOWN` and `depth=0` are unavailable values, not measured publisher queue behavior. New manifests encode those fields as null and distinguish discovery from requested subscriber configuration. Storage-minus-capture also includes delivery lag of the recorder's `/clock`; it is not independent sensor latency or a measured PX4/Gazebo clock offset.
 
 ## Diagnostics, not safety bounds
 
