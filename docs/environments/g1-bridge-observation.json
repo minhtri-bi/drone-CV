@@ -1,0 +1,1053 @@
+{
+  "probe": "read-only G1 environment, never flight acceptance",
+  "control_publishers_created": 0,
+  "arming_commands_sent": 0,
+  "namespace": "/drone_cv_g1",
+  "versions": {
+    "packages": {
+      "exit": 0,
+      "stdout": "libgz-rendering8 8.2.3-1~noble\nlibgz-sim8 8.15.0-1~noble\npx4-gazebo 1.18.0~beta1-noble\nros-jazzy-rclpy 7.1.11-1noble.20260615.133206",
+      "stderr": ""
+    },
+    "firmware": {
+      "exit": 0,
+      "stdout": "HW arch: PX4_SITL\nPX4 git-hash: 61907962c9220437ec01a98fa26bfbf5cbb254b5\nPX4 version: 1.18.0 80 (17956992)\nPX4 git-branch: main\nOS: Linux\nOS version: Release 6.18.33 (101851647)\nBuild datetime: Sep 11 2026 00:55:54\nBuild uri: localhost\nBuild variant: default\nToolchain: GNU GCC, 13.3.0\nUNKNOWN MCU",
+      "stderr": ""
+    }
+  },
+  "assets_sha256": {
+    "share/gz/models/x500_depth/model.sdf": "84d05a5072b49e87ca164ec9be8bda2e58201baf624d6d10f7117a5e6d6bbb5f",
+    "share/gz/models/OakD-Lite/model.sdf": "f8a78a93c19eb3902ec751fc56bf22b389c7528b38f4d5e3a6c177f3548ee070",
+    "share/gz/models/x500/model.sdf": "cb76a4afd439f253a8c516b1fcd3528f80347619cfa46bebb620557054fbf125",
+    "share/gz/models/x500_base/model.sdf": "e807dca3406f7cd5cb3d545898601c3ec17e0e5242e25cf467a69df1812cf436",
+    "share/gz/worlds/default.sdf": "457a363a22c437b788a4aaf1e2335aa149efce4e5b988cdc108065663cd879b2"
+  },
+  "bridge": {
+    "exit": 0,
+    "stdout": "ros_gz_bridge bridge_node\nros_gz_bridge bridge_types\nros_gz_bridge parameter_bridge\nros_gz_bridge static_bridge",
+    "stderr": ""
+  },
+  "ros_source_manifest": "repositories:\n  px4-ros2-interface-lib:\n    type: git\n    url: https://github.com/Auterion/px4-ros2-interface-lib.git\n    version: 22943b5412235d2d36512d58b9073ae3de8fd1cd\n  px4_msgs:\n    type: git\n    url: https://github.com/PX4/px4_msgs.git\n    version: 8fb8277cf95c4ba87094146bc8922e76c4ac0799\n",
+  "depth": {
+    "width": 640,
+    "height": 480,
+    "step_bytes": 2560,
+    "format": "R_FLOAT32",
+    "header": {
+      "stamp": {
+        "sec": "12",
+        "nsec": 608000000
+      },
+      "data": [
+        {
+          "key": "frame_id",
+          "value": [
+            "camera_link"
+          ]
+        },
+        {
+          "key": "seq",
+          "value": [
+            "176"
+          ]
+        }
+      ]
+    },
+    "finite_pixels": 149626,
+    "nan_pixels": 0,
+    "positive_inf_pixels": 157574,
+    "negative_inf_pixels": 0,
+    "finite_min_m": 0.44744744896888733,
+    "finite_max_m": 16.487102508544922,
+    "payload_sha256": "e9b116431701cdd0a3567d4c50cdd500fa1bbd4e52af7da5d4615fda17ed331d",
+    "no_return_semantics_certified": false
+  },
+  "camera_info": {
+    "header": {
+      "stamp": {
+        "sec": "12",
+        "nsec": 740000000
+      },
+      "data": [
+        {
+          "key": "frame_id",
+          "value": [
+            "camera_link"
+          ]
+        }
+      ]
+    },
+    "width": 640,
+    "height": 480,
+    "distortion": {
+      "k": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "intrinsics": {
+      "k": [
+        432.496042035043,
+        0,
+        320,
+        0,
+        432.496042035043,
+        240,
+        0,
+        0,
+        1
+      ]
+    },
+    "projection": {
+      "p": [
+        432.496042035043,
+        0,
+        320,
+        0,
+        0,
+        432.496042035043,
+        240,
+        0,
+        0,
+        0,
+        1,
+        0
+      ]
+    },
+    "rectificationMatrix": [
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1
+    ]
+  },
+  "world_stats": {
+    "simTime": {
+      "sec": "12",
+      "nsec": 876000000
+    },
+    "realTime": {
+      "sec": "57",
+      "nsec": 815151395
+    },
+    "iterations": "3219",
+    "realTimeFactor": 0.03280072742173203,
+    "stepSize": {
+      "nsec": 4000000
+    }
+  },
+  "dds_connection": {
+    "exit": 0,
+    "stdout": "INFO  [uxrce_dds_client] Running, connected\nINFO  [uxrce_dds_client] Using transport:     udp\nINFO  [uxrce_dds_client] Agent IP:            127.0.0.1\nINFO  [uxrce_dds_client] Agent port:          8888\nINFO  [uxrce_dds_client] Custom participant:  no\nINFO  [uxrce_dds_client] Localhost only:      no\nINFO  [uxrce_dds_client] Payload tx:          47429 B/s\nINFO  [uxrce_dds_client] Payload rx:          0 B/s\nINFO  [uxrce_dds_client] timesync converged: false\nuxrce_dds_client: cycle: 6115 events, 9400000us elapsed, 1537.20us avg, min 0us max 20000us 1975.243us rms\nuxrce_dds_client: cycle interval: 6116 events, 1536.95us avg, min 0us max 20000us 1975.081us rms",
+    "stderr": ""
+  },
+  "dds_timestamp_sync_parameter": {
+    "exit": 0,
+    "stdout": "0",
+    "stderr": ""
+  },
+  "dds": {
+    "odometry": {
+      "count": 111,
+      "wall_window_s": 6.009914748999108,
+      "wall_rate_hz": 18.469479957013693,
+      "strictly_increasing_stamps": true,
+      "duplicate_stamps": 0,
+      "backward_events": [],
+      "first": {
+        "timestamp_us": 13208000,
+        "sample_us": 13208000,
+        "pose_frame": 1,
+        "position": [
+          -6.107593071646988e-05,
+          0.023376410827040672,
+          -0.042558178305625916
+        ],
+        "quaternion_wxyz": [
+          0.6696156859397888,
+          -0.00042838187073357403,
+          -0.0007700306014157832,
+          0.7427072525024414
+        ]
+      },
+      "last": {
+        "timestamp_us": 14304000,
+        "sample_us": 14304000,
+        "pose_frame": 1,
+        "position": [
+          0.02759273536503315,
+          0.022242259234189987,
+          -0.024778947234153748
+        ],
+        "quaternion_wxyz": [
+          0.6698336601257324,
+          -0.000762301788199693,
+          -0.0008989105117507279,
+          0.7425102591514587
+        ]
+      }
+    },
+    "status": {
+      "count": 3,
+      "wall_window_s": 6.009914748999108,
+      "wall_rate_hz": 0.499175133973343,
+      "strictly_increasing_stamps": true,
+      "duplicate_stamps": 0,
+      "backward_events": [],
+      "first": {
+        "timestamp_us": 13284000,
+        "arming_state": 1,
+        "armed": false
+      },
+      "last": {
+        "timestamp_us": 14292000,
+        "arming_state": 1,
+        "armed": false
+      }
+    },
+    "all_observed_disarmed": true,
+    "publishers": {
+      "/drone_cv_g1/fmu/out/vehicle_odometry": [
+        {
+          "type": "px4_msgs/msg/VehicleOdometry",
+          "reliability": "BEST_EFFORT",
+          "durability": "TRANSIENT_LOCAL"
+        }
+      ],
+      "/drone_cv_g1/fmu/out/vehicle_status_v4": [
+        {
+          "type": "px4_msgs/msg/VehicleStatus",
+          "reliability": "BEST_EFFORT",
+          "durability": "TRANSIENT_LOCAL"
+        }
+      ]
+    },
+    "ros_camera_topics": [
+      "/drone_cv_g1/camera/depth/camera_info",
+      "/drone_cv_g1/camera/depth/image_raw"
+    ]
+  },
+  "commander_status": {
+    "exit": 0,
+    "stdout": "INFO  [commander] Disarmed\nINFO  [commander] prearm safety: Off\nINFO  [commander] navigation mode: Hold\nINFO  [commander] user intended navigation mode: Hold\nINFO  [commander] in failsafe: no\ncommander: cycle: 898 events, 8000us elapsed, 8.91us avg, min 0us max 8000us 266.963us rms\ncommander: preflight check: 102 events, 0us elapsed, 0.00us avg, min 0us max 0us 0.000us rms",
+    "stderr": ""
+  },
+  "ros_camera": {
+    "checks": {
+      "image_samples": true,
+      "paired_image_camera_info": true,
+      "clock_progress": true,
+      "no_invalid_image": true,
+      "sensor_stamp_in_sim_clock_window": true,
+      "image_optical_frame": true,
+      "camera_info_contract": true,
+      "optical_extrinsics_match_model": true,
+      "node_uses_sim_time": true,
+      "odometry_in_sim_clock_domain": true
+    },
+    "all_checks_pass": true,
+    "wall_window_s": 8.00006896800005,
+    "image_count": 36,
+    "camera_info_count": 45,
+    "paired_count": 35,
+    "image_wall_hz": 4.499961205834416,
+    "image_sim_stamp_first_ns": 14356000000,
+    "image_sim_stamp_last_ns": 15844000000,
+    "clock_first_ns": 14424000000,
+    "clock_last_ns": 15876000000,
+    "odometry_stamp_first_ns": 14888000000,
+    "odometry_stamp_last_ns": 15872000000,
+    "node_ros_time_ns": 15892000000,
+    "last_paired_image": {
+      "width": 640,
+      "height": 480,
+      "encoding": "32FC1",
+      "frame_id": "drone_cv_g1/camera_optical",
+      "step_bytes": 2560,
+      "finite_pixels": 149626,
+      "nan_pixels": 0,
+      "positive_inf_pixels": 157574,
+      "finite_min_m": 0.44744744896888733,
+      "finite_max_m": 16.487102508544922
+    },
+    "last_paired_camera_info": {
+      "width": 640,
+      "height": 480,
+      "frame_id": "drone_cv_g1/camera_optical",
+      "K": [
+        432.496042035043,
+        0.0,
+        320.0,
+        0.0,
+        432.496042035043,
+        240.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "body_to_optical": {
+      "translation": [
+        0.13233,
+        0.0,
+        0.26078
+      ],
+      "quaternion_xyzw": [
+        -0.5,
+        0.5,
+        -0.5,
+        0.5
+      ]
+    },
+    "errors": [],
+    "publishers": {
+      "/drone_cv_g1/camera/depth/image_raw": [
+        {
+          "type": "sensor_msgs/msg/Image",
+          "reliability": "BEST_EFFORT",
+          "durability": "VOLATILE"
+        }
+      ],
+      "/drone_cv_g1/camera/depth/camera_info": [
+        {
+          "type": "sensor_msgs/msg/CameraInfo",
+          "reliability": "BEST_EFFORT",
+          "durability": "VOLATILE"
+        }
+      ],
+      "/clock": [
+        {
+          "type": "rosgraph_msgs/msg/Clock",
+          "reliability": "BEST_EFFORT",
+          "durability": "VOLATILE"
+        }
+      ]
+    },
+    "clock_domain_note": "Gazebo /clock is the only clock source; UXRCE_DDS_SYNCT=0 preserves PX4 simulation timestamps. This observes common-domain stamps, not a capture-time pose interpolation implementation."
+  },
+  "blockers": [],
+  "observation_complete": true,
+  "acceptance_evaluated": false,
+  "scope_note": "Read-only sensor/DDS environment observations, not flight acceptance; capture-time odometry mapping and calibrated control remain later requirements",
+  "observed_at_utc": "2026-11-03T07:03:35.406311+00:00",
+  "probe_exit": 0,
+  "base_image": "px4io/px4-sitl-gazebo-ros2@sha256:2c01c89215a5f541d3a819c1bd2115ff27c9423679f3738dbb4096271d77084b",
+  "derived_image_identifier": "sha256:061a39905d2d84d40859bb46b67048241b6dacf2ed3983889da7f5fd3e718285",
+  "derived_image_config": "sha256:2c1c1ad1a7280451865f9d878acd7ada545c74cb39dad0271028d615954b6e98",
+  "dependency_lock_sha256": "d163a64cac8333fc2296d3376d0f593478d08368d9245a7bac7dc387572efe23",
+  "installed_bridge_closure": {
+    "cppzmq-dev": "4.10.0-1build1",
+    "ros-jazzy-actuator-msgs": "0.0.1-4noble.20260911.102005",
+    "ros-jazzy-gps-msgs": "3.1.1-1noble.20260911.103001",
+    "ros-jazzy-gz-cmake-vendor": "0.0.12-1noble.20260618.173318",
+    "ros-jazzy-gz-math-vendor": "0.0.11-1noble.20260905.031649",
+    "ros-jazzy-gz-msgs-vendor": "0.0.8-1noble.20260905.033532",
+    "ros-jazzy-gz-tools-vendor": "0.0.8-1noble.20260820.143431",
+    "ros-jazzy-gz-transport-vendor": "0.0.9-1noble.20260905.065154",
+    "ros-jazzy-gz-utils-vendor": "0.0.5-1noble.20260618.173807",
+    "ros-jazzy-marine-acoustic-msgs": "2.1.0-2noble.20260911.112832",
+    "ros-jazzy-ros-gz-bridge": "1.0.24-1noble.20260920.234644",
+    "ros-jazzy-ros-gz-interfaces": "1.0.24-1noble.20260911.110630",
+    "ros-jazzy-vision-msgs": "4.1.1-3noble.20260911.140407"
+  },
+  "runtime_identity": {
+    "agent_binary_sha256": "daf20860cbd302d4421d8228cc09c26ab3e18e380ce345fc6948d28aa5428b81",
+    "agent_binary": "/usr/local/bin/MicroXRCEAgent",
+    "architecture": "x86_64",
+    "python": "3.12.3"
+  },
+  "container_policy": {
+    "network": "none",
+    "cpus": 4,
+    "memory_bytes": 6442450944,
+    "capabilities": "ALL dropped",
+    "no_new_privileges": true,
+    "ROS_DOMAIN_ID": 83,
+    "ROS_LOCALHOST_ONLY": 1,
+    "GZ_PARTITION": "drone_cv_g1_simclock_r31",
+    "rendering": "LIBGL_ALWAYS_SOFTWARE=1",
+    "vehicle": "gz_x500_depth",
+    "host_mounts": []
+  },
+  "clock_policy": {
+    "source": "Gazebo /clock",
+    "PX4_PARAM_UXRCE_DDS_SYNCT": 0,
+    "use_sim_time": true,
+    "wall_timestamp_override": false,
+    "documentation": "https://docs.px4.io/main/en/ros2/user_guide.html#ros-gazebo-and-px4-time-synchronization",
+    "startup_override_source": "https://github.com/PX4/PX4-Autopilot/blob/61907962c9220437ec01a98fa26bfbf5cbb254b5/ROMFS/px4fmu_common/init.d-posix/rcS"
+  },
+  "prior_failed_clock_mode_windows": [
+    {
+      "probe": "read-only G1 environment, never flight acceptance",
+      "control_publishers_created": 0,
+      "arming_commands_sent": 0,
+      "namespace": "/drone_cv_g1",
+      "versions": {
+        "packages": {
+          "exit": 0,
+          "stdout": "libgz-rendering8 8.2.3-1~noble\nlibgz-sim8 8.15.0-1~noble\npx4-gazebo 1.18.0~beta1-noble\nros-jazzy-rclpy 7.1.11-1noble.20260615.133206",
+          "stderr": ""
+        },
+        "firmware": {
+          "exit": 0,
+          "stdout": "HW arch: PX4_SITL\nPX4 git-hash: 61907962c9220437ec01a98fa26bfbf5cbb254b5\nPX4 version: 1.18.0 80 (17956992)\nPX4 git-branch: main\nOS: Linux\nOS version: Release 6.18.33 (101851647)\nBuild datetime: Sep 11 2026 00:55:54\nBuild uri: localhost\nBuild variant: default\nToolchain: GNU GCC, 13.3.0\nUNKNOWN MCU",
+          "stderr": ""
+        }
+      },
+      "assets_sha256": {
+        "share/gz/models/x500_depth/model.sdf": "84d05a5072b49e87ca164ec9be8bda2e58201baf624d6d10f7117a5e6d6bbb5f",
+        "share/gz/models/OakD-Lite/model.sdf": "f8a78a93c19eb3902ec751fc56bf22b389c7528b38f4d5e3a6c177f3548ee070",
+        "share/gz/models/x500/model.sdf": "cb76a4afd439f253a8c516b1fcd3528f80347619cfa46bebb620557054fbf125",
+        "share/gz/models/x500_base/model.sdf": "e807dca3406f7cd5cb3d545898601c3ec17e0e5242e25cf467a69df1812cf436",
+        "share/gz/worlds/default.sdf": "457a363a22c437b788a4aaf1e2335aa149efce4e5b988cdc108065663cd879b2"
+      },
+      "bridge": {
+        "exit": 0,
+        "stdout": "ros_gz_bridge bridge_node\nros_gz_bridge bridge_types\nros_gz_bridge parameter_bridge\nros_gz_bridge static_bridge",
+        "stderr": ""
+      },
+      "ros_source_manifest": "repositories:\n  px4-ros2-interface-lib:\n    type: git\n    url: https://github.com/Auterion/px4-ros2-interface-lib.git\n    version: 22943b5412235d2d36512d58b9073ae3de8fd1cd\n  px4_msgs:\n    type: git\n    url: https://github.com/PX4/px4_msgs.git\n    version: 8fb8277cf95c4ba87094146bc8922e76c4ac0799\n",
+      "depth": {
+        "width": 640,
+        "height": 480,
+        "step_bytes": 2560,
+        "format": "R_FLOAT32",
+        "header": {
+          "stamp": {
+            "sec": "13",
+            "nsec": 300000000
+          },
+          "data": [
+            {
+              "key": "frame_id",
+              "value": [
+                "camera_link"
+              ]
+            },
+            {
+              "key": "seq",
+              "value": [
+                "236"
+              ]
+            }
+          ]
+        },
+        "finite_pixels": 149626,
+        "nan_pixels": 0,
+        "positive_inf_pixels": 157574,
+        "negative_inf_pixels": 0,
+        "finite_min_m": 0.44744744896888733,
+        "finite_max_m": 16.487102508544922,
+        "payload_sha256": "e9b116431701cdd0a3567d4c50cdd500fa1bbd4e52af7da5d4615fda17ed331d",
+        "no_return_semantics_certified": false
+      },
+      "camera_info": {
+        "header": {
+          "stamp": {
+            "sec": "13",
+            "nsec": 400000000
+          },
+          "data": [
+            {
+              "key": "frame_id",
+              "value": [
+                "camera_link"
+              ]
+            }
+          ]
+        },
+        "width": 640,
+        "height": 480,
+        "distortion": {
+          "k": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "intrinsics": {
+          "k": [
+            432.496042035043,
+            0,
+            320,
+            0,
+            432.496042035043,
+            240,
+            0,
+            0,
+            1
+          ]
+        },
+        "projection": {
+          "p": [
+            432.496042035043,
+            0,
+            320,
+            0,
+            0,
+            432.496042035043,
+            240,
+            0,
+            0,
+            0,
+            1,
+            0
+          ]
+        },
+        "rectificationMatrix": [
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1
+        ]
+      },
+      "world_stats": {
+        "simTime": {
+          "sec": "13",
+          "nsec": 536000000
+        },
+        "realTime": {
+          "sec": "63",
+          "nsec": 887258364
+        },
+        "iterations": "3384",
+        "realTimeFactor": 0.03413673251440393,
+        "stepSize": {
+          "nsec": 4000000
+        }
+      },
+      "dds": {
+        "odometry": {
+          "count": 112,
+          "wall_window_s": 6.00327518999984,
+          "wall_rate_hz": 18.656482745713173,
+          "strictly_increasing_stamps": false,
+          "first": {
+            "timestamp_us": 1793688706756250,
+            "sample_us": 1793688706752250,
+            "pose_frame": 1,
+            "position": [
+              0.00795956514775753,
+              -0.027122754603624344,
+              0.09040547907352448
+            ],
+            "quaternion_wxyz": [
+              0.6642608046531677,
+              0.002334832213819027,
+              -0.0008231124375015497,
+              0.7474968433380127
+            ]
+          },
+          "last": {
+            "timestamp_us": 1793688707872250,
+            "sample_us": 1793688707872250,
+            "pose_frame": 1,
+            "position": [
+              -0.00047938540228642523,
+              -0.010428235866129398,
+              0.09250818192958832
+            ],
+            "quaternion_wxyz": [
+              0.6642749309539795,
+              0.0026495158672332764,
+              -0.0009132379782386124,
+              0.7474831342697144
+            ]
+          }
+        },
+        "status": {
+          "count": 2,
+          "wall_window_s": 6.00327518999984,
+          "wall_rate_hz": 0.33315147760202096,
+          "strictly_increasing_stamps": true,
+          "first": {
+            "timestamp_us": 1793688706972250,
+            "arming_state": 1,
+            "armed": false
+          },
+          "last": {
+            "timestamp_us": 1793688707476250,
+            "arming_state": 1,
+            "armed": false
+          }
+        },
+        "all_observed_disarmed": true,
+        "publishers": {
+          "/drone_cv_g1/fmu/out/vehicle_odometry": [
+            {
+              "type": "px4_msgs/msg/VehicleOdometry",
+              "reliability": "BEST_EFFORT",
+              "durability": "TRANSIENT_LOCAL"
+            }
+          ],
+          "/drone_cv_g1/fmu/out/vehicle_status_v4": [
+            {
+              "type": "px4_msgs/msg/VehicleStatus",
+              "reliability": "BEST_EFFORT",
+              "durability": "TRANSIENT_LOCAL"
+            }
+          ]
+        },
+        "ros_camera_topics": [
+          "/drone_cv_g1/camera/depth/camera_info",
+          "/drone_cv_g1/camera/depth/image_raw"
+        ]
+      },
+      "commander_status": {
+        "exit": 0,
+        "stdout": "INFO  [commander] Disarmed\nINFO  [commander] prearm safety: Off\nINFO  [commander] navigation mode: Hold\nINFO  [commander] user intended navigation mode: Hold\nINFO  [commander] in failsafe: no\ncommander: cycle: 997 events, 36000us elapsed, 36.11us avg, min 0us max 8000us 455.555us rms\ncommander: preflight check: 114 events, 8000us elapsed, 70.18us avg, min 0us max 4000us 527.464us rms",
+        "stderr": ""
+      },
+      "ros_camera": {
+        "checks": {
+          "image_samples": true,
+          "paired_image_camera_info": true,
+          "clock_progress": true,
+          "no_invalid_image": true,
+          "sensor_stamp_in_sim_clock_window": true,
+          "image_optical_frame": true,
+          "camera_info_contract": true,
+          "optical_extrinsics_match_model": true,
+          "node_uses_sim_time": true
+        },
+        "all_checks_pass": true,
+        "wall_window_s": 8.001794711999537,
+        "image_count": 40,
+        "camera_info_count": 47,
+        "paired_count": 40,
+        "image_wall_hz": 4.998878556583784,
+        "image_sim_stamp_first_ns": 15148000000,
+        "image_sim_stamp_last_ns": 16668000000,
+        "clock_first_ns": 15216000000,
+        "clock_last_ns": 16724000000,
+        "node_ros_time_ns": 16728000000,
+        "last_paired_image": {
+          "width": 640,
+          "height": 480,
+          "encoding": "32FC1",
+          "frame_id": "drone_cv_g1/camera_optical",
+          "step_bytes": 2560,
+          "finite_pixels": 149626,
+          "nan_pixels": 0,
+          "positive_inf_pixels": 157574,
+          "finite_min_m": 0.44744744896888733,
+          "finite_max_m": 16.487102508544922
+        },
+        "last_paired_camera_info": {
+          "width": 640,
+          "height": 480,
+          "frame_id": "drone_cv_g1/camera_optical",
+          "K": [
+            432.496042035043,
+            0.0,
+            320.0,
+            0.0,
+            432.496042035043,
+            240.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "body_to_optical": {
+          "translation": [
+            0.13233,
+            0.0,
+            0.26078
+          ],
+          "quaternion_xyzw": [
+            -0.5,
+            0.5,
+            -0.5,
+            0.5
+          ]
+        },
+        "errors": [],
+        "publishers": {
+          "/drone_cv_g1/camera/depth/image_raw": [
+            {
+              "type": "sensor_msgs/msg/Image",
+              "reliability": "BEST_EFFORT",
+              "durability": "VOLATILE"
+            }
+          ],
+          "/drone_cv_g1/camera/depth/camera_info": [
+            {
+              "type": "sensor_msgs/msg/CameraInfo",
+              "reliability": "BEST_EFFORT",
+              "durability": "VOLATILE"
+            }
+          ],
+          "/clock": [
+            {
+              "type": "rosgraph_msgs/msg/Clock",
+              "reliability": "BEST_EFFORT",
+              "durability": "VOLATILE"
+            }
+          ]
+        },
+        "clock_domain_note": "ROS camera/clock are Gazebo sim time; raw PX4 DDS timestamps remain a separate domain. Capture-time odometry mapping is a later adapter requirement."
+      },
+      "blockers": [
+        "no advancing DDS odometry"
+      ],
+      "observation_complete": false,
+      "acceptance_evaluated": false,
+      "scope_note": "Read-only sensor/DDS environment observations, not flight acceptance; capture-time odometry mapping and calibrated control remain later requirements",
+      "probe_exit": 2
+    },
+    {
+      "probe": "read-only G1 environment, never flight acceptance",
+      "control_publishers_created": 0,
+      "arming_commands_sent": 0,
+      "namespace": "/drone_cv_g1",
+      "versions": {
+        "packages": {
+          "exit": 0,
+          "stdout": "libgz-rendering8 8.2.3-1~noble\nlibgz-sim8 8.15.0-1~noble\npx4-gazebo 1.18.0~beta1-noble\nros-jazzy-rclpy 7.1.11-1noble.20260615.133206",
+          "stderr": ""
+        },
+        "firmware": {
+          "exit": 0,
+          "stdout": "HW arch: PX4_SITL\nPX4 git-hash: 61907962c9220437ec01a98fa26bfbf5cbb254b5\nPX4 version: 1.18.0 80 (17956992)\nPX4 git-branch: main\nOS: Linux\nOS version: Release 6.18.33 (101851647)\nBuild datetime: Sep 11 2026 00:55:54\nBuild uri: localhost\nBuild variant: default\nToolchain: GNU GCC, 13.3.0\nUNKNOWN MCU",
+          "stderr": ""
+        }
+      },
+      "assets_sha256": {
+        "share/gz/models/x500_depth/model.sdf": "84d05a5072b49e87ca164ec9be8bda2e58201baf624d6d10f7117a5e6d6bbb5f",
+        "share/gz/models/OakD-Lite/model.sdf": "f8a78a93c19eb3902ec751fc56bf22b389c7528b38f4d5e3a6c177f3548ee070",
+        "share/gz/models/x500/model.sdf": "cb76a4afd439f253a8c516b1fcd3528f80347619cfa46bebb620557054fbf125",
+        "share/gz/models/x500_base/model.sdf": "e807dca3406f7cd5cb3d545898601c3ec17e0e5242e25cf467a69df1812cf436",
+        "share/gz/worlds/default.sdf": "457a363a22c437b788a4aaf1e2335aa149efce4e5b988cdc108065663cd879b2"
+      },
+      "bridge": {
+        "exit": 0,
+        "stdout": "ros_gz_bridge bridge_node\nros_gz_bridge bridge_types\nros_gz_bridge parameter_bridge\nros_gz_bridge static_bridge",
+        "stderr": ""
+      },
+      "ros_source_manifest": "repositories:\n  px4-ros2-interface-lib:\n    type: git\n    url: https://github.com/Auterion/px4-ros2-interface-lib.git\n    version: 22943b5412235d2d36512d58b9073ae3de8fd1cd\n  px4_msgs:\n    type: git\n    url: https://github.com/PX4/px4_msgs.git\n    version: 8fb8277cf95c4ba87094146bc8922e76c4ac0799\n",
+      "depth": {
+        "width": 640,
+        "height": 480,
+        "step_bytes": 2560,
+        "format": "R_FLOAT32",
+        "header": {
+          "stamp": {
+            "sec": "53",
+            "nsec": 132000000
+          },
+          "data": [
+            {
+              "key": "frame_id",
+              "value": [
+                "camera_link"
+              ]
+            },
+            {
+              "key": "seq",
+              "value": [
+                "1443"
+              ]
+            }
+          ]
+        },
+        "finite_pixels": 149626,
+        "nan_pixels": 0,
+        "positive_inf_pixels": 157574,
+        "negative_inf_pixels": 0,
+        "finite_min_m": 0.44744744896888733,
+        "finite_max_m": 16.487102508544922,
+        "payload_sha256": "e9b116431701cdd0a3567d4c50cdd500fa1bbd4e52af7da5d4615fda17ed331d",
+        "no_return_semantics_certified": false
+      },
+      "camera_info": {
+        "header": {
+          "stamp": {
+            "sec": "53",
+            "nsec": 264000000
+          },
+          "data": [
+            {
+              "key": "frame_id",
+              "value": [
+                "camera_link"
+              ]
+            }
+          ]
+        },
+        "width": 640,
+        "height": 480,
+        "distortion": {
+          "k": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "intrinsics": {
+          "k": [
+            432.496042035043,
+            0,
+            320,
+            0,
+            432.496042035043,
+            240,
+            0,
+            0,
+            1
+          ]
+        },
+        "projection": {
+          "p": [
+            432.496042035043,
+            0,
+            320,
+            0,
+            0,
+            432.496042035043,
+            240,
+            0,
+            0,
+            0,
+            1,
+            0
+          ]
+        },
+        "rectificationMatrix": [
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1
+        ]
+      },
+      "world_stats": {
+        "simTime": {
+          "sec": "53",
+          "nsec": 392000000
+        },
+        "realTime": {
+          "sec": "271",
+          "nsec": 801427645
+        },
+        "iterations": "13348",
+        "realTimeFactor": 0.9989643237373653,
+        "stepSize": {
+          "nsec": 4000000
+        }
+      },
+      "dds_connection": {
+        "exit": 0,
+        "stdout": "INFO  [uxrce_dds_client] Running, connected\nINFO  [uxrce_dds_client] Using transport:     udp\nINFO  [uxrce_dds_client] Agent IP:            127.0.0.1\nINFO  [uxrce_dds_client] Agent port:          8888\nINFO  [uxrce_dds_client] Custom participant:  no\nINFO  [uxrce_dds_client] Localhost only:      no\nINFO  [uxrce_dds_client] Payload tx:          47666 B/s\nINFO  [uxrce_dds_client] Payload rx:          0 B/s\nINFO  [uxrce_dds_client] timesync converged: false\nuxrce_dds_client: cycle: 29646 events, 45928000us elapsed, 1549.21us avg, min 0us max 28000us 1970.882us rms\nuxrce_dds_client: cycle interval: 29647 events, 1549.43us avg, min 0us max 28000us 1971.178us rms",
+        "stderr": ""
+      },
+      "dds": {
+        "odometry": {
+          "count": 122,
+          "wall_window_s": 6.008127824000439,
+          "wall_rate_hz": 20.305826302937703,
+          "strictly_increasing_stamps": true,
+          "duplicate_stamps": 0,
+          "backward_events": [],
+          "first": {
+            "timestamp_us": 1793688938928121,
+            "sample_us": 1793688938928121,
+            "pose_frame": 1,
+            "position": [
+              0.03353714570403099,
+              -0.00962985772639513,
+              0.07873786985874176
+            ],
+            "quaternion_wxyz": [
+              0.6641693115234375,
+              0.002285953611135483,
+              -0.0011872861068695784,
+              0.7475778460502625
+            ]
+          },
+          "last": {
+            "timestamp_us": 1793688940994784,
+            "sample_us": 1793688940994784,
+            "pose_frame": 1,
+            "position": [
+              0.03898727893829346,
+              -0.01623115874826908,
+              -0.04783794283866882
+            ],
+            "quaternion_wxyz": [
+              0.6641690135002136,
+              0.002337516751140356,
+              -0.0011414496693760157,
+              0.747577965259552
+            ]
+          }
+        },
+        "status": {
+          "count": 2,
+          "wall_window_s": 6.008127824000439,
+          "wall_rate_hz": 0.33288239840881484,
+          "strictly_increasing_stamps": true,
+          "duplicate_stamps": 0,
+          "backward_events": [],
+          "first": {
+            "timestamp_us": 1793688940166784,
+            "arming_state": 1,
+            "armed": false
+          },
+          "last": {
+            "timestamp_us": 1793688940674784,
+            "arming_state": 1,
+            "armed": false
+          }
+        },
+        "all_observed_disarmed": true,
+        "publishers": {
+          "/drone_cv_g1/fmu/out/vehicle_odometry": [
+            {
+              "type": "px4_msgs/msg/VehicleOdometry",
+              "reliability": "BEST_EFFORT",
+              "durability": "TRANSIENT_LOCAL"
+            }
+          ],
+          "/drone_cv_g1/fmu/out/vehicle_status_v4": [
+            {
+              "type": "px4_msgs/msg/VehicleStatus",
+              "reliability": "BEST_EFFORT",
+              "durability": "TRANSIENT_LOCAL"
+            }
+          ]
+        },
+        "ros_camera_topics": [
+          "/drone_cv_g1/camera/depth/camera_info",
+          "/drone_cv_g1/camera/depth/image_raw"
+        ]
+      },
+      "commander_status": {
+        "exit": 0,
+        "stdout": "INFO  [commander] Disarmed\nINFO  [commander] prearm safety: Off\nINFO  [commander] navigation mode: Hold\nINFO  [commander] user intended navigation mode: Hold\nINFO  [commander] in failsafe: no\ncommander: cycle: 4306 events, 52000us elapsed, 12.08us avg, min 0us max 8000us 265.461us rms\ncommander: preflight check: 483 events, 8000us elapsed, 16.56us avg, min 0us max 4000us 257.129us rms",
+        "stderr": ""
+      },
+      "ros_camera": {
+        "checks": {
+          "image_samples": true,
+          "paired_image_camera_info": true,
+          "clock_progress": true,
+          "no_invalid_image": true,
+          "sensor_stamp_in_sim_clock_window": true,
+          "image_optical_frame": true,
+          "camera_info_contract": true,
+          "optical_extrinsics_match_model": true,
+          "node_uses_sim_time": true
+        },
+        "all_checks_pass": true,
+        "wall_window_s": 8.011124495000331,
+        "image_count": 43,
+        "camera_info_count": 49,
+        "paired_count": 43,
+        "image_wall_hz": 5.367536108924022,
+        "image_sim_stamp_first_ns": 54848000000,
+        "image_sim_stamp_last_ns": 56400000000,
+        "clock_first_ns": 54852000000,
+        "clock_last_ns": 56432000000,
+        "node_ros_time_ns": 56432000000,
+        "last_paired_image": {
+          "width": 640,
+          "height": 480,
+          "encoding": "32FC1",
+          "frame_id": "drone_cv_g1/camera_optical",
+          "step_bytes": 2560,
+          "finite_pixels": 149626,
+          "nan_pixels": 0,
+          "positive_inf_pixels": 157574,
+          "finite_min_m": 0.44744744896888733,
+          "finite_max_m": 16.487102508544922
+        },
+        "last_paired_camera_info": {
+          "width": 640,
+          "height": 480,
+          "frame_id": "drone_cv_g1/camera_optical",
+          "K": [
+            432.496042035043,
+            0.0,
+            320.0,
+            0.0,
+            432.496042035043,
+            240.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "body_to_optical": {
+          "translation": [
+            0.13233,
+            0.0,
+            0.26078
+          ],
+          "quaternion_xyzw": [
+            -0.5,
+            0.5,
+            -0.5,
+            0.5
+          ]
+        },
+        "errors": [],
+        "publishers": {
+          "/drone_cv_g1/camera/depth/image_raw": [
+            {
+              "type": "sensor_msgs/msg/Image",
+              "reliability": "BEST_EFFORT",
+              "durability": "VOLATILE"
+            }
+          ],
+          "/drone_cv_g1/camera/depth/camera_info": [
+            {
+              "type": "sensor_msgs/msg/CameraInfo",
+              "reliability": "BEST_EFFORT",
+              "durability": "VOLATILE"
+            }
+          ],
+          "/clock": [
+            {
+              "type": "rosgraph_msgs/msg/Clock",
+              "reliability": "BEST_EFFORT",
+              "durability": "VOLATILE"
+            }
+          ]
+        },
+        "clock_domain_note": "ROS camera/clock are Gazebo sim time; raw PX4 DDS timestamps remain a separate domain. Capture-time odometry mapping is a later adapter requirement."
+      },
+      "blockers": [
+        "DDS time synchronization is not converged"
+      ],
+      "observation_complete": false,
+      "acceptance_evaluated": false,
+      "scope_note": "Read-only sensor/DDS environment observations, not flight acceptance; capture-time odometry mapping and calibrated control remain later requirements"
+    }
+  ],
+  "prior_failures_note": "Both windows used default OS-clock DDS time synchronization while ROS used Gazebo /clock. Kept as failed observations, not passing trials. First did not record per-event duplicate/backstep detail; no attribution beyond its observed failure is claimed. Final run changed the documented clock mode and checked raw odometry against /clock.",
+  "gate_scope": "g1-environment only; no oracle/supervisor/flight/calibration acceptance; no camera +Inf free-space certificate",
+  "cleanup": "Owned runtime and resolver containers stopped and removed after observation; Docker Desktop and images retained."
+}
