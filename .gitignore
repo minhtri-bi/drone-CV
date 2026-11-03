@@ -1,0 +1,3 @@
+# Native roadmap JSON is canonical and tracked; views/locks are local.
+.omp/roadmap/*
+!.omp/roadmap/roadmap.json

@@ -15,6 +15,8 @@ Không dùng LLM điều khiển drone trong control loop. State machine, planne
 
 Không được đổi tên thiết kế thành “harness đã chạy”. Không dùng Markdown gate làm bảo đảm kỹ thuật: chỉ runner/CI thật mới enforce được.
 
+Contract [SAFETY.md](SAFETY.md) là bổ sung bắt buộc: contact/clearance theo phase, suite membership trước run, unsafe latch, finite deadlines và oracle/supervisor có trước flight.
+
 ## 3. Coding-agent workflow
 
 ### Task contract
@@ -58,10 +60,11 @@ Tối đa ba lần sửa cho cùng một failure mà không có bằng chứng n
 | Slice | Sản phẩm phải chạy được | Evidence để nhận |
 | --- | --- | --- |
 | H0 / G0 | Pure NumPy projection/frame transforms/validity/histogram và braking API, không ROS | Đáp án analytic ở optical/body/world frame; invalid/near/far, vật mảnh, wrap, braking biên; chạy fixture qua API thật |
-| H1 / G1 | Linux environment manifest + camera/odom/ack probe + mission trống | Versions/clock/QoS/TF thật; bag, ULog; arm/takeoff/square/hold/land/disarm và mất heartbeat |
-| H2 / G2 | Replay perception trên bag + evidence/coverage trace | 10/10 wall-stop có logs, near evidence không bị filter xoá, dữ liệu mới/cũ được phân biệt |
-| H3a / G3 | Single-world runner và oracle ground truth, không cần random đầu tiên | Known-contact/known-free calibration; một run wall/corridor tự chấm được, restart/cleanup đúng ownership |
-| H3b / G3 | Fault injector + supervisor/recovery + batch seeded worlds | Các case A–D/E/F đúng scope, manifest mỗi attempt, report không thiếu seed |
+| H1a / G1 | Environment probe không arm; oracle/logger + supervisor/bridge tối thiểu trước flight | Clock/QoS/TF/versions; known-contact/free, phase allowlist, ownership/TTL và log sống |
+| H1b / G1 | Mission bootstrap trong known-clear volume rồi calibration braking/delay và fault handoff | Bag/ULog; arm/takeoff/square/hold/land/disarm; bounds/deadlines gắn config/workload; bootstrap không cộng navigation success |
+| H2 / G2 | Replay perception trên bag, rồi wall-stop dùng oracle và supervisor đã qua G1 | 10/10 wall-stop có logs, near evidence không bị filter xoá, dữ liệu mới/cũ được phân biệt |
+| H3a / G3 | Single-world runner dùng lại oracle G1, thêm lifecycle/fault injection | Một run wall/corridor tự chấm được; mọi nhánh bounded collect/cleanup đúng ownership |
+| H3b / G3 | Bounded planner/recovery + batch seeded worlds | Các case A–D/E/F đúng suite; manifest mỗi attempt, unsafe latch và report không thiếu seed |
 | H4 / G4 | Stereo/model adapter cùng input/output contract | Scale/focal/near-overestimation gate offline trước flight; so cùng seeds và measured latency |
 
 Không xây scheduler/distributed fleet/dashboard trước khi H3a có oracle hoạt động. H0 có thể làm ở Windows; H1 trở đi cần môi trường Linux được xác nhận.
@@ -108,25 +111,26 @@ stateDiagram-v2
     VALIDATE --> START: World hợp lệ
     START --> HEALTH: Khởi tạo process của run
     HEALTH --> EXECUTE: Sensor + oracle + safety sẵn sàng
-    HEALTH --> INFRA_ERROR: Prerequisite/deadline lỗi
+    HEALTH --> COLLECT: Prerequisite/deadline lỗi
     EXECUTE --> COLLECT: Goal hoặc outcome terminal
     EXECUTE --> COLLECT: Mission timeout hoặc unsafe event
-    EXECUTE --> INFRA_ERROR: Mất simulator/oracle
+    EXECUTE --> COLLECT: Mất simulator/oracle
     COLLECT --> CLASSIFY: Flush bag + ULog + trace
     CLASSIFY --> CLEANUP
-    INFRA_ERROR --> CLEANUP
     INVALID_WORLD --> [*]
     CLEANUP --> [*]
 ```
 
 Executor không tự quyết success. Evaluator lấy geometry/contact từ Gazebo hoặc oracle geometry độc lập đã calibrate; status/odom từ PX4 để kiểm tra handoff. Missing telemetry không có nghĩa zero collision.
 
+COLLECT là best-effort có deadline cho mọi nhánh terminal, không chỉ success. Ghi failure ban đầu trước khi thu log; lỗi collect/cleanup thêm reason chứ không ghi đè collision.
+
 ### Input tối thiểu
 
 | Nhóm | Fields cần có và nghĩa |
 | --- | --- |
 | Experiment | schema version, experiment ID, source revision, dirty flag, suite/gate, config hash, environment record |
-| Scenario | scenario ID, world seed, noise seed, asset/world hash, start/goal ENU, footprint, geofence, expected outcome class |
+| Scenario | scenario ID, suite membership, world/noise seed, asset/world hash, start/goal ENU, physical/planning envelope, support-contact pair/phase allowlist, geofence, expected outcome class |
 | Run | run ID, attempt index, namespace/domain/ports, process ownership, sim epoch, wall start/end và sim start/end |
 | Policy | frozen seed set, validity validator revision, timeouts, speed/clearance limits, depth/command deadlines, retry cap |
 
@@ -142,18 +146,22 @@ World seed và noise seed phải riêng. Run ID/attempt không ghi đè file cũ
 
 Depth source/model không được thấy ground-truth distance để tự sửa online. Sim odometry được dùng trong giai đoạn lõi nhưng phải ghi rõ là localization lý tưởng, không gọi đó là VIO.
 
+### Safety outcome không gộp với execution outcome
+
+Giữ `safety_outcome` và `execution_outcome` riêng theo SAFETY S03. `UNSAFE_OBSERVED` được latch toàn attempt, kể cả nếu execution sau đó là `INFRA_ERROR`. `NO_VIOLATION_OBSERVED` chỉ cho phép success/safe abort khi observer đủ coverage và telemetry. Thiếu observer là `UNKNOWN`, không phải “an toàn”.
+
 ### Kết quả và exit contract
 
 | Outcome | Khi dùng | Có cộng navigation success? |
 | --- | --- | --- |
-| `SUCCESS` | Goal hold + mission kết thúc đúng, không vi phạm an toàn, telemetry đủ | Có |
-| `SAFE_ABORT` | Không hoàn thành goal nhưng dừng/handoff đúng contract, không vi phạm | Không |
-| `UNSAFE_FAIL` | Contact, clearance/geofence violation, lật hoặc mất kiểm soát quan sát được | Không |
-| `TASK_FAIL` | Timeout/không hoàn thành mà chưa có unsafe event; log đủ | Không |
-| `INFRA_ERROR` | Simulator/oracle/recording không đủ để chấm | Không; báo riêng, batch acceptance incomplete |
+| `SUCCESS` | Completed đúng goal/termination, observer đủ, không unsafe toàn trial; contact/clearance theo phase contract | Có |
+| `SAFE_ABORT` | Không hoàn thành goal nhưng dừng/handoff đúng, observer đủ và không vi phạm | Không |
+| `UNSAFE_FAIL` | Primary label cho unsafe đã latch: contact không allowlist, phase-clearance/geofence violation, lật/mất kiểm soát | Không; giữ cả execution/infra reasons |
+| `TASK_FAIL` | Timeout/không hoàn thành, chưa có unsafe event và log đủ | Không |
+| `INFRA_ERROR` | Simulator/oracle/recording không đủ để chấm; không xoá unsafe event đã biết | Không; batch incomplete nếu chưa có failure đủ kết luận |
 | `INVALID_WORLD` | Validator loại trước khi thực hiện trial | Không; báo generator rejection |
 
-Negative safety scenario có `expected_outcome` và oracle riêng; `SAFE_ABORT` có thể pass scenario đó nhưng vẫn không là mission success. Lỗi không được rơi về success mặc định.
+Negative safety và stress-diagnostic có suite membership/expected outcome đóng băng trước run theo SAFETY S04. PASS test phân loại không biến collision stress thành navigation success; không đổi suite sau failure. Chỉ navigation suite áp mục tiêu 45/50 và zero unsafe. Lỗi không được rơi về success mặc định.
 
 CLI evaluator khi được viết phải phân biệt: `0` pass toàn bộ gate, `1` failure quan sát được, `2` invalid/incomplete evidence hoặc infra. Aggregate có unsafe event ưu tiên failure; nếu không có failure nhưng thiếu trial thì vẫn không pass.
 
@@ -168,8 +176,8 @@ Report tối thiểu: numerator/denominator, Wilson CI, outcome counts, missing/
 - Docs-only hiện tại: PDF readback/provenance, local links, coverage 30+35 scenario và đối chiếu nguồn. Không có runtime test để báo green.
 - H0: unit/regression hành vi và offline smoke không cần simulator.
 - H1–H3: test phần thay đổi cộng SITL smoke đúng scenario. Nếu thiếu môi trường thì không merge với tuyên bố đã đạt flight gate.
-- Acceptance G3: 50 test worlds hợp lệ đóng băng, ≥45 success, không unsafe event, clearance ≥0.5 m, performance gates, đủ required scenario và không trial thiếu.
-- Acceptance G4: ≥40/50 như PDF, nhưng không hạ gate collision/clearance. Đổi depth source làm mất hiệu lực bằng chứng G3 cho source đó cho đến khi rerun.
+- Acceptance G3: 50 frozen navigation worlds hợp lệ, ≥45 success, zero unsafe, navigation clearance ≥0.5 m theo phase contract, performance gates, đủ required scenario theo suite và không trial thiếu.
+- Acceptance G4: mỗi source được công bố đạt ≥40/50 như PDF, không hạ contact/phase-clearance gate. Đổi source làm mất hiệu lực bằng chứng G3 cho source đó đến khi rerun.
 - Người dùng quyết định thay mục tiêu/phạm vi hoặc chuyển sang hardware. Một PR tài liệu được merge không đồng nghĩa hệ thống bay đã được chấp nhận.
 
 ## 8. Lệnh giao task đầu tiên

@@ -4,21 +4,30 @@ Drone tránh vật cản bằng computer vision, **mô phỏng trước** với 
 
 ## Trạng thái
 
-Repo hiện có plan, phân tích rủi ro và đặc tả harness. **Chưa có flight runtime, simulator launcher, evaluator hay CI.**
+Repo có plan, contract an toàn đã sửa, router skills OMP và native roadmap. **Chưa có flight runtime, simulator launcher, evaluator hay CI.**
 
-Mục tiêu lõi: ≥45/50 world test hợp lệ tới đích, không va chạm, clearance ≥0.5 m và bộ edge case bắt buộc.
+Mục tiêu lõi: ≥45/50 frozen navigation worlds tới đích, zero unsafe, navigation clearance ≥0.5 m theo phase contract.
 Đây là mục tiêu chưa đạt, không phải kết quả benchmark.
 
 ## Đọc theo thứ tự
 
 1. [Plan triển khai đã hiệu chỉnh](docs/PLAN.md): phạm vi, kiến trúc, contracts, gate G0–G5.
-2. [Phản biện và nguồn chính thức](docs/REVIEW.md): lỗi/rủi ro còn lại trong plan gốc.
-3. [65 scenario và oracle](docs/SCENARIOS.md): 30 case gốc + 35 case bổ sung, chưa chạy.
-4. [Harness phát triển và đánh giá](docs/HARNESS.md): agent workflow, runner/evaluator contract, Git gates và task đầu tiên.
-5. [Hướng dẫn agent cho repo](.omp/AGENTS.md): bất biến an toàn và phạm vi tự động hoá.
+2. [Contract an toàn S01–S08](docs/SAFETY.md): contact/clearance theo phase, unsafe latch, coverage và dependency đã sửa.
+3. [Phản biện và nguồn chính thức](docs/REVIEW.md): rủi ro từ plan gốc và các sửa contract tiếp theo.
+4. [65 scenario và oracle](docs/SCENARIOS.md): 30 case gốc + 35 bổ sung, chưa chạy.
+5. [Harness phát triển và đánh giá](docs/HARNESS.md): agent workflow, runner/evaluator contract và Git gates.
+6. [Skills OMP và roadmap](docs/OMP.md): 10 skills nạp theo trigger, không cài thêm bundle.
+7. [Hướng dẫn agent cho repo](.omp/AGENTS.md): bất biến và phạm vi tự động hoá.
 
 [PDF gốc, giữ nguyên byte](docs/source/drone-obstacle-avoidance-plan.pdf).
 Nguồn, checksum và quan hệ giữa PDF/bản sửa được ghi trong plan.
+
+## Roadmap trong OMP
+
+27 task có dependency và acceptance tại [state canonical](.omp/roadmap/roadmap.json).
+Dùng `/roadmap status` hoặc `/roadmap view` trong OMP; canvas offline được sinh tự động, không sửa HTML.
+Chỉ phần chuẩn bị đã hoàn tất; mọi task triển khai G0–G4 và decision G5 còn pending.
+Đây là roadmap hoàn chỉnh cho phạm vi mô phỏng, không phải ước lượng phần trăm công sức hay chứng nhận bay.
 
 ## Bước triển khai đầu tiên
 
