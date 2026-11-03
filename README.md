@@ -62,12 +62,20 @@ Ba scene thật qua API: wall 6 m, dây ngang một hàng pixel ở 2 m, và unk
 2. Đọc [REP-103](https://www.ros.org/reps/rep-0103.html) và [REP-118](https://www.ros.org/reps/rep-0118.html), đối chiếu `tests/test_geometry.py`.
 3. Đọc công thức braking trong PLAN rồi chạy `tests/test_safety.py` và demo; so output scene wall/wire/unknown.
 
-## Bước tiếp theo: G1
+## G1: đã chạy smoke không arm, gate còn blocked
 
-Đã probe host: Windows Python chạy G0; WSL Ubuntu có, nhưng không thấy `ros2`, `gz`, `px4`, `MicroXRCEAgent` trên PATH hoặc `/opt/ros/jazzy`.
-Docker client có, nhưng Linux engine named pipe không tồn tại. Task `g1-environment` đang blocked; chưa pull image, cài tool hoặc sửa cấu hình máy.
-G1 cần operator khởi động Linux engine và cho phép tải image, hoặc cung cấp môi trường Linux đã cài stack.
-Lệnh smoke image trong harness vẫn **chưa chạy**. Không coi WSL có mặt là flight stack đã sẵn sàng.
+Sau khi người dùng cho phép mở Docker Desktop và tải image, đã chạy đúng digest ở Linux/amd64, container `--network none`, 4 CPU/6 GiB, software rendering, không host mount và không control publisher.
+
+- PX4 package `1.18.0~beta1-noble`, firmware commit `61907962c9220437ec01a98fa26bfbf5cbb254b5`; Gazebo Sim `8.15.0`; ROS 2 Jazzy.
+- Model `gz_x500_depth` thật; depth Gazebo `R_FLOAT32` 640×480, CameraInfo và `/clock` có dữ liệu.
+- DDS `/drone_cv_g1/fmu/out/vehicle_odometry` có timestamp tăng; status quan sát đều **Disarmed**. QoS publisher BEST_EFFORT/TRANSIENT_LOCAL.
+- Thiếu `ros_gz_bridge` trong image: chưa có camera/CameraInfo/clock ROS, chưa xác minh camera QoS hoặc alignment frame/time. **Không đánh dấu G1 done.**
+- Depth camera cấu hình 30 Hz sim-time nhưng các cửa sổ wall-time thực chỉ khoảng 6 Hz trong cấu hình CPU thử; RTF thấp. Đây là smoke, chưa là profile hoặc calibration.
+
+[Environment evidence](docs/environments/g1-observation.json) giữ version, model hashes, sensor metadata và blocker. Không có flight acceptance hay chứng nhận `+Inf` sensor luôn là free.
+`scripts/g1_probe.py` là observer chỉ đọc, chạy **bên trong container có Agent/PX4/Gazebo đang chạy**, sau khi source `/usr/local/bin/ros2-entrypoint.sh`; không publish/arm, exit 2 khi observation thiếu.
+Container/process do run sở hữu đã dừng và xoá sau probe; Docker Desktop và image đã tải được giữ lại. Không cài thêm package, đổi driver/WSL hoặc quyền.
+Để tiếp tục cần phê duyệt image dẫn xuất bổ sung bridge đã pin, hoặc môi trường bridge tương thích đã có; không tự cài lên host.
 
 ## Nguyên tắc
 

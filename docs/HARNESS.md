@@ -80,9 +80,11 @@ Mỗi environment record cần: OS/architecture, CPU/RAM/GPU/driver, image diges
 - Tách debug GUI và headless benchmark; pin physics step, sensor rates, noise settings, seed và RTF policy.
 - Một seed không bảo đảm bitwise determinism khi scheduler/GPU thay đổi; giữ repeated trials và environment identity.
 
-### Smoke môi trường ứng viên — chưa chạy
+### Recipe smoke ứng viên và kết quả đã quan sát
 
-Chỉ dùng khi Docker Linux engine đã có và người dùng đã cho phép tải image. Các lệnh từ mô tả image nhà cung cấp, được pin digest; không phải installer. Chạy trong ba terminal riêng, ở Linux hoặc host có Docker Linux engine:
+Recipe dưới từ nhà cung cấp cho X500 mặc định. Lần thử thực tế đã chọn `PX4_SIM_MODEL=gz_x500_depth`, domain 83/namespace `/drone_cv_g1`, network none và software rendering; xem [environment evidence](environments/g1-observation.json). PX4/Agent/depth Gazebo/DDS chạy, nhưng image thiếu ROS camera bridge; đây chưa là G1 acceptance.
+
+Chỉ chạy khi có quyền mở engine/tải image, không arm. Chạy trong terminal riêng:
 
 ```sh
 docker run --rm -it --name drone-cv-smoke px4io/px4-sitl-gazebo-ros2@sha256:2c01c89215a5f541d3a819c1bd2115ff27c9423679f3738dbb4096271d77084b MicroXRCEAgent udp4 -p 8888
@@ -96,7 +98,7 @@ docker exec -it drone-cv-smoke /usr/local/bin/ros2-entrypoint.sh env HEADLESS=1 
 docker exec -it drone-cv-smoke /usr/local/bin/ros2-entrypoint.sh ros2 topic list
 ```
 
-Các lệnh này khởi tạo **X500 mặc định**, chưa chọn depth model và chưa điều khiển bay. Việc chọn depth model qua packaged wrapper phải đọc help/config trong image rồi ghi lệnh đã thử; không đoán flags. Nếu dùng PX4 source build, lệnh chính thức riêng là `make px4_sitl gz_x500_depth` trong checkout PX4 đã pin, không phải trong repo này.
+Các lệnh recipe chọn X500 mặc định; lần probe đã xác minh env `PX4_SIM_MODEL=gz_x500_depth` qua wrapper và startup `SYS_AUTOSTART=4002`, không đoán flags. Với source build, lệnh riêng là `make px4_sitl gz_x500_depth` trong checkout PX4 đã pin.
 
 Chỉ thấy topic names chưa đủ qua G1. Kiểm tra rates/encoding/clock/QoS, pose và camera frames, firmware/messages, rồi mới chạy mission. Không disable preflight checks để lấy video demo.
 
@@ -184,4 +186,4 @@ Report tối thiểu: numerator/denominator, Wilson CI, outcome counts, missing/
 
 `python -m pytest -q` chạy regression hành vi; `python scripts/g0_demo.py --output artifacts/<new-name>` chạy API thật và xuất SVG/NPZ/summary. Demo chỉ dùng dữ liệu tổng hợp; xem README về sampling support, independent local-clear certificate và giới hạn braking.
 
-`g1-environment` đã probe và blocked: Docker Linux engine không sẵn sàng, WSL chưa có ROS/PX4/Gazebo trên PATH. Không chạy flight hoặc tự cài stack. Sau khi operator giải prerequisite, native roadmap giữ đúng thứ tự environment, oracle/supervisor, bootstrap flight và calibration.
+`g1-environment` vẫn blocked sau unarmed smoke thật: pinned image không có `ros_gz_bridge`, camera/clock mới quan sát ở Gazebo Transport, chưa có ROS frame/time alignment. Container thử đã cleanup; không cài package ngoài quyền được cấp. Sau khi bridge prerequisite được giải quyết và gate đạt, mới mở oracle/supervisor, bootstrap flight và calibration theo native roadmap.

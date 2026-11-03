@@ -53,5 +53,5 @@
 - `python scripts/check_project.py`: PDF/scenario/link/DAG integrity and portable roadmap freshness.
 - `python scripts/check_project.py --export-roadmap`: regenerate the read-only portable view after native state updates.
 - `python scripts/g0_demo.py --output artifacts/<new-name>`: actual synthetic API smoke; never overwrite earlier evidence.
-- G1 environment is blocked by an unavailable Docker Linux engine and missing ROS/PX4/Gazebo in WSL. Do not bypass that blocker with fake flight evidence or automatic installation.
+- G1 pinned-image unarmed smoke ran after explicit Docker/image approval; see docs/environments/g1-observation.json. Current blocker is missing ros_gz_bridge, not a stopped Docker engine. No ROS camera/clock/frame alignment proof. Do not mark G1 complete or install extra packages without authorization.
 - LocalClearance and verified pixel-cone support in the G0 demo come from analytic synthetic geometry, not forward-camera proof. Future adapters must justify them independently.
