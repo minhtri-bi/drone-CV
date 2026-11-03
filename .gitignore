@@ -1,3 +1,13 @@
 # Native roadmap JSON is canonical and tracked; views/locks are local.
 .omp/roadmap/*
 !.omp/roadmap/roadmap.json
+
+# Python/runtime outputs, not project evidence committed as source.
+__pycache__/
+.pytest_cache/
+*.py[cod]
+*.egg-info/
+.venv/
+build/
+dist/
+artifacts/
