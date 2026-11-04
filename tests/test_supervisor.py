@@ -20,7 +20,8 @@ def config():
         max_tick_gap_wall_s=.3, prime_sim_s=.2, prime_wall_s=.2,
         request_timeout_s=1., session_timeout_s=20., max_command_ttl_s=.5,
         envelope=Envelope((-5., -5., -5.), (5., 5., 0.), 1., .1, .2, .1,
-                          .2, .01, .01, "offline synthetic bounds, not calibrated"),
+                          .2, .01, .01, "offline synthetic bounds, not calibrated",
+                          (.01, .01, .01), .01, .01, "synthetic_offline"),
     )
 
 
@@ -32,7 +33,9 @@ def inputs(t=1., *, stage=2, armed=False, action=None, command=True):
     stamp = sample(t)
     cmd = Command("planner", stamp, .4, (.1, 0., 0.), 0.) if command else None
     permit = Permit("independent_safety", stamp, .4, "planner", stamp.sequence,
-                    (.1, 0., 0.), 2., stamp) if command else None
+                    (.1, 0., 0.), stamp, (-.3, -.5, -1.5), (2., .5, -.5),
+                    (0., 0., -1.), 0, "local_ned_reference_centers",
+                    "bootstrap_known_clear", config().envelope.bounds_provenance) if command else None
     return Inputs(
         Clock("epoch", t, t),
         Odometry(stamp, (0., 0., -1.), (0., 0., 0.), 0., 0,
@@ -137,7 +140,7 @@ def test_faults_revoke_and_never_publish_a_fake_hold(fault, reason):
     ({"reset_counter": 1}, "ODOMETRY_RESET"),
     ({"velocity_ned": (1.1, 0., 0.)}, "MEASURED_SPEED"),
     ({"position_ned": (6., 0., -1.)}, "MEASURED_ENVELOPE"),
-    ({"velocity_ned": (-.2, 0., 0.)}, "DIRECTION_UNSUPPORTED"),
+    ({"velocity_ned": (-.2, 0., 0.)}, "STOPPING_ROOM"),
     ({"position_variance": (.1,) * 3}, "ODOMETRY_UNCERTAINTY"),
 ])
 def test_measured_telemetry_not_request_or_truth_controls_authority(change, reason):
@@ -190,7 +193,7 @@ def test_independent_permit_must_bind_command_identity_and_sequence():
 def test_actual_speed_is_used_for_stopping_room():
     data = inputs(1.3, stage=14, armed=True)
     data = replace(data, odometry=replace(data.odometry, velocity_ned=(.9, 0., 0.)),
-                   permit=replace(data.permit, free_distance_m=.1))
+                   permit=replace(data.permit, maximum_ned=(.1, .5, -.5)))
     state, output = transition(active(), data, config())
     assert state.reason == "STOPPING_ROOM" and not output.heartbeat
 
@@ -257,7 +260,7 @@ def test_handoff_requires_ack_and_status_then_stops_forever():
     lambda: replace(config(), planner="independent_safety"),
     lambda: replace(config(), source_component=1000),
     lambda: replace(inputs().command, velocity_ned=(nan, 0., 0.)),
-    lambda: replace(inputs().permit, free_distance_m=nan),
+    lambda: replace(inputs().permit, minimum_ned=(nan, 0., 0.)),
     lambda: replace(inputs().lease, kind="navigation"),
 ])
 def test_invalid_configuration_and_physical_values_are_rejected(factory):
@@ -316,7 +319,7 @@ def test_zero_request_with_measured_drift_cannot_skip_swept_direction():
                    odometry=replace(data.odometry, position_ned=(4.99, 0., -1.),
                                     velocity_ned=(.9, 0., 0.)))
     state, output = transition(active(), data, config())
-    assert state.reason == "DIRECTION_UNSUPPORTED" and not output.heartbeat
+    assert state.reason == "STOPPING_ROOM" and not output.heartbeat
 
 
 def test_priming_and_mode_wait_do_not_inject_non_offboard_setpoints():
@@ -399,7 +402,11 @@ def test_wire_permit_preserves_capture_identity_and_rejects_wall_stamp_spoofing(
         "stamp": {"epoch": "epoch", "sequence": 10, "sim_s": 1.3},
         "capture_stamp": {"epoch": "epoch", "sequence": 7, "sim_s": 1.1},
         "source": "independent_safety", "ttl_s": .4, "command_source": "planner",
-        "command_sequence": 9, "velocity_ned": [.1, 0., 0.], "free_distance_m": 2.,
+        "command_sequence": 9, "velocity_ned": [.1, 0., 0.],
+        "minimum_ned": [-.3, -.5, -1.5], "maximum_ned": [2., .5, -.5],
+        "reference_ned": [0., 0., -1.], "reset_counter": 0,
+        "frame": "local_ned_reference_centers", "evidence_kind": "bootstrap_known_clear",
+        "bounds_provenance": config().envelope.bounds_provenance,
     }
     permit = decode_json(json.dumps(wire), "permit", "epoch", 12.)
     assert permit.capture_stamp == Stamp("epoch", 7, 1.1, 12.)
@@ -442,7 +449,7 @@ def bare_adapter(state):
     from drone_cv.px4_bridge import RosBridge
     adapter = object.__new__(RosBridge)
     adapter.state, adapter.cfg = state, config()
-    adapter.authorization = SimpleNamespace(epoch="epoch")
+    adapter.authorization = SimpleNamespace(epoch="epoch", terminal_observation_wall_s=1.)
     adapter.latest = {}
     return adapter
 
@@ -564,3 +571,74 @@ def test_dds_exclusivity_checks_endpoint_identity_and_all_control_aliases(fault)
         get_publishers_info_by_topic=lambda topic: publishers.get(topic, []),
         get_subscriptions_info_by_topic=lambda topic: readers.get(topic, []))
     assert graph_exclusive(node, namespace, owner, "planner", "independent_safety", gids) == (fault is None)
+
+
+@pytest.mark.parametrize("velocity", [(0.01, -.02, .01), (-.02, .01, 0.), (.1, .01, .01)])
+@pytest.mark.parametrize("command_velocity", [(0., 0., 0.), (.1, 0., 0.)])
+def test_noisy_drift_is_admitted_only_with_complete_stopping_region(velocity, command_velocity):
+    data = inputs(1.3, stage=14, armed=True)
+    data = replace(data, command=replace(data.command, velocity_ned=command_velocity),
+                   permit=replace(data.permit, velocity_ned=command_velocity),
+                   odometry=replace(data.odometry, velocity_ned=velocity))
+    state, output = transition(active(), data, config())
+    assert state.stage == Stage.ACTIVE and output.velocity_ned == command_velocity
+    narrow = replace(data.permit, minimum_ned=(-.001, -.001, -1.001))
+    state, output = transition(active(), replace(data, permit=narrow), config())
+    assert state.reason == "STOPPING_ROOM" and not output.heartbeat
+
+
+@pytest.mark.parametrize("changes", [
+    {"frame": "world_enu"}, {"reset_counter": -1},
+    {"bounds_provenance": ""}, {"evidence_kind": "truth"},
+    {"reference_ned": (999., 0., -1.)},
+])
+def test_invalid_region_identity_is_rejected(changes):
+    with pytest.raises(ValueError):
+        replace(inputs().permit, **changes)
+
+
+def test_reset_and_motion_model_provenance_bind_the_certificate():
+    data = inputs(1.3, stage=14, armed=True)
+    for changes in ({"reset_counter": 1}, {"bounds_provenance": "different model"}):
+        state, output = transition(active(), replace(data, permit=replace(data.permit, **changes)),
+                                   config())
+        assert state.reason == "PERMIT_FRAME_BINDING" and not output.heartbeat
+    mission = replace(data, lease=replace(data.lease, kind="mission"))
+    state, _ = transition(active(), mission, config())
+    assert state.reason == "PERMIT_EVIDENCE_KIND"
+
+
+def test_seeded_arbitrary_direction_stopping_paths_stay_inside_admitted_box():
+    import numpy as np
+    rng = np.random.default_rng(20260521)
+    cfg = config()
+    for _ in range(200):
+        velocity = rng.uniform(-.1, .1, 3)
+        data = inputs(1.3, stage=14, armed=True)
+        data = replace(data, odometry=replace(data.odometry, velocity_ned=tuple(velocity)),
+                       permit=replace(data.permit, minimum_ned=(-.5, -.5, -1.5)))
+        state, _ = transition(active(), data, cfg)
+        assert state.stage == Stage.ACTIVE
+        # Independent time integration, changing direction at every interval.
+        upper = np.linalg.norm(np.abs(velocity) + .01)
+        upper = max(upper, .1)
+        duration = cfg.envelope.response_delay_s + upper / cfg.envelope.deceleration_mps2
+        dt = duration / 200
+        position = np.array(data.odometry.position_ned)
+        for t in np.linspace(0, duration, 200, endpoint=False):
+            direction = rng.normal(size=3)
+            direction /= np.linalg.norm(direction)
+            speed = max(0., upper - max(0., t-cfg.envelope.response_delay_s)
+                        * cfg.envelope.deceleration_mps2)
+            position = position + dt*speed*direction
+            assert np.all(position >= data.permit.minimum_ned)
+            assert np.all(position <= data.permit.maximum_ned)
+
+
+def test_stationary_region_checks_geofence_on_every_axis():
+    data = inputs(1.3, stage=14, armed=True)
+    data = replace(data, permit=replace(data.permit, minimum_ned=(-10., -10., -10.),
+                                       maximum_ned=(10., 10., 10.)),
+                   odometry=replace(data.odometry, position_ned=(4.99, 0., -1.)))
+    state, output = transition(active(), data, config())
+    assert state.reason == "PREDICTED_ENVELOPE" and not output.heartbeat

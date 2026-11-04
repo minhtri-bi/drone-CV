@@ -145,4 +145,32 @@ def test_evidence_semantics_never_blocks_g1_or_rejects_ready_g2():
     PROJECT.check_roadmap({"tasks": tasks})
     PROJECT.check_roadmap({"tasks": [
         {**tasks[1], "status": "done"},
-        {"id": "prep-evidence-semantics", "status": "done", "acceptance": ["contract"]}]})
+        {"id": "prep-evidence-semantics", "status": "done", "acceptance": ["contract"]},
+        {"id": "prep-evidence-review", "status": "done", "acceptance": ["contract"]}]})
+
+
+@pytest.mark.parametrize("gate,status,preparation", [
+    ("g2-replay", "done", "prep-evidence-review"),
+    ("g1-flight", "in_progress", "prep-flight-oracle"),
+    ("g1-flight", "done", "prep-flight-oracle"),
+    ("g1-calibration", "done", "prep-depth-path-audit"),
+])
+@pytest.mark.parametrize("preparation_status", [None, "pending", "blocked", "in_progress"])
+def test_approved_supplemental_gate_rejects_missing_proof(gate, status, preparation,
+                                                       preparation_status):
+    tasks = [{"id": gate, "status": status, "acceptance": ["contract"]},
+             {"id": "prep-evidence-semantics", "status": "done", "acceptance": ["contract"]}]
+    if preparation_status is not None:
+        tasks.append({"id": preparation, "status": preparation_status, "acceptance": ["contract"]})
+    with pytest.raises(ValueError, match="supplemental preparation gate unmet"):
+        PROJECT.check_roadmap({"tasks": tasks})
+    PROJECT.check_roadmap({"tasks": [
+        *[task for task in tasks if task["id"] != preparation],
+        {"id": preparation, "status": "done", "acceptance": ["contract"]}]})
+
+
+def test_evidence_review_does_not_block_g1_or_calibration_acquisition():
+    PROJECT.check_roadmap({"tasks": [
+        {"id": "g1-supervisor", "status": "in_progress", "acceptance": ["contract"]},
+        {"id": "g1-calibration", "status": "in_progress", "acceptance": ["contract"]},
+        {"id": "prep-evidence-review", "status": "blocked", "acceptance": ["contract"]}]})

@@ -6,7 +6,7 @@ The run subcommand is consequential: operator authorization is required again
 on the command line, not inferred from a repository/config file or roadmap.
 """
 import argparse
-from dataclasses import replace
+from dataclasses import asdict, replace
 from hashlib import sha256
 from importlib import import_module
 import json
@@ -40,7 +40,8 @@ def offline_smoke() -> dict:
         max_tick_gap_wall_s=.3, prime_sim_s=.2, prime_wall_s=.2,
         request_timeout_s=1., session_timeout_s=20., max_command_ttl_s=.5,
         envelope=Envelope((-5., -5., -5.), (5., 5., 0.), 1., .1, .2, .1,
-                          .2, .01, .01, "offline synthetic fixture; NOT measured or certified"),
+                          .2, .01, .01, "offline synthetic fixture; NOT measured or certified",
+                          (.01, .01, .01), .01, .01, "synthetic_offline"),
     )
     def data(t, nav=2, armed=False, action=None, ack=None):
         stamp = Stamp("offline_epoch", round(t*1e6), t, t)
@@ -48,7 +49,10 @@ def offline_smoke() -> dict:
             Odometry(stamp, (0., 0., -1.), (0., 0., 0.), 0., 0, (.001,)*3, (.001,)*3),
             Status(stamp, nav, 2 if armed else 1, False, 0, True, 1, 1, t, t if armed else 0.),
             Command(cfg.planner, stamp, .4, (.1, 0., 0.), 0.),
-            Permit(cfg.safety, stamp, .4, cfg.planner, stamp.sequence, (.1, 0., 0.), 2., stamp),
+            Permit(cfg.safety, stamp, .4, cfg.planner, stamp.sequence, (.1, 0., 0.), stamp,
+                   (-.3, -.5, -1.5), (2., .5, -.5), (0., 0., -1.), 0,
+                   "local_ned_reference_centers", "bootstrap_known_clear",
+                   cfg.envelope.bounds_provenance),
             Lease(cfg.owner, stamp, 10., 10., "bootstrap"), True,
             OperatorRequest(cfg.owner, stamp, action) if action else None,
             Ack(stamp, ack, 0, 42, 191, False) if ack else None)
@@ -161,9 +165,16 @@ def run(config_path, startup_path, confirmation):
     try:
         bridge = RosBridge(cfg, authorization)
         executor.add_node(bridge.node)
-        while rclpy.ok() and bridge.state.stage not in (Stage.REVOKED, Stage.RELEASED):
+        while rclpy.ok() and not bridge.terminal_finished():
             executor.spin_once(timeout_sec=authorization.tick_wall_s)
         print(json.dumps({"stage": bridge.state.stage.value, "reason": bridge.state.reason,
+                          "parameter_readback": bridge.parameter_readback,
+                          "status_trace": [asdict(value) for value in bridge.status_trace],
+                          "ack_trace": [asdict(value) for value in bridge.ack_trace],
+                          "publication_trace": bridge.publication_trace,
+                          "trace_scope": "last 256 events per stream; not full-session coverage",
+                          "terminal_observation": (bridge.terminal_observation.report()
+                              if bridge.terminal_observation is not None else None),
                           "scope": "runtime execution is NOT gate acceptance"}))
         return 0 if bridge.state.stage == Stage.RELEASED else 2
     finally:

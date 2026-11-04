@@ -15,7 +15,7 @@ import numpy as np
 
 from camera import CameraModel, Intrinsics, Mount, Pose
 from capture import capture, climb, straight, yaw_scan
-from evidence import SensorProfile, decide, swept_envelope
+from evidence import EvidenceSource, SensorProfile, decide, swept_envelope
 from model_profile import diagnostic_envelope
 from scene import Box, Scene
 
@@ -118,7 +118,8 @@ def run(profile: dict, observed: dict) -> dict:
     rest = fixture["rest_height_m"]
     if rest > b.z:
         raise ValueError("INVALID_REST_HEIGHT")
-    sensor = SensorProfile()
+    sensor = SensorProfile(0., 0., EvidenceSource.HISTORICAL_ANALYSIS,
+                           "Historical sensing-cap comparison; no calibrated uncertainty", False)
     caps = {"near_trusted_m": sensor.near_trusted_m, "far_trusted_m": sensor.far_trusted_m,
             "rho_m": relative["rho_m"]}
     if "sensing_caps" in observed and any(observed["sensing_caps"].get(key) != caps[key]
@@ -145,7 +146,12 @@ def run(profile: dict, observed: dict) -> dict:
     for name, config in profiles.items():
         sensor = SensorProfile(
             near_translation_uncertainty_m=relative["maximum_translation_m"] if not config["historical"] else 0.,
-            near_rotation_uncertainty_rad=relative["maximum_rotation_rad"] if not config["historical"] else 0.)
+            near_rotation_uncertainty_rad=relative["maximum_rotation_rad"] if not config["historical"] else 0.,
+            source=(EvidenceSource.ANALYTIC_SYNTHETIC if config["historical"]
+                    else EvidenceSource.STATIONARY_DIAGNOSTIC),
+            provenance=("Historical analytic comparison with explicit zero uncertainty" if config["historical"]
+                        else "Same-bag all-pairs stationary truth-relative observed maxima; not calibration"),
+            no_return_certified=config["historical"])
         config["sensor_profile"] = asdict(sensor)
         envelope = (swept_envelope(b, 1.) if config["historical"] else diagnostic_envelope(
             fixture, b, 1., clearance_m=config["clearance_m"], pose_xy_m=error, pose_z_m=error))

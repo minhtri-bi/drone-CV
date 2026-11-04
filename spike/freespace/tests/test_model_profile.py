@@ -171,6 +171,14 @@ def test_liveness_binds_rest_and_observed_scalar_inflation_without_running_fixtu
     assert result["uncertainty_status"]["calibrated_pose_bound_m"] is None
     assert result["sensing_caps"] == {**observed["sensing_caps"], "rho_m": 15.}
     assert result["motion_authority"] is False
+    diagnostic = result["profiles"]["model_navigation_diagnostic"]["sensor_profile"]
+    assert diagnostic["source"] == "stationary_measured_diagnostic"
+    assert diagnostic["near_translation_uncertainty_m"] == .1
+    assert diagnostic["near_rotation_uncertainty_rad"] == 0.
+    assert diagnostic["provenance"] and not diagnostic["no_return_certified"]
+    historical = result["profiles"]["historical_synthetic"]["sensor_profile"]
+    assert historical["source"] == "analytic_synthetic"
+    assert historical["near_translation_uncertainty_m"] == 0.
 
 
 def test_liveness_rejects_diagnostic_sensor_cap_mismatch_before_capture():

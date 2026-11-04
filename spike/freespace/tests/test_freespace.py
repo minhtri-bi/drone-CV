@@ -5,12 +5,12 @@ import pytest
 
 from camera import CameraModel, Intrinsics, Mount, Pose
 from capture import ahead, capture, climb, straight
-from evidence import Envelope, EvidenceStore, Frame, SensorProfile, Status, decide, swept_envelope
+from evidence import EvidenceSource, Envelope, EvidenceStore, Frame, SensorProfile, Status, decide, swept_envelope
 from scene import Box, Cylinder, Scene, capsule_hits_scene, render_depth
 
 # Preserve the original synthetic regression fixture, not the new model profile.
 CAM = CameraModel(Intrinsics.pinned_x500_depth(), Mount((0.13233, 0.0, 0.26078)))
-PROFILE = SensorProfile()
+PROFILE = SensorProfile(0., 0., EvidenceSource.ANALYTIC_SYNTHETIC, "Exact analytic regression poses", True)
 WALLS = (Box((-2, 2.5, 0), (12, 2.7, 3)), Box((-2, -2.7, 0), (12, -2.5, 3)))
 CLEAR = Scene(walls=WALLS)
 A, B = Pose(0, 0, 1.2), Pose(2, 0, 1.2)
@@ -160,7 +160,7 @@ def test_no_return_clears_space_only_when_certified():
     open_field = Scene()                                  # ground only; sky is +Inf
     env = swept_envelope(B, 1.0)
     certified, _, _ = run(open_field, straight(A, B), env)
-    strict = SensorProfile(no_return_certified=False)
+    strict = SensorProfile(0., 0., EvidenceSource.ANALYTIC_SYNTHETIC, "Analytic uncertified no-return comparison", False)
     uncertified, _, _ = run(open_field, straight(A, B), env, profile=strict)
     assert certified.allowed
     assert not uncertified.allowed and uncertified.reason == "UNSUPPORTED_VOLUME"
@@ -275,8 +275,8 @@ def test_empty_sampling_grid_never_grants_motion(spacing_m):
 
 
 @pytest.mark.parametrize("profile", [
-    SensorProfile(near_trusted_m=0.1),
-    SensorProfile(far_trusted_m=20.0),
+    SensorProfile(0., 0., EvidenceSource.ANALYTIC_SYNTHETIC, "Analytic clip boundary", True, near_trusted_m=0.1),
+    SensorProfile(0., 0., EvidenceSource.ANALYTIC_SYNTHETIC, "Analytic clip boundary", True, far_trusted_m=20.0),
 ])
 def test_profile_cannot_claim_support_outside_camera_clip(profile):
     with pytest.raises(ValueError, match="trusted range"):
@@ -292,7 +292,8 @@ def test_short_camera_range_cannot_clear_an_obstacle_beyond_its_clip():
     # This mismatch previously converted a clipped wall to trusted free space.
     with pytest.raises(ValueError, match="trusted range"):
         capture(scene, short_camera, PROFILE, [A], noise_seed=None)
-    matching = SensorProfile(near_trusted_m=0.2, far_trusted_m=1.0)
+    matching = SensorProfile(0., 0., EvidenceSource.ANALYTIC_SYNTHETIC, "Exact short-camera fixture", True,
+                             near_trusted_m=0.2, far_trusted_m=1.0)
     store, t = capture(scene, short_camera, matching, [A], noise_seed=None)
     assert np.isposinf(store.frames[0].depth).all()
     decision, _, _ = decide(store, env, epoch="run", now_s=t)

@@ -1,0 +1,270 @@
+{
+  "scope": "offline_existing_profile_level_radial_diagnostic_only",
+  "part_count": 42,
+  "parts": [
+    {
+      "part": "collision/base_link/base_link_collision_0",
+      "role": "body",
+      "outer_aabb_radial_m": 0.24999999999999997,
+      "level_analytic_radial_m": 0.24999999999999997
+    },
+    {
+      "part": "collision/base_link/base_link_collision_1",
+      "role": "gear",
+      "outer_aabb_radial_m": 0.1412488223778526,
+      "level_analytic_radial_m": 0.1412488223778526
+    },
+    {
+      "part": "collision/base_link/base_link_collision_2",
+      "role": "gear",
+      "outer_aabb_radial_m": 0.1412488223778526,
+      "level_analytic_radial_m": 0.1412488223778526
+    },
+    {
+      "part": "collision/base_link/base_link_collision_3",
+      "role": "gear",
+      "outer_aabb_radial_m": 0.18731057097772139,
+      "level_analytic_radial_m": 0.18731057097772139
+    },
+    {
+      "part": "collision/base_link/base_link_collision_4",
+      "role": "gear",
+      "outer_aabb_radial_m": 0.18731057097772139,
+      "level_analytic_radial_m": 0.18731057097772139
+    },
+    {
+      "part": "visual/base_link/base_link_visual/Scene/LandingFoam[1]/LandingFoam[1]#LandingFoam-mesh",
+      "role": "gear",
+      "outer_aabb_radial_m": 0.18165777612661438,
+      "level_analytic_radial_m": 0.18165777612661438
+    },
+    {
+      "part": "visual/base_link/base_link_visual/Scene/LandingRubber[2]/LandingRubber[1]#LandingRubber-mesh",
+      "role": "gear",
+      "outer_aabb_radial_m": 0.1879042704678037,
+      "level_analytic_radial_m": 0.1879042704678037
+    },
+    {
+      "part": "visual/base_link/base_link_visual/Scene/CarbonFiber[3]/CarbonFiber[1]#CarbonFiber-mesh",
+      "role": "body",
+      "outer_aabb_radial_m": 0.28018400245576924,
+      "level_analytic_radial_m": 0.28018400245576924
+    },
+    {
+      "part": "visual/base_link/base_link_visual/Scene/Metal[4]/Metal[1]#Metal-mesh",
+      "role": "body",
+      "outer_aabb_radial_m": 0.2792989879775699,
+      "level_analytic_radial_m": 0.2792989879775699
+    },
+    {
+      "part": "visual/base_link/base_link_visual/Scene/RailsRubber[5]/RailsRubber[1]#RailsRubber-mesh",
+      "role": "body",
+      "outer_aabb_radial_m": 0.15449816840304936,
+      "level_analytic_radial_m": 0.15449816840304936
+    },
+    {
+      "part": "visual/base_link/base_link_visual/Scene/FMUK66[6]/FMUK66[1]#FMUK66-mesh",
+      "role": "body",
+      "outer_aabb_radial_m": 0.05693132762591827,
+      "level_analytic_radial_m": 0.05693132762591827
+    },
+    {
+      "part": "visual/base_link/base_link_visual/Scene/RailsAntennaHolder[7]/RailsAntennaHolder[1]#RailsAntennaHolder-mesh",
+      "role": "body",
+      "outer_aabb_radial_m": 0.09273594241932798,
+      "level_analytic_radial_m": 0.09273594241932798
+    },
+    {
+      "part": "visual/base_link/base_link_visual/Scene/LandingPlastic[8]/LandingPlastic[1]#LandingPlastic-mesh",
+      "role": "gear",
+      "outer_aabb_radial_m": 0.1481592839695465,
+      "level_analytic_radial_m": 0.1481592839695465
+    },
+    {
+      "part": "visual/base_link/base_link_visual/Scene/FMURubber[9]/FMURubber[1]#FMURubber-mesh",
+      "role": "body",
+      "outer_aabb_radial_m": 0.05187229325352063,
+      "level_analytic_radial_m": 0.05187229325352063
+    },
+    {
+      "part": "visual/base_link/5010_motor_base_0/Scene/Stator.001[2]/Stator[1]/Stator[1]#Body1_001-mesh",
+      "role": "body",
+      "outer_aabb_radial_m": 0.2686393240376415,
+      "level_analytic_radial_m": 0.2686393240376415
+    },
+    {
+      "part": "visual/base_link/5010_motor_base_1/Scene/Stator.001[2]/Stator[1]/Stator[1]#Body1_001-mesh",
+      "role": "body",
+      "outer_aabb_radial_m": 0.2686393250514189,
+      "level_analytic_radial_m": 0.2686393250514189
+    },
+    {
+      "part": "visual/base_link/5010_motor_base_2/Scene/Stator.001[2]/Stator[1]/Stator[1]#Body1_001-mesh",
+      "role": "body",
+      "outer_aabb_radial_m": 0.26863932613632024,
+      "level_analytic_radial_m": 0.26863932613632024
+    },
+    {
+      "part": "visual/base_link/5010_motor_base_3/Scene/Stator.001[2]/Stator[1]/Stator[1]#Body1_001-mesh",
+      "role": "body",
+      "outer_aabb_radial_m": 0.26863932715009764,
+      "level_analytic_radial_m": 0.26863932715009764
+    },
+    {
+      "part": "visual/base_link/NXP_FMUK66_FRONT",
+      "role": "body",
+      "outer_aabb_radial_m": 0.04946831530972473,
+      "level_analytic_radial_m": 0.04946831530972473
+    },
+    {
+      "part": "visual/base_link/NXP_FMUK66_TOP",
+      "role": "body",
+      "outer_aabb_radial_m": 0.02729121683520606,
+      "level_analytic_radial_m": 0.02729121683520606
+    },
+    {
+      "part": "visual/base_link/RDDRONE_FMUK66_TOP",
+      "role": "body",
+      "outer_aabb_radial_m": 0.03552099494130208,
+      "level_analytic_radial_m": 0.03552099494130208
+    },
+    {
+      "part": "collision/rotor_0/rotor_0_collision",
+      "role": "rotor",
+      "outer_aabb_radial_m": 0.4438814167808733,
+      "level_analytic_radial_m": 0.38594471970136623
+    },
+    {
+      "part": "visual/rotor_0/rotor_0_visual/1345_prop_ccw",
+      "role": "rotor",
+      "outer_aabb_radial_m": 0.4536356689734713,
+      "level_analytic_radial_m": 0.39284201757215603
+    },
+    {
+      "part": "visual/rotor_0/rotor_0_visual_motor_bell/Scene/BellSide[2]/Bellside[1]/Bellside[1]#Body1-mesh",
+      "role": "rotor",
+      "outer_aabb_radial_m": 0.28779247142442677,
+      "level_analytic_radial_m": 0.2755731679715664
+    },
+    {
+      "part": "visual/rotor_0/rotor_0_visual_motor_bell/Scene/BellHead[3]/BellHead.001[1]/BellHead.001[1]#Body2-mesh",
+      "role": "rotor",
+      "outer_aabb_radial_m": 0.2877924720742887,
+      "level_analytic_radial_m": 0.2755731684310882
+    },
+    {
+      "part": "collision/rotor_1/rotor_1_collision",
+      "role": "rotor",
+      "outer_aabb_radial_m": 0.4438814167808733,
+      "level_analytic_radial_m": 0.38594471970136623
+    },
+    {
+      "part": "visual/rotor_1/rotor_1_visual/1345_prop_ccw",
+      "role": "rotor",
+      "outer_aabb_radial_m": 0.4536356689734713,
+      "level_analytic_radial_m": 0.39284201757215603
+    },
+    {
+      "part": "visual/rotor_1/rotor_1_visual_motor_top/Scene/BellSide[2]/Bellside[1]/Bellside[1]#Body1-mesh",
+      "role": "rotor",
+      "outer_aabb_radial_m": 0.28779247142442677,
+      "level_analytic_radial_m": 0.2755731679715664
+    },
+    {
+      "part": "visual/rotor_1/rotor_1_visual_motor_top/Scene/BellHead[3]/BellHead.001[1]/BellHead.001[1]#Body2-mesh",
+      "role": "rotor",
+      "outer_aabb_radial_m": 0.2877924720742887,
+      "level_analytic_radial_m": 0.2755731684310882
+    },
+    {
+      "part": "collision/rotor_2/rotor_2_collision",
+      "role": "rotor",
+      "outer_aabb_radial_m": 0.4438814167808733,
+      "level_analytic_radial_m": 0.38594471970136623
+    },
+    {
+      "part": "visual/rotor_2/rotor_2_visual/1345_prop_cw",
+      "role": "rotor",
+      "outer_aabb_radial_m": 0.4536357924701899,
+      "level_analytic_radial_m": 0.39284210489752325
+    },
+    {
+      "part": "visual/rotor_2/rotor_2_visual_motor_top/Scene/BellSide[2]/Bellside[1]/Bellside[1]#Body1-mesh",
+      "role": "rotor",
+      "outer_aabb_radial_m": 0.28779247142442677,
+      "level_analytic_radial_m": 0.2755731679715664
+    },
+    {
+      "part": "visual/rotor_2/rotor_2_visual_motor_top/Scene/BellHead[3]/BellHead.001[1]/BellHead.001[1]#Body2-mesh",
+      "role": "rotor",
+      "outer_aabb_radial_m": 0.2877924720742887,
+      "level_analytic_radial_m": 0.2755731684310882
+    },
+    {
+      "part": "collision/rotor_3/rotor_3_collision",
+      "role": "rotor",
+      "outer_aabb_radial_m": 0.4438814167808733,
+      "level_analytic_radial_m": 0.38594471970136623
+    },
+    {
+      "part": "visual/rotor_3/rotor_3_visual/1345_prop_cw",
+      "role": "rotor",
+      "outer_aabb_radial_m": 0.45363579247019004,
+      "level_analytic_radial_m": 0.39284210489752325
+    },
+    {
+      "part": "visual/rotor_3/rotor_3_visual_motor_top/Scene/BellSide[2]/Bellside[1]/Bellside[1]#Body1-mesh",
+      "role": "rotor",
+      "outer_aabb_radial_m": 0.28779247142442677,
+      "level_analytic_radial_m": 0.2755731679715664
+    },
+    {
+      "part": "visual/rotor_3/rotor_3_visual_motor_top/Scene/BellHead[3]/BellHead.001[1]/BellHead.001[1]#Body2-mesh",
+      "role": "rotor",
+      "outer_aabb_radial_m": 0.2877924720742887,
+      "level_analytic_radial_m": 0.2755731684310882
+    },
+    {
+      "part": "collision/camera_link/OakD-Lite/collision",
+      "role": "body",
+      "outer_aabb_radial_m": 0.13993383758047945,
+      "level_analytic_radial_m": 0.13993383758047945
+    },
+    {
+      "part": "visual/camera_link/OakD-Lite/visual/Scene/OAK_D_LITE[0]/RGBCamera[1]/RGBCameraMesh[1]/RGBCameraMesh[1]#RGBCameraMesh_001-mesh",
+      "role": "body",
+      "outer_aabb_radial_m": 0.1309311658070959,
+      "level_analytic_radial_m": 0.1309311658070959
+    },
+    {
+      "part": "visual/camera_link/OakD-Lite/visual/Scene/OAK_D_LITE[0]/StereoPair[2]/StereoPairMesh[1]/StereoPairMesh[1]#StereoPairMesh_001-mesh",
+      "role": "body",
+      "outer_aabb_radial_m": 0.13508082609990057,
+      "level_analytic_radial_m": 0.13508082609990057
+    },
+    {
+      "part": "visual/camera_link/OakD-Lite/visual/Scene/OAK_D_LITE[0]/Frame[3]/FrameMesh[1]/FrameMesh[1]#FrameMesh_001-mesh",
+      "role": "body",
+      "outer_aabb_radial_m": 0.14072515616213213,
+      "level_analytic_radial_m": 0.14072515616213213
+    },
+    {
+      "part": "visual/camera_link/OakD-Lite/visual/Scene/OAK_D_LITE[0]/Glass[4]/GlassMesh[1]/GlassMesh[1]#GlassMesh_001-mesh",
+      "role": "body",
+      "outer_aabb_radial_m": 0.1399482180797813,
+      "level_analytic_radial_m": 0.1399482180797813
+    }
+  ],
+  "outer_aabb_radial_m": 0.45363579247019004,
+  "level_analytic_radial_m": 0.39284210489752325,
+  "vertical_bounds_m": [
+    -0.22759949999999998,
+    0.06938461481722502
+  ],
+  "navigation_clearance_m": 0.5,
+  "profile_changed": false,
+  "smaller_envelope_authorized": false,
+  "independent_gazebo_mesh_loading_verified": false,
+  "remaining": "R10 requires independently observed resolved geometry or calibrated multiview fixture; no new execution approved.",
+  "profile_sha256": "dfb61109531a218fa1fd627cf709896ec54d8d7fb79102bda144c45c6b865c95"
+}

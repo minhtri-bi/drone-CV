@@ -11,7 +11,7 @@ import numpy as np
 from camera import Mount
 from capture_pose import (OdomSample, camera_from_info, decode_depth, interpolate_pose,
                           quaternion_rotation)
-from evidence import EvidenceStore, Frame, SensorProfile, decide, swept_envelope
+from evidence import EvidenceSource, EvidenceStore, Frame, SensorProfile, decide, swept_envelope
 from replay_fixture import aligned_camera, grade_frame
 from bag_diagnostics import diagnostics, geometry_summary, validate_receive_log
 from recording_integrity import require_alignment_epoch, validate_alignment
@@ -172,7 +172,9 @@ def evaluate(records, manifest, fixture, output=None, fault=None, *, legacy_anal
                     raise ValueError("DEPTH_CALIBRATION_MISMATCH")
                 pose = interpolate_pose(group["odom"], capture_ns, fixture["max_pose_gap_ns"])
                 if store is None:
-                    store = EvidenceStore(camera, SensorProfile(no_return_certified=False))
+                    store = EvidenceStore(camera, SensorProfile(
+                        0., 0., EvidenceSource.HISTORICAL_ANALYSIS,
+                        "Historical bag comparison; zero is an explicit uncalibrated analysis assumption", False))
                 store = store.add(Frame(depth, pose, f"bag-epoch-{epoch_id}", capture_ns/1e9, accepted))
                 geometry = grade_frame(depth, camera, pose, manifest["world_from_odom"], fixture)
                 reports.append({"stamp_ns": capture_ns, "epoch": epoch_id, **geometry})

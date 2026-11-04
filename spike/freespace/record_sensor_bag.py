@@ -83,6 +83,7 @@ def record(output: Path, fixture_path: Path, policy_path: Path,
     static = QoSProfile(depth=10, reliability=ReliabilityPolicy.RELIABLE,
                         durability=DurabilityPolicy.TRANSIENT_LOCAL)
     cached, observed_wall, progress, counts = {}, {}, {}, Counter()
+    callback_counts = Counter()
     odometry, writer, begin_ns = (), None, None
     failure, alignment_counter = [], None
     last_clock = 0
@@ -119,6 +120,7 @@ def record(output: Path, fixture_path: Path, policy_path: Path,
     def receive(topic, message):
         nonlocal last_clock, progress, odometry
         wall_ns = time.monotonic_ns()
+        callback_counts[topic] += 1
         try:
             if topic == TRUTH_TOPIC:
                 if oracle is None:
@@ -312,6 +314,12 @@ def record(output: Path, fixture_path: Path, policy_path: Path,
         manifest.update(recorded_wall_s=elapsed, record_end_wall_monotonic_ns=end_ns,
                         record_end_sim_ns=end_sim_ns, topic_counts=dict(counts),
                         topics=topics, warmup_wall_s=fixture["warmup_wall_s"])
+        manifest["depth_path_audit"] = {
+            "schema": 1, "callback_counts": dict(callback_counts),
+            "enqueued_counts": dict(counts),
+            "source_and_bridge_authoritative_taps": False,
+            "loss_location_certified": False,
+            "scope": "callback/enqueue/storage only; warmup seeded events are separate"}
         try:
             manifest["bag_files"] = {(p.relative_to(output).as_posix() if oracle is not None
                                        else str(p.relative_to(output))): {

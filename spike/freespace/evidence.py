@@ -14,7 +14,7 @@ Ground truth is not used here.
 """
 
 from dataclasses import dataclass, field
-from enum import IntEnum
+from enum import IntEnum, StrEnum
 from math import ceil, cos, isfinite, sin
 
 import numpy as np
@@ -37,25 +37,41 @@ class Status(IntEnum):
     UNSEEN = 3        # never inside any retained frame's trusted frustum
 
 
+class EvidenceSource(StrEnum):
+    ANALYTIC_SYNTHETIC = "analytic_synthetic"
+    HISTORICAL_ANALYSIS = "historical_nonadmitting_analysis"
+    STATIONARY_DIAGNOSTIC = "stationary_measured_diagnostic"
+
+
 @dataclass(frozen=True)
 class SensorProfile:
-    """Trusted sensing contract. Values are spike defaults, not calibration."""
+    """Explicit offline uncertainty contract; no source grants operational authority."""
 
+    near_translation_uncertainty_m: float
+    near_rotation_uncertainty_rad: float
+    source: EvidenceSource
+    provenance: str
+    no_return_certified: bool
     near_trusted_m: float = 0.3
     far_trusted_m: float = 10.0
-    no_return_certified: bool = True   # synthetic renderer: +Inf means nothing within far clip
+    # Only exact analytic renderer semantics can certify +Inf as no return.
     sigma0: float = 0.004
     sigma2: float = 0.0015
     sigma_k: float = 3.0
     fixed_margin_m: float = 0.03
-    near_translation_uncertainty_m: float = 0.0
-    near_rotation_uncertainty_rad: float = 0.0
 
     def __post_init__(self) -> None:
+        if not isinstance(self.source, EvidenceSource):
+            raise ValueError("an explicit supported evidence source is required")
+        if not isinstance(self.provenance, str) or not self.provenance.strip():
+            raise ValueError("nonempty uncertainty provenance is required")
+        if self.no_return_certified and self.source is not EvidenceSource.ANALYTIC_SYNTHETIC:
+            raise ValueError("only analytic synthetic evidence can certify no return")
         values = (self.near_trusted_m, self.far_trusted_m, self.sigma0, self.sigma2,
                   self.sigma_k, self.fixed_margin_m, self.near_translation_uncertainty_m,
                   self.near_rotation_uncertainty_rad)
-        if not all(isfinite(v) and v >= 0 for v in values):
+        if not all(isinstance(v, (float, int, np.floating, np.integer))
+                   and not isinstance(v, (bool, np.bool_)) and isfinite(v) and v >= 0 for v in values):
             raise ValueError("sensor profile values must be finite and nonnegative")
         if not 0 < self.near_trusted_m < self.far_trusted_m:
             raise ValueError("trusted range must satisfy 0 < near < far")
@@ -63,6 +79,11 @@ class SensorProfile:
             raise ValueError("no-return certification must be an explicit boolean")
         if self.near_rotation_uncertainty_rad > np.pi:
             raise ValueError("near rotation uncertainty must not exceed pi")
+
+    @property
+    def motion_authority(self) -> bool:
+        """Calibration binding is absent from this offline model, for every source."""
+        return False
 
     def margin(self, z: NDArray) -> NDArray:
         return self.fixed_margin_m + self.sigma_k * (self.sigma0 + self.sigma2 * z * z)

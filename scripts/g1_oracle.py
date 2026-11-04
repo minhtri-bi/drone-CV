@@ -1,4 +1,4 @@
-"""Read-only physical-profile builder and sampled static-fixture oracle.
+"""Read-only physical-profile builder and static/declared-moving offline oracle.
 
 Profile output is an exclusive JSON file. Replay/evaluate output is an exclusive
 folder containing report.json. Nothing here starts a simulator or publishes.
@@ -120,6 +120,16 @@ def _observe(state, oracle, profile, fixture, observation):
 
 def _offline(state, oracle, profile, fixture, path):
     samples = _json(path)
+    if isinstance(state, import_module("drone_cv.oracle_observation").MovingObserverState):
+        if not isinstance(samples, dict) or set(samples) != {"observations", "discovery"}:
+            raise ValueError("MOVING_OBSERVATIONS_REQUIRE_OBSERVATIONS_AND_DISCOVERY")
+        if not isinstance(samples["observations"], list) or not isinstance(samples["discovery"], list):
+            raise ValueError("MOVING_OBSERVATION_LEDGERS_MUST_BE_ARRAYS")
+        for sample in samples["observations"]:
+            state = state.observe(sample)
+        for snapshot in samples["discovery"]:
+            state = state.discover(snapshot)
+        return state, True, []
     if not isinstance(samples, list):
         raise ValueError("OBSERVATIONS_MUST_BE_ARRAY")
     for sample in samples:
@@ -318,6 +328,11 @@ def main(argv=None):
         state = oracle.ObserverState()
         inputs = {"profile_sha256": _sha(args.profile), "fixture_sha256": _sha(args.fixture)}
         profile, fixture = _json(args.profile), _json(args.fixture)
+        moving = "moving_contract" in fixture
+        if moving:
+            if args.mode != "evaluate":
+                raise ValueError("MOVING_CONTRACT_REQUIRES_INDEPENDENT_OFFLINE_OBSERVATION_LEDGERS")
+            state = import_module("drone_cv.oracle_observation").MovingObserverState.create(profile, fixture)
         if args.mode == "evaluate":
             inputs["observations_sha256"] = _sha(args.observations)
             state, complete, samples = _offline(state, oracle, profile, fixture, args.observations)
@@ -341,7 +356,10 @@ def main(argv=None):
     result.update(schema=1, mode=args.mode, inputs=inputs, truth_samples=samples,
                   scope="OFFLINE_TYPED_FIXTURE" if args.mode == "evaluate" else "RECORDED_CONTINUOUS_TRUTH",
                   live_acceptance_certified=False, flight_admission=False,
-                  sampling_scope="Sampled static-fixture endpoints only; no inter-sample swept-volume certificate.")
+                  sampling_scope=("Declared bounded-motion enclosures; independent evaluator phase and "
+                                  "cooperative discovery ledgers; offline assumptions only."
+                                  if hasattr(state, "intervals")
+                                  else "Sampled static-fixture endpoints only; no inter-sample swept-volume certificate."))
     try:
         (args.output/"report.json").write_text(json.dumps(result, indent=2, allow_nan=False)+"\n",
                                                 encoding="utf-8")

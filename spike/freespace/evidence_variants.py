@@ -5,7 +5,7 @@ import heapq
 
 import numpy as np
 
-from evidence import Envelope, EvidenceStore, Frame, SensorProfile, decide, observed_surface_points
+from evidence import EvidenceSource, Envelope, EvidenceStore, Frame, SensorProfile, decide, observed_surface_points
 
 
 def scheduled_identities(rows, queries, ttl_ns, *, epoch):
@@ -59,7 +59,8 @@ def gap_variant(frames, camera, ttl_ns, query_envelope):
     trace = []
     for query in queries:
         prefix = tuple(frame for frame in kept if round(frame.time_s*1e9) <= query)
-        store = EvidenceStore(camera, SensorProfile(no_return_certified=False), prefix)
+        store = EvidenceStore(camera, SensorProfile(0., 0., EvidenceSource.HISTORICAL_ANALYSIS,
+                              "Temporal omission comparison; original capture uncertainty uncalibrated", False), prefix)
         actual = sorted(frame.sequence for frame in store.retained(frames[0].epoch, query/1e9, ttl_ns/1e9))
         decision, _, _ = decide(store, query_envelope, epoch=frames[0].epoch, now_s=query/1e9, ttl_s=ttl_ns/1e9)
         trace.append({"query_ns": query, "epoch": frames[0].epoch, "expected_sequences": expected[query],
@@ -97,7 +98,8 @@ def early_obstacle_variant(frames, camera, ttl_ns):
     trace = []
     for query in queries:
         prefix = tuple(f for f in variants if round(f.time_s*1e9) <= query)
-        store = EvidenceStore(camera, SensorProfile(no_return_certified=False), prefix)
+        store = EvidenceStore(camera, SensorProfile(0., 0., EvidenceSource.HISTORICAL_ANALYSIS,
+                              "Early hazard retention comparison; not calibrated acquisition evidence", False), prefix)
         retained = store.retained(first.epoch, query/1e9, ttl_ns/1e9)
         contributors = [f.sequence for f in retained if np.any(probe.contains(
             observed_surface_points(f, camera, store.profile), inflate_m=store.profile.fixed_margin_m))]

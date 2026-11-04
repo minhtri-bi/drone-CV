@@ -12,7 +12,7 @@ import numpy as np
 
 from camera import CameraModel, Intrinsics, Mount, Pose
 from capture import capture, climb, straight, yaw_scan
-from evidence import SensorProfile, decide, swept_envelope
+from evidence import EvidenceSource, SensorProfile, decide, swept_envelope
 from scene import Box, Cylinder, Scene, capsule_hits_scene
 
 WALLS = (Box((-4, 2.5, 0), (12, 2.7, 3)), Box((-4, -2.7, 0), (12, -2.5, 3)))
@@ -48,7 +48,9 @@ def safety_sweep(n: int, seed: int, pose_noise: tuple[float, float] | None = Non
     if type(n) is not int or n < 0:
         raise ValueError("INVALID_SWEEP_TRIAL_COUNT")
     rng = np.random.default_rng(seed)
-    camera, profile = CAMERAS["pinned_73deg"], SensorProfile()
+    camera = CAMERAS["pinned_73deg"]
+    profile = SensorProfile(0., 0., EvidenceSource.ANALYTIC_SYNTHETIC,
+                            "Exact analytic scene capture poses; synthetic noise model only", True)
     env = swept_envelope(B, QUERY_M, pose_error_m=pose_error_m)
     counts = {"trials": 0, "skipped_unsafe_approach": 0, "allowed_true_clear": 0,
               "allowed_true_hit": 0, "blocked_true_hit": 0, "blocked_true_clear": 0}
@@ -107,7 +109,8 @@ def blind_zone(*, rest_height_m: float) -> dict:
     for cam_name, camera in CAMERAS.items():
         out[cam_name] = {}
         for plan_name, poses in strategies(rest_height_m=rest_height_m).items():
-            store, t = capture(clear, camera, SensorProfile(), poses)
+            store, t = capture(clear, camera, SensorProfile(
+                0., 0., EvidenceSource.ANALYTIC_SYNTHETIC, "Exact analytic strategy capture poses", True), poses)
             decision, samples, status = decide(store, env, epoch="run", now_s=t, ttl_s=60.0)
             behind = samples[:, 0] < B.x
             out[cam_name][plan_name] = {

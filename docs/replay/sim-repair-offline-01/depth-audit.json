@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "scope": "historical_persisted_receive_trace_only",
+  "recording_complete": true,
+  "streams": {
+    "/drone_cv_g1/camera/depth/camera_info": {
+      "stored_events": 581,
+      "source_sim_gap_s": {
+        "count": 580,
+        "p50": 0.032,
+        "p95": 0.036,
+        "p99": 0.036,
+        "max": 0.036
+      },
+      "receive_wall_gap_s": {
+        "count": 580,
+        "p50": 0.202254312,
+        "p95": 0.279718896,
+        "p99": 0.2994470887900001,
+        "max": 0.996563384
+      },
+      "stored_duplicate_stamps": 0,
+      "source_reorder_count": 0
+    },
+    "/drone_cv_g1/camera/depth/image_raw": {
+      "stored_events": 452,
+      "source_sim_gap_s": {
+        "count": 451,
+        "p50": 0.032,
+        "p95": 0.082,
+        "p99": 0.1,
+        "max": 0.164
+      },
+      "receive_wall_gap_s": {
+        "count": 451,
+        "p50": 0.211227123,
+        "p95": 0.5342140310000001,
+        "p99": 0.659265554,
+        "max": 1.07828322
+      },
+      "stored_duplicate_stamps": 0,
+      "source_reorder_count": 0
+    }
+  },
+  "all_stage_coverage_complete": false,
+  "loss_location_certified": false,
+  "missing_authoritative_stages": [
+    "source_publish",
+    "bridge_receive",
+    "bridge_publish"
+  ],
+  "callback_enqueue_storage_identity_proof": false,
+  "end_to_end_latency_bound": null,
+  "flight_admission": false
+}

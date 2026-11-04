@@ -1,12 +1,13 @@
 """Pure ROS-message boundary helpers; no ROS runtime imports or control output."""
 
 from bisect import bisect_left
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from math import atan2
 
 import numpy as np
 
 from camera import CameraModel, Intrinsics, Mount, Pose
+from drone_cv.px4_quaternion import normalize_px4_quaternion
 
 OPTICAL_FRAME = "drone_cv_g1/camera_optical"
 ENU_FROM_NED = np.array([[0., 1., 0.], [1., 0., 0.], [0., 0., -1.]])
@@ -14,13 +15,7 @@ FRD_FROM_FLU = np.diag([1., -1., -1.])
 
 
 def unit_quaternion(value):
-    q = np.asarray(value, dtype=np.float64)
-    if q.shape != (4,) or not np.isfinite(q).all():
-        raise ValueError("INVALID_QUATERNION")
-    squared = float(q @ q)
-    if abs(squared - 1.0) > 1e-6:
-        raise ValueError("INVALID_QUATERNION_NORM")
-    return q / np.sqrt(squared)
+    return np.asarray(normalize_px4_quaternion(value).wxyz, dtype=np.float64)
 
 
 def quaternion_rotation(value):
@@ -37,6 +32,7 @@ class OdomSample:
     quaternion_wxyz: tuple[float, float, float, float]
     reset_counter: int
     pose_frame: int = 1
+    quaternion_squared_norm_error: float = field(init=False)
 
     def __post_init__(self):
         if type(self.timestamp_ns) is not int or self.timestamp_ns < 0:
@@ -49,7 +45,9 @@ class OdomSample:
         if type(self.reset_counter) is not int or not 0 <= self.reset_counter <= 255:
             raise ValueError("INVALID_RESET_COUNTER")
         object.__setattr__(self, "position_ned", tuple(float(x) for x in position))
-        object.__setattr__(self, "quaternion_wxyz", tuple(unit_quaternion(self.quaternion_wxyz)))
+        normalized = normalize_px4_quaternion(self.quaternion_wxyz)
+        object.__setattr__(self, "quaternion_wxyz", normalized.wxyz)
+        object.__setattr__(self, "quaternion_squared_norm_error", normalized.squared_norm_error)
 
 
 def interpolate_pose(samples, capture_ns, max_gap_ns=50_000_000):

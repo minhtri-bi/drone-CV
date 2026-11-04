@@ -4,11 +4,12 @@ import numpy as np
 import pytest
 
 from camera import CameraModel, Intrinsics, Mount, Pose
-from evidence import Envelope, EvidenceStore, Frame, SensorProfile, decide
+from evidence import EvidenceSource, Envelope, EvidenceStore, Frame, SensorProfile, decide
 
 
 CAMERA = CameraModel(Intrinsics(5, 5, 2., 2., 2., 2.), Mount((0., 0., 0.)))
-PROFILE = SensorProfile(fixed_margin_m=0., sigma0=0., sigma2=0.)
+PROFILE = SensorProfile(0., 0., EvidenceSource.ANALYTIC_SYNTHETIC, "Exact analytic near-cone fixture", True,
+                        fixed_margin_m=0., sigma0=0., sigma2=0.)
 CAPTURE = Pose(0., 0., 1.)
 
 
@@ -132,7 +133,8 @@ def test_rotation_uncertainty_uses_body_lever_arm_not_camera_only():
     camera = CameraModel(CAMERA.intrinsics, Mount((1., 0., 0.)))
     depth = np.full((5, 5), np.nan)
     depth[2, 2] = .1
-    profile = SensorProfile(fixed_margin_m=0., near_rotation_uncertainty_rad=.1)
+    profile = SensorProfile(0., .1, EvidenceSource.ANALYTIC_SYNTHETIC, "Declared analytic lever-arm perturbation",
+                            True, fixed_margin_m=0.)
     store = EvidenceStore(camera, profile, (Frame(depth, CAPTURE, "run", 1., 0),))
     # The 1 m mount needs >.1 m rotational inflation; a camera-origin-only
     # .3 m ray radius would miss this point.
@@ -147,7 +149,8 @@ def test_rotation_uncertainty_uses_body_lever_arm_not_camera_only():
 ])
 def test_invalid_near_uncertainty_is_not_silently_used(field, value):
     with pytest.raises(ValueError):
-        SensorProfile(**{field: value})
+        from dataclasses import replace
+        replace(PROFILE, **{field: value})
 
 
 def test_retained_near_hazard_from_other_epoch_cannot_block_current_epoch():
@@ -161,3 +164,38 @@ def test_inclusive_ttl_uses_source_nanoseconds_not_float_subtraction_roundoff():
     store = EvidenceStore(CAMERA, PROFILE, (frame,))
     assert store.retained("run", .4, .3) == (frame,)
     assert store.retained("run", .400000001, .3) == ()
+
+
+def test_uncertainty_and_provenance_are_required_not_implicit_zero():
+    with pytest.raises(TypeError):
+        SensorProfile()
+    with pytest.raises(TypeError):
+        SensorProfile(0., 0.)
+
+
+@pytest.mark.parametrize("source", [EvidenceSource.HISTORICAL_ANALYSIS, EvidenceSource.STATIONARY_DIAGNOSTIC])
+def test_real_analysis_never_certifies_synthetic_no_return_or_motion(source):
+    with pytest.raises(ValueError, match="only analytic"):
+        SensorProfile(0., 0., source, "Explicit non-admitting comparison", True)
+    profile = SensorProfile(0., 0., source, "Explicit non-admitting comparison", False)
+    assert not profile.motion_authority
+    assert profile.classify(np.array([[np.inf]]))[0, 0] == 0
+
+
+@pytest.mark.parametrize("changes", [
+    {"provenance": ""}, {"provenance": "  "}, {"source": "calibrated"},
+    {"source": "analytic_synthetic"}, {"near_translation_uncertainty_m": np.inf},
+    {"near_rotation_uncertainty_rad": np.nan},
+])
+def test_profile_rejects_absent_or_unbound_provenance(changes):
+    from dataclasses import replace
+    with pytest.raises(ValueError):
+        replace(PROFILE, **changes)
+
+
+def test_explicit_exact_zero_is_immutable_and_nonoperational():
+    from dataclasses import FrozenInstanceError
+    assert PROFILE.near_translation_uncertainty_m == PROFILE.near_rotation_uncertainty_rad == 0.
+    assert not PROFILE.motion_authority
+    with pytest.raises(FrozenInstanceError):
+        PROFILE.provenance = "Changed"

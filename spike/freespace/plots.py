@@ -16,7 +16,7 @@ from matplotlib.patches import Circle, Patch, Rectangle
 
 from camera import CameraModel, Intrinsics, Pose
 from capture import capture, climb, straight, yaw_scan
-from evidence import Envelope, SensorProfile, Status, classify_points, decide, swept_envelope
+from evidence import EvidenceSource, Envelope, SensorProfile, Status, classify_points, decide, swept_envelope
 from scene import Box, Cylinder, Scene
 
 INK, INK2, SURFACE = "#0b0b0b", "#52514e", "#fcfcfb"
@@ -28,7 +28,8 @@ STATUS_LABEL = {Status.FREE: "FREE: observed free", Status.OBSTACLE: "OBSTACLE: 
 SERIES = ["#2a78d6", "#eb6834", "#1baf7a"]
 
 CAM = CameraModel(Intrinsics.pinned_x500_depth())
-PROFILE = SensorProfile()
+PROFILE = SensorProfile(0., 0., EvidenceSource.ANALYTIC_SYNTHETIC,
+                        "Exact analytic plotting fixture poses; not operational calibration", True)
 WALLS = (Box((-4, 2.5, 0), (12, 2.7, 3)), Box((-4, -2.7, 0), (12, -2.5, 3)))
 A, B = Pose(0.0, 0.0, 1.2), Pose(2.0, 0.0, 1.2)
 

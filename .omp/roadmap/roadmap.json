@@ -5,8 +5,8 @@
   "root": "C:\\Users\\TRI\\drone-CV",
   "title": "Drone-CV: simulation-first obstacle avoidance",
   "goal": "Sửa contract an toàn trước; chuẩn bị OMP; triển khai G0–G4 với oracle độc lập, đạt ít nhất 45/50 world tĩnh ở G3, không unsafe event trong acceptance suite, không tuyên bố bay thật.",
-  "revision": 77,
-  "updatedAt": "2026-11-04T05:19:43.644Z",
+  "revision": 90,
+  "updatedAt": "2026-11-04T10:36:51.933Z",
   "tasks": [
     {
       "id": "prep-safety",
@@ -227,7 +227,7 @@
       "milestone": false,
       "verification": "smoke",
       "status": "blocked",
-      "blocker": "Authorized code/offline slice complete: guarded actual pinned PX4 serialization and lifecycle smoke passed with zero init/nodes/control publishers. Runtime stationary fault injection/ownership and handoff remain unverified and outside approval; no arming or publisher authorization. Runtime gate intentionally incomplete.",
+      "blocker": "R1/R4/R8 code/offline repairs implemented; 648 tests and guarded actual pinned serialization/storage smoke passed without ROS init, nodes, publishers or arming. Real r39/support06 geometry is conditionally contained but NO stationary admission: unchanged variance/status checks reject all evaluated transition windows. Exact trial failsafe policy values/rationale, justified dynamics/uncertainty budgets, live parameter readback and stationary ownership/fallback/process-death evidence remain missing. Control-publisher construction and arming are not authorized. Runtime gate stays incomplete. See docs/SIM_REPAIR_RESULTS.md.",
       "runToken": "23efe9e5-5ba6-41fb-b4ed-3fecad5b8970",
       "startedAt": "2026-11-04T04:23:19.043Z",
       "evidenceIds": [],
@@ -710,6 +710,97 @@
         "r_5edc2b5c-e93f-4225-92ea-d9f1a36781c8"
       ],
       "note": "Implemented full finite-near cones with capture pose/uncertainty, complete-profile rest height, inclusive epoch/TTL identity checks and supplemental G2 checker. Actual pinned decoder:433 captures,1831 query times,315712 all-pairs up to exactly10s;11s camera gap/recovery and early-only obstacle expiry identities pass. Frozen1600 attempts and96 liveness cases retained. Both failed05 and complete disarmed06 bags preserved with hashes/source ZIPs. Primary geometry replay remains failed due documented side-target occlusion; original ROIs/thresholds unchanged, plane residual/coverage diagnostic complete. Stationary uncalibrated/nonadmitting only; supervisor runtime blocked, flight/calibration/G2 remain unmet."
+    },
+    {
+      "id": "prep-evidence-review",
+      "title": "Repair uncertainty provenance and independent y-plane evidence",
+      "phase": "Simulation repair preparation",
+      "acceptance": [
+        "Require explicit near-evidence uncertainty and provenance across synthetic, historical and diagnostic consumers; no implicit operational zero or fabricated calibration.",
+        "Pass offline nonoccluding fixture preflight on the declared pose grid with unchanged primary ROIs, 3-pixel erosion and support/error limits; retain the old fixture as a failing negative.",
+        "After separate acquisition approval, retain fresh pinned unarmed recording with passing original primary geometry and independent dy residual/truth comparison under frozen justified budgets. Historical failed evidence stays unchanged.",
+        "Supplemental G2 completion gate only; does not block unrelated G1 work or replace calibration."
+      ],
+      "dependsOn": [
+        "prep-evidence-semantics",
+        "g1-oracle"
+      ],
+      "milestone": false,
+      "verification": "smoke",
+      "status": "blocked",
+      "blocker": "Approved code/offline R5 migration and R2 preflight are implemented. Actual finite preflight passed 90 physically admissible poses; 153 below-support poses retained separately. Historical plane artifact covers 433 frames but zero primary frames pass and all 433 lack a justified numerical dy budget. Completion requires frozen justified residual/rotation/depth/extrinsic/conditioning budgets and separately approved fresh unarmed matching-fixture capture. No G2 acceptance. See docs/SIM_REPAIR_RESULTS.md and docs/replay/sim-repair-offline-01/.",
+      "runToken": "52497d53-2e2e-4745-b1b8-a0a0c00f0dd8",
+      "startedAt": "2026-11-04T08:29:41.178Z",
+      "evidenceIds": [],
+      "note": "User approved simulation repair plan and roadmap update. Code/offline uncertainty and fixture work started; new acquisition and control publishers remain separately gated."
+    },
+    {
+      "id": "prep-flight-oracle",
+      "title": "Add moving-interval, isolation and phase-aware oracle evidence",
+      "phase": "Simulation repair preparation",
+      "acceptance": [
+        "Conservative interval coverage uses explicit justified translation/angular bounds and complete geometry; missing coverage is UNKNOWN and unsafe observations remain latched.",
+        "Evaluator-owned phase transitions require independent status/support and frozen schedule; planner intent cannot grant contact exemptions.",
+        "Bounded retained endpoint discovery detects unexpected and disappearing readers without claiming DDS security; acceptance truth follows an evaluator-only path before planner participation.",
+        "Exercise offline boundary/negative cases and separately approved unarmed fault proofs before g1-flight preflight; static historical receipts remain static."
+      ],
+      "dependsOn": [
+        "g1-oracle",
+        "g1-environment"
+      ],
+      "milestone": false,
+      "verification": "smoke",
+      "status": "blocked",
+      "blocker": "R3 code/offline interval/phase/discovery paths implemented; actual clear CLI exits 0 and thin-crossing interval exits expected 2/UNKNOWN. Offline suite has 648 passing tests. No live evaluator-only truth path, pinned wire-enum phase mapping, bound phase/support/endpoint acquisition or justified moving-trial limits has been exercised. Separately approved unarmed faults remain required; offline semantic fixtures do not complete G1 preflight. See docs/SIM_REPAIR_RESULTS.md.",
+      "runToken": "2e1d4cdd-ed1d-4df0-a238-ce60f273ec22",
+      "startedAt": "2026-11-04T08:31:07.316Z",
+      "evidenceIds": [],
+      "note": "Approved code/offline interval, phase and discovery implementation only. Fresh unarmed fault acquisition remains separately gated."
+    },
+    {
+      "id": "prep-depth-path-audit",
+      "title": "Locate depth-path losses with matched stage identities",
+      "phase": "Simulation repair preparation",
+      "acceptance": [
+        "Match actual source, bridge, callback, enqueue and storage identities within common fully observed windows; account for duplicates, reordering, probe loss and bounded drain.",
+        "Unknown or unavailable stage instrumentation remains unresolved; secondary BEST_EFFORT subscriptions do not certify publication counts.",
+        "Distinguish controlled source skip, transport loss and recorder/storage backpressure; report simulation gaps separately from receive-wall gaps, never as end-to-end latency bounds.",
+        "Retain separately approved unarmed acquisition and frozen workload/QoS provenance as a supplemental g1-calibration completion input; no deadline relaxation."
+      ],
+      "dependsOn": [
+        "prep-replay-integrity",
+        "g1-environment"
+      ],
+      "milestone": false,
+      "verification": "smoke",
+      "status": "blocked",
+      "blocker": "E7 matched-stage analyzer and exact callback/enqueue/storage accounting implemented and offline boundary tests passed. Actual pinned finite writer roundtripped two generated messages with matching ordered identities. Historical support06 audit remains partial: 452 images/581 CameraInfo, no authoritative source/bridge taps and no historical per-stage certificate. Source/bridge instrumentation and separately approved unarmed common-window acquisition are missing; no loss-location or end-to-end latency bound is claimed. See docs/SIM_DEPTH_PATH_REPAIRS.md.",
+      "runToken": "9e722073-0b3e-47fa-a91e-c4c703526081",
+      "startedAt": "2026-11-04T10:13:46.955Z",
+      "evidenceIds": [],
+      "note": "Approved offline analyzer and exact recorder enqueue/storage accounting. Historical traces remain partial; authoritative Gazebo/bridge taps and fresh approved acquisition are still missing."
+    },
+    {
+      "id": "prep-geometry-crosscheck",
+      "title": "Crosscheck resolved mesh loading and conservative rotor geometry",
+      "phase": "Simulation repair preparation",
+      "acceptance": [
+        "Compare unchanged pinned asymmetric mesh transforms with independent Gazebo geometry or calibrated multi-view observations, retaining wrong-axis/scale negatives and explicit visible-surface limits.",
+        "Quantify analytic rotor containment and liveness without shrinking current outer bounds or 0.5 m navigation clearance; any new primitive requires complete consumer migration and containment proof.",
+        "Record source/view/tolerance provenance and separate offline analysis from separately approved renderer execution; a containment contradiction blocks affected geometry."
+      ],
+      "dependsOn": [
+        "g1-oracle",
+        "prep-model-profile"
+      ],
+      "milestone": false,
+      "verification": "smoke",
+      "status": "blocked",
+      "blocker": "Offline unchanged-profile R7 accounting ran over all 42 parts: outer AABB radial 0.45363579247019004 m versus conditional level analytic 0.39284210489752325 m. No physical profile, consumer or 0.5 m clearance was reduced. R10 independent Gazebo mesh-loading/multiview observation and wrong-axis/scale runtime comparison require a separately approved evaluator fixture; those observations remain unrun. No smaller-envelope or resolved-loader certificate. See docs/SIM_REPAIR_RESULTS.md.",
+      "runToken": "04d1b1a0-d82d-410c-b4b5-2fc3281d1962",
+      "startedAt": "2026-11-04T10:13:52.707Z",
+      "evidenceIds": [],
+      "note": "Approved offline R7 envelope accounting only; independent Gazebo mesh-loading observation requires separately approved fixture execution. No profile or clearance reduction."
     }
   ],
   "receipts": [
@@ -1089,6 +1180,45 @@
       "at": "2026-11-04T05:19:34.855Z",
       "outcome": "success",
       "sha256": "5b206e9fd6f7a0dc5ebd1786a741949eba805eaf7b1a5dd34aab2f0d9e6dbf09"
+    },
+    {
+      "id": "r_0ce5a484-9dc9-417e-ada0-ebd7512c8eb3",
+      "taskId": "prep-flight-oracle",
+      "runToken": "2e1d4cdd-ed1d-4df0-a238-ce60f273ec22",
+      "kind": "smoke",
+      "label": "Offline repair regression suite; no simulator or control publisher, runtime gate remains unmet",
+      "toolName": "bash",
+      "toolCallId": "call_dca9e38227384b6a8fc5d69e93fba54c|fc_0896eb0d4bcab2c2016aeb053786d487d0bc0ee1bb23dc037b",
+      "sessionId": "01a1a4d6-71ab-778b-a103-9ef0e487530a",
+      "at": "2026-11-04T10:13:11.446Z",
+      "outcome": "unknown",
+      "sha256": "41020aeb410f40503756b3c73688eb030f3cd904d14e0416efea509883209146"
+    },
+    {
+      "id": "r_bf484ae7-4a8f-4ee2-bbd8-07fde97992ae",
+      "taskId": "prep-evidence-review",
+      "runToken": "52497d53-2e2e-4745-b1b8-a0a0c00f0dd8",
+      "kind": "smoke",
+      "label": "Offline nonoccluding y-sensitive fixture preflight with unchanged primary grading; not fresh sensor evidence",
+      "toolName": "bash",
+      "toolCallId": "call_2a974681b0a54ea1ad5071d9e1a87a9c|fc_0896eb0d4bcab2c2016aeb0541e04887d094d92be042e08238",
+      "sessionId": "01a1a4d6-71ab-778b-a103-9ef0e487530a",
+      "at": "2026-11-04T10:13:22.342Z",
+      "outcome": "unknown",
+      "sha256": "2d7797b42805aa0067cfcd25cff3913b8d8e323b0c9dd4ee7ba50d8be99572bb"
+    },
+    {
+      "id": "r_a6bf8f30-b56d-4354-911c-4713bb6145e8",
+      "taskId": "prep-flight-oracle",
+      "runToken": "2e1d4cdd-ed1d-4df0-a238-ce60f273ec22",
+      "kind": "smoke",
+      "label": "Actual offline oracle CLI with frozen analytic inputs and declared PYTHONPATH; not live acceptance",
+      "toolName": "eval",
+      "toolCallId": "call_c505f9a9e07149ea95029ed6d0daf5a0|fc_0896eb0d4bcab2c2016aeb0730b97087d0af1ec351b8787d24",
+      "sessionId": "01a1a4d6-71ab-778b-a103-9ef0e487530a",
+      "at": "2026-11-04T10:21:39.512Z",
+      "outcome": "success",
+      "sha256": "d69a1e85845effcf01fd30a2e1834b49ad5c43721304f3d17cc210cf806340da"
     }
   ]
 }

@@ -14,6 +14,8 @@ from pathlib import Path
 import re
 import time
 
+from drone_cv.px4_quaternion import normalize_px4_quaternion
+from drone_cv.px4_failsafe import TerminalObservation, read_parameters, validate_policy
 from drone_cv.supervisor import (
     Ack, Command, Config, Inputs, Lease, Odometry, OperatorRequest, Output, Permit,
     Stage, State, Status, revoke, transition,
@@ -118,14 +120,13 @@ def encode(output: Output, timestamp_us: int, cfg: Config, types=None) -> dict:
 def decode_odometry(msg, epoch: str, wall_s: float) -> Odometry:
     if msg.pose_frame != 1 or msg.velocity_frame != 1:
         raise ValueError("odometry must be NED pose and NED velocity")
-    q = tuple(float(v) for v in msg.q)
-    if len(q) != 4 or not all(isfinite(v) for v in q) or abs(sum(v*v for v in q)-1.) > 1e-3:
-        raise ValueError("invalid float32 odometry quaternion")
-    w, x, y, z = q
+    normalized = normalize_px4_quaternion(msg.q)
+    w, x, y, z = normalized.wxyz
     yaw = atan2(2*(w*z+x*y), 1-2*(y*y+z*z))
     return Odometry(Stamp(epoch, int(msg.timestamp_sample), msg.timestamp_sample/1e6, wall_s),
                     tuple(msg.position), tuple(msg.velocity), yaw, int(msg.reset_counter),
-                    tuple(msg.position_variance), tuple(msg.velocity_variance))
+                    tuple(msg.position_variance), tuple(msg.velocity_variance),
+                    normalized.squared_norm_error)
 
 
 def decode_status(msg, epoch: str, wall_s: float) -> Status:
@@ -190,8 +191,22 @@ class RuntimeAuthorization:
     discovery_wall_s: float
     discovery_stable_s: float
     tick_wall_s: float
+    target: str
+    parameter_policy: dict
+    policy_rationale: str
+    readback_wall_s: float
+    terminal_observation_wall_s: float
+    instance: int
 
     def validate(self, cfg: Config):
+        if self.target != "exploratory_simulation" or cfg.envelope.target != self.target:
+            raise ValueError("runtime requires explicit exploratory simulation bounds; no offline fixture or hardware")
+        if type(self.instance) is not int or self.instance != 0:
+            raise ValueError("pinned local readback supports explicit PX4 instance zero only")
+        validate_policy(self.parameter_policy, self.policy_rationale, self.readback_wall_s)
+        if (not isfinite(self.terminal_observation_wall_s)
+                or self.terminal_observation_wall_s <= 0):
+            raise ValueError("bounded terminal observation deadline required")
         if self.owner != cfg.owner or not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", self.owner):
             raise ValueError("startup owner must match a valid unique ROS node name")
         if not re.fullmatch(r"(?:/[A-Za-z_][A-Za-z0-9_]*)+", self.namespace):
@@ -298,6 +313,9 @@ class RosBridge:
         self.lock = ProcessLock(authorization.lock_directory, authorization.namespace)
         self.started_wall = time.monotonic()
         self.node, self.timer = None, None
+        self.terminal_observation = None
+        self.parameter_readback = None
+        self.status_trace, self.ack_trace, self.publication_trace = (), (), ()
         try:
             rclpy = import_module("rclpy")
             if not rclpy.ok():
@@ -334,6 +352,12 @@ class RosBridge:
                 raise RuntimeError("exclusive DDS discovery deadline expired; no control publishers created")
             if self.state.stage == Stage.REVOKED:
                 raise RuntimeError(self.state.reason)
+            self.parameter_readback = read_parameters(
+                authorization.parameter_policy, authorization.policy_rationale,
+                authorization.readback_wall_s, authorization.firmware)
+            # Readback may take time: recheck graph before creating publishers.
+            if not self._graph():
+                raise RuntimeError("DDS ownership changed during parameter readback")
             for key, name in OUTPUT_TYPES.items():
                 self.publishers[key] = self.node.create_publisher(getattr(self.types, name),
                     f"{authorization.namespace}/fmu/in/{key}", qos)
@@ -376,6 +400,12 @@ class RosBridge:
         try:
             decoder = {"odometry": decode_odometry, "status": decode_status, "ack": decode_ack}[kind]
             value = decoder(msg, self.authorization.epoch, time.monotonic())
+            if kind in ("status", "ack"):
+                attribute = kind + "_trace"
+                setattr(self, attribute, (*getattr(self, attribute, ())[-255:], value))
+            terminal = getattr(self, "terminal_observation", None)
+            if kind == "status" and terminal is not None:
+                self.terminal_observation = terminal.observe(value)
             previous = self.latest.get(kind)
             if previous is not None:
                 if (value.stamp.sequence <= previous.stamp.sequence
@@ -456,6 +486,8 @@ class RosBridge:
             for key in ("trajectory_setpoint", "offboard_control_mode", "vehicle_command"):
                 if key in messages:
                     self.publishers[key].publish(messages[key])
+                    self.publication_trace = (*getattr(self, "publication_trace", ())[-255:],
+                        (now.sim_s, wall, key, output.vehicle_command))
             if self.state.stage in (Stage.REVOKED, Stage.RELEASED):
                 self._stop_publishers()
         except Exception as error:
@@ -463,6 +495,13 @@ class RosBridge:
             self._stop_publishers()
 
     def _stop_publishers(self):
+        if (self.state.stage in (Stage.REVOKED, Stage.RELEASED)
+                and getattr(self, "terminal_observation", None) is None):
+            wall = time.monotonic()
+            self.terminal_observation = TerminalObservation(
+                wall, wall + self.authorization.terminal_observation_wall_s,
+                self.authorization.epoch, self.cfg.target_system,
+                self.cfg.target_component, self.state.reason)
         if self.node is None:
             return
         for pub in self.publishers.values():
@@ -470,6 +509,15 @@ class RosBridge:
         self.publishers.clear()
         if self.timer is not None:
             self.timer.cancel()
+
+    def terminal_finished(self) -> bool:
+        if self.state.stage not in (Stage.REVOKED, Stage.RELEASED):
+            return False
+        self._stop_publishers()
+        terminal = self.terminal_observation
+        if terminal is None:
+            raise RuntimeError("terminal observation was not initialized")
+        return time.monotonic() >= terminal.deadline_wall_s
 
     def close(self):
         if self.node is not None:

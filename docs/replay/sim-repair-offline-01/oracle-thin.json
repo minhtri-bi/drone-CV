@@ -1,0 +1,187 @@
+{
+  "safety_outcome": "UNKNOWN",
+  "execution_outcome": "INCOMPLETE",
+  "observed_unsafe": false,
+  "reasons": [
+    "POTENTIAL_INTERVAL_VIOLATION"
+  ],
+  "execution_reasons": [],
+  "ledger": [
+    {
+      "sim_ns": 0,
+      "epoch": 0,
+      "wall_ns": 0,
+      "evaluation": {
+        "phase": "rest",
+        "pairs": [
+          {
+            "part": "body",
+            "surface": "wire",
+            "clearance_m": 0.89,
+            "allowed_support": false,
+            "unsafe": false,
+            "reason": "CLEARANCE_SATISFIED"
+          }
+        ],
+        "minimum_clearance_m": 0.89,
+        "unsafe": false,
+        "required_clearance_m": 0.0,
+        "max_truth_gap_ns": 1000000000,
+        "geometry_scope": "conservative_world_aabb_not_physics_contact"
+      }
+    },
+    {
+      "sim_ns": 1000000000,
+      "epoch": 0,
+      "wall_ns": 1000000000,
+      "evaluation": {
+        "phase": "rest",
+        "pairs": [
+          {
+            "part": "body",
+            "surface": "wire",
+            "clearance_m": 0.89,
+            "allowed_support": false,
+            "unsafe": false,
+            "reason": "CLEARANCE_SATISFIED"
+          }
+        ],
+        "minimum_clearance_m": 0.89,
+        "unsafe": false,
+        "required_clearance_m": 0.0,
+        "max_truth_gap_ns": 1000000000,
+        "geometry_scope": "conservative_world_aabb_not_physics_contact"
+      }
+    }
+  ],
+  "sample_count": 2,
+  "minimum_clearance_m": 0.89,
+  "coverage_complete": false,
+  "coverage_intervals": [
+    {
+      "start_sim_ns": 0,
+      "end_sim_ns": 1000000000,
+      "epoch": 0,
+      "start_wall_ns": 0,
+      "end_wall_ns": 1000000000,
+      "scope": "sampled_endpoints_only",
+      "continuous_clearance_certified": false
+    }
+  ],
+  "coverage_gaps": [],
+  "max_gap_ns": 1000000000,
+  "scope": "OFFLINE_TYPED_FIXTURE",
+  "continuous_clearance_certified": false,
+  "moving_intervals": [
+    {
+      "continuous_clearance_certified": false,
+      "end_epoch": 0,
+      "end_sim_ns": 1000000000,
+      "outcome": "POTENTIAL_VIOLATION",
+      "pairs": [
+        {
+          "allowed_support_enclosure": false,
+          "displacement_bound_m": 4.346410161513775,
+          "enclosure_separation_m": 0.0,
+          "part": "body",
+          "part_radius_m": 0.17320508075688773,
+          "potential_violation": true,
+          "surface": "wire"
+        }
+      ],
+      "reasons": [],
+      "scope": "declared_conservative_enclosure_not_physics_contact",
+      "start_epoch": 0,
+      "start_sim_ns": 0
+    }
+  ],
+  "phase_ledger": [
+    {
+      "epoch": 0,
+      "known_sampled_violation": false,
+      "phase": "rest",
+      "reasons": [],
+      "schedule_index": 0,
+      "sim_ns": 0,
+      "support": {
+        "contacts": [],
+        "epoch": 0,
+        "source": "contact/1",
+        "source_ns": 0
+      },
+      "telemetry": {
+        "armed": false,
+        "epoch": 0,
+        "landed": true,
+        "nav_state": "DISARMED",
+        "source": "px4/1",
+        "source_ns": 0
+      },
+      "truth_source": "truth/1",
+      "valid": true,
+      "wall_ns": 0
+    },
+    {
+      "epoch": 0,
+      "known_sampled_violation": false,
+      "phase": "rest",
+      "reasons": [],
+      "schedule_index": 0,
+      "sim_ns": 1000000000,
+      "support": {
+        "contacts": [],
+        "epoch": 0,
+        "source": "contact/1",
+        "source_ns": 1000000000
+      },
+      "telemetry": {
+        "armed": false,
+        "epoch": 0,
+        "landed": true,
+        "nav_state": "DISARMED",
+        "source": "px4/1",
+        "source_ns": 1000000000
+      },
+      "truth_source": "truth/1",
+      "valid": true,
+      "wall_ns": 1000000000
+    }
+  ],
+  "discovery": {
+    "ledger": [
+      {
+        "error": null,
+        "readers": [],
+        "source": "graph/1",
+        "wall_ns": 0
+      },
+      {
+        "error": null,
+        "readers": [],
+        "source": "graph/1",
+        "wall_ns": 1000000000
+      }
+    ],
+    "unexpected_readers": [],
+    "reasons": [],
+    "cooperative_coverage_complete": true,
+    "dds_security_certified": false,
+    "scope": "bounded_cooperative_detection_not_access_control"
+  },
+  "motion_assumptions": {
+    "angular_speed_rad_s": 3.141592653589793,
+    "provenance": "analytic test constraints, not calibrated",
+    "translation_speed_m_s": 4.0
+  },
+  "flight_admission": false,
+  "live_acceptance_certified": false,
+  "schema": 1,
+  "mode": "evaluate",
+  "inputs": {
+    "profile_sha256": "70290036ff01a34b2ca9d7e5b83825936637b0272a764bc64b969837fa3ce2b6",
+    "fixture_sha256": "9ae5448d2893a4dd0d80a5dc8bc7bded225b0b733caa6fb6ed5bcb8327ad2695",
+    "observations_sha256": "9e3635e18623d96e4d63695a4e2980e9dc7c115d1996cf3c6605bc1722bc1b95"
+  },
+  "truth_samples": [],
+  "sampling_scope": "Declared bounded-motion enclosures; independent evaluator phase and cooperative discovery ledgers; offline assumptions only."
+}

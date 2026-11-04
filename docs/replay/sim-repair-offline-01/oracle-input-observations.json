@@ -1,0 +1,112 @@
+{
+  "observations": [
+    {
+      "sim_ns": 0,
+      "wall_ns": 0,
+      "epoch": 0,
+      "truth_source": "truth/1",
+      "source_ns": 0,
+      "world_from_body": [
+        [
+          1.0,
+          -0.0,
+          0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      "telemetry": {
+        "source": "px4/1",
+        "source_ns": 0,
+        "epoch": 0,
+        "armed": false,
+        "landed": true,
+        "nav_state": "DISARMED"
+      },
+      "support": {
+        "source": "contact/1",
+        "source_ns": 0,
+        "epoch": 0,
+        "contacts": []
+      }
+    },
+    {
+      "sim_ns": 1000000000,
+      "wall_ns": 1000000000,
+      "epoch": 0,
+      "truth_source": "truth/1",
+      "source_ns": 1000000000,
+      "world_from_body": [
+        [
+          1.0,
+          -0.0,
+          0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      "telemetry": {
+        "source": "px4/1",
+        "source_ns": 1000000000,
+        "epoch": 0,
+        "armed": false,
+        "landed": true,
+        "nav_state": "DISARMED"
+      },
+      "support": {
+        "source": "contact/1",
+        "source_ns": 1000000000,
+        "epoch": 0,
+        "contacts": []
+      }
+    }
+  ],
+  "discovery": [
+    {
+      "wall_ns": 0,
+      "source": "graph/1",
+      "readers": [],
+      "error": null
+    },
+    {
+      "wall_ns": 1000000000,
+      "source": "graph/1",
+      "readers": [],
+      "error": null
+    }
+  ]
+}

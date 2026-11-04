@@ -116,9 +116,14 @@ def test_full_storage_queue_rejects_evidence_instead_of_silently_dropping_it():
     writer = object.__new__(BagWriter)
     writer.process = SimpleNamespace(is_alive=lambda: True)
     writer.incoming = Queue(maxsize=1)
-    writer.write("depth", b"first", {"topic_sequence": 1})
+    from collections import Counter
+    import hashlib
+    writer.enqueued = Counter()
+    writer.identity_hashes = {"depth": hashlib.sha256()}
+    writer.write("depth", b"first", {"topic_sequence": 1, "source_ns": 1})
     with pytest.raises(ValueError, match="BAG_WRITER_BACKPRESSURE"):
-        writer.write("depth", b"second", {"topic_sequence": 2})
+        writer.write("depth", b"second", {"topic_sequence": 2, "source_ns": 2})
+    assert writer.enqueued == {"depth": 1}
     writer.process = SimpleNamespace(is_alive=lambda: False)
     with pytest.raises(ValueError, match="BAG_WRITER_EXITED"):
-        writer.write("depth", b"third", {"topic_sequence": 3})
+        writer.write("depth", b"third", {"topic_sequence": 3, "source_ns": 3})

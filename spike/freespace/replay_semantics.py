@@ -13,7 +13,7 @@ import numpy as np
 
 from capture_pose import camera_from_info, decode_depth, interpolate_pose
 from drone_cv.oracle_truth import TRUTH_TOPIC, body_truth, decode_wire
-from evidence import Envelope, EvidenceStore, Frame, SensorProfile, decide, swept_envelope
+from evidence import EvidenceSource, Envelope, EvidenceStore, Frame, SensorProfile, decide, swept_envelope
 from evidence_variants import early_obstacle_variant, gap_variant
 from plane_diagnostics import plane_crosscheck
 from recording_integrity import require_alignment_epoch, validate_alignment
@@ -73,7 +73,8 @@ def truth_diagnostic(recording, records, manifest, fixture, group, frames, camer
             truth.append((sample.source_ns, np.asarray(sample.world_from_body)))
     maximum_gap = fixture["oracle"]["fixture"]["max_truth_gap_ns"]
     alignment = np.asarray(manifest["world_from_odom"])
-    sensor = SensorProfile(no_return_certified=False)
+    sensor = SensorProfile(0., 0., EvidenceSource.HISTORICAL_ANALYSIS,
+                           "Historical semantics ray radius; not calibrated sensing evidence", False)
     radius = ray_radius(camera, sensor.far_trusted_m)
     captures, queries, skipped, bracket_deltas, absolute = [], [], Counter(), [], []
     capture_coverage, query_coverage, missing = [], [], []
@@ -173,9 +174,12 @@ def full_profile_envelope(profile, pose, observed_bound_m):
 def envelope_comparison(frames, camera, profile, diagnostic, ttl_ns):
     pose = frames[-1].pose
     now = frames[-1].time_s
-    sensor = SensorProfile(no_return_certified=False,
-                           near_translation_uncertainty_m=diagnostic["relative_error"]["maximum_translation_m"],
-                           near_rotation_uncertainty_rad=diagnostic["relative_error"]["maximum_rotation_rad"])
+    sensor = SensorProfile(
+        near_translation_uncertainty_m=diagnostic["relative_error"]["maximum_translation_m"],
+        near_rotation_uncertainty_rad=diagnostic["relative_error"]["maximum_rotation_rad"],
+        source=EvidenceSource.STATIONARY_DIAGNOSTIC,
+        provenance="Same-bag all-pairs stationary truth-relative observed maxima; not calibration",
+        no_return_certified=False)
     store = EvidenceStore(camera, sensor, frames)
     observed_bound = diagnostic["relative_error"]["maximum_bound_m"]
     envelopes = {"historical_stationary": swept_envelope(pose, 1.),

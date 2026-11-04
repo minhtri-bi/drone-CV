@@ -4,20 +4,22 @@
 
 The operator approved complete code and offline pinned-message verification only. No control publisher, ROS node, rclpy initialization or arming command was permitted during verification. `g1-supervisor` remains blocked on its actual stationary runtime fault-injection/ownership/handoff evidence. `g1-flight`, `g1-calibration` and every G2/navigation gate remain unmet.
 
-Evidence: [`replay/evidence-semantics-01/supervisor-offline.json`](replay/evidence-semantics-01/supervisor-offline.json). Its lifecycle is a synthetic input sequence, not a vehicle mode change. Synthetic envelope/deadline parameters are protocol fixtures, not measured stopping or tracking bounds.
+Historical protocol evidence: [`replay/evidence-semantics-01/supervisor-offline.json`](replay/evidence-semantics-01/supervisor-offline.json). Its lifecycle is synthetic, not a vehicle mode change. The current [review repair results](SIM_REPAIR_RESULTS.md) replace the old directional-permit contract and add new guarded pinned-message/real-bag diagnostics. Synthetic envelope/deadline parameters remain protocol fixtures, not measured stopping or tracking bounds.
 
 ## Implementation
 
 - `src/drone_cv/supervisor.py`: immutable deterministic transition state, independent command/permit/authorization inputs, explicit priming/mode/arm/handoff states and latched revocation.
 - `src/drone_cv/px4_bridge.py`: pinned generated-message encoding, strict bounded JSON decoding and lazily constructed optional ROS adapter. Importing this module does not initialize ROS or create publishers.
 - `scripts/g1_supervisor.py`: separate `offline-smoke`, `sources` and consequential `run` subcommands.
-- `tests/test_supervisor.py`: behavioral freshness, epoch, capture-source progress, measured-drift direction, request/ACK attribution, failsafe/owner conflict and TTL-boundary regressions.
+- `tests/test_supervisor.py`: behavioral freshness, epoch, capture-source progress, complete stopping-region containment, request/ACK attribution, failsafe/owner conflict and TTL-boundary regressions.
 
 A safety permit binds the command identity/velocity and the original required observation `capture_stamp`. This stamp is the oldest observation still needed to justify that permit; producing another verdict cannot refresh it. Wire stamps contain `epoch`, `sequence` and simulation `sim_s`; receive monotonic time is assigned locally. Lease, command, permit, capture, status, odometry and clock progress have separate finite checks. A live bridge heartbeat does not renew an expired proposal.
 
-Priming emits only `OffboardControlMode`, never `TrajectorySetpoint` before fresh PX4 status observes Offboard. Mode entry and arming require separate explicit one-shot requests. ACKs must be addressed correctly and occur strictly after the request; successful ACK alone does not replace fresh status evidence. A zero requested velocity cannot bypass the stopping-direction check when measured velocity is nonzero. Transient observed failsafe, authority loss, disarm, rejected ACK and ownership conflict latch revocation; no automatic re-entry follows.
+Priming emits only `OffboardControlMode`, never `TrajectorySetpoint` before fresh PX4 status observes Offboard. Mode entry and arming require separate explicit one-shot requests. ACKs must be addressed correctly and occur strictly after the request; successful ACK alone does not replace fresh status evidence. Zero command and noisy measured drift now require complete all-direction stopping-room containment, not angular coincidence. Transient observed failsafe, authority loss, disarm, rejected ACK and ownership conflict latch revocation; no automatic re-entry follows.
 
 Unused setpoint fields are NaN only at the PX4 encoding boundary. Mode/arm fields consumed by pinned Commander remain finite where required. Handoff output is not proof that PX4 accepted the mode or that the vehicle stopped. When valid odometry is absent, the code does not synthesize a hold setpoint.
+
+The current bridge requires explicit exploratory-simulation configuration and read-only pinned live-parameter agreement before publisher construction. Revocation stops publication while bounded terminal status observation continues. These runtime mechanisms have offline tests, not an exercised live-readback or fallback certificate; the runtime gate remains blocked. See [the new contract, evidence and limitations](SIM_REPAIR_RESULTS.md#r4-policy-readback-and-terminal-observation).
 
 ## Exercised pinned path
 

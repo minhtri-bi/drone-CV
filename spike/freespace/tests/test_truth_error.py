@@ -157,3 +157,5 @@ def test_plane_crosscheck_preserves_baseline_erosion_and_reports_auxiliary_exclu
     assert row["original_grader"]["pass"]
     assert row["independent_truth_projected_roi"]["pixels_excluded_from_original_roi"] > 0
     assert report["motion_authority"] is False
+    assert report["rows"][0]["independent_dy"]["failure"] == "INDEPENDENT_PLANE_RESIDUAL_UNAVAILABLE"
+    assert not report["rows"][0]["independent_dy"]["g2_acceptance"]

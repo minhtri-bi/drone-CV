@@ -6,6 +6,7 @@ import numpy as np
 
 from camera import Pose
 from drone_cv.oracle_truth import TRUTH_TOPIC, body_truth, decode_wire
+from dy_crosscheck import independent_dy
 from replay_fixture import aligned_camera, grade_frame
 from truth_error import interpolate_truth, rigid
 
@@ -162,10 +163,26 @@ def plane_crosscheck(records, manifest, fixture, frames, camera):
                 auxiliary_fixture = {**fixture, "targets": [target]}
                 grade = grade_frame(frame.depth, camera, frame.pose, alignment, auxiliary_fixture)["targets"][target["name"]]
             target_rows.append(_target_row(frame, camera, alignment, actual_pose, fixture, target, scope, grade))
+        residuals = {row["name"]: row["same_estimator_roi"]["estimated_plane_normal_residual_m"]["median_signed_m"]
+                     for row in target_rows}
+        required = ("side", "front", "horizontal")
+        if all(residuals.get(name) is not None for name in required):
+            dy = independent_dy(
+                (0., 1., 0.), residuals["side"], residuals["front"], residuals["horizontal"],
+                nuisance_corrections_m=(0., 0., 0.), budget=None,
+                truth_minus_estimate_y_m=float(actual[1, 3]-estimate[1, 3]))
+            dy["geometry_eligible"] = all(row["original_grader"]["pass"] for row in target_rows)
+            dy["nuisance_status"] = "Explicitly uncorrected; no justified rotation/depth/extrinsic budget"
+            if not dy["geometry_eligible"]:
+                dy["geometry_failure"] = "ORIGINAL_OR_AUXILIARY_TARGET_GRADING_FAILED"
+        else:
+            dy = {"motion_authority": False, "comparison_pass": False, "g2_acceptance": False,
+                  "failure": "INDEPENDENT_PLANE_RESIDUAL_UNAVAILABLE"}
         rows.append({"stamp_ns": stamp, "sequence": frame.sequence, "truth_bracket_delta_ns": bracket,
                      "truth_minus_estimate_translation_world_m": (actual[:3, 3]-estimate[:3, 3]).tolist(),
                      "estimated_world_from_body": estimate.tolist(), "truth_world_from_body": actual.tolist(),
-                     "original_grader_all_pass": original_grade["all_pass"], "targets": target_rows})
+                     "original_grader_all_pass": original_grade["all_pass"], "targets": target_rows,
+                     "independent_dy": dy})
     complete = not rejected and len(rows) == len(frames)
     return {"scope": "DIRECT_PLANE_TRUTH_CROSSCHECK_NOT_CALIBRATION", "motion_authority": False,
             "diagnostic_complete": complete, "rows": rows,

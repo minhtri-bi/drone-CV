@@ -41,6 +41,10 @@ class Envelope:
     position_variance_max: float
     velocity_variance_max: float
     bounds_provenance: str
+    velocity_error_mps: tuple[float, float, float]
+    tracking_error_m: float
+    position_error_m: float
+    target: str
 
     def __post_init__(self):
         for name in ("minimum_ned", "maximum_ned"):
@@ -52,6 +56,14 @@ class Envelope:
                      "velocity_variance_max"):
             _positive(getattr(self, name), name)
         _identity(self.bounds_provenance)
+        object.__setattr__(self, "velocity_error_mps",
+                           _vector(self.velocity_error_mps, "velocity error"))
+        if min(*self.velocity_error_mps, self.tracking_error_m, self.position_error_m) < 0:
+            raise ValueError("motion uncertainty bounds must be nonnegative")
+        if not all(isfinite(v) for v in (self.tracking_error_m, self.position_error_m)):
+            raise ValueError("motion uncertainty bounds must be finite")
+        if self.target not in ("synthetic_offline", "exploratory_simulation"):
+            raise ValueError("unsupported motion target; hardware is not authorized")
         if self.yaw_error_rad >= pi / 2:
             raise ValueError("yaw error must be below pi/2")
 
@@ -106,6 +118,7 @@ class Odometry:
     reset_counter: int
     position_variance: tuple[float, float, float]
     velocity_variance: tuple[float, float, float]
+    quaternion_squared_norm_error: float = 0.0
 
     def __post_init__(self):
         for name in ("position_ned", "velocity_ned", "position_variance", "velocity_variance"):
@@ -160,11 +173,12 @@ class Command:
 
 @dataclass(frozen=True)
 class Permit:
-    """Independent safety result for exactly one command and swept corridor.
+    """Certified NED reference-center box, eroded by footprint and phase clearance.
 
-    The safety producer must justify complete footprint/near-field coverage and
-    preserve the oldest required observation's capture identity, not decision time.
-    This interface does not infer clearance from a planner heartbeat or truth.
+    The producer covers the COMPLETE box including near-field support. Additional
+    state/tracking error and stopping travel are checked here exactly once.
+    Bounds are absolute in the reset-bound local NED frame, not body coordinates.
+    Original capture identity is never replaced by decision time.
     """
     source: str
     stamp: Stamp
@@ -172,8 +186,14 @@ class Permit:
     command_source: str
     command_sequence: int
     velocity_ned: tuple[float, float, float]
-    free_distance_m: float
     capture_stamp: Stamp
+    minimum_ned: tuple[float, float, float]
+    maximum_ned: tuple[float, float, float]
+    reference_ned: tuple[float, float, float]
+    reset_counter: int
+    frame: str
+    evidence_kind: str
+    bounds_provenance: str
 
     def __post_init__(self):
         _identity(self.source)
@@ -184,8 +204,20 @@ class Permit:
         if type(self.command_sequence) is not int or self.command_sequence < 0:
             raise ValueError("command sequence must be a nonnegative integer")
         object.__setattr__(self, "velocity_ned", _vector(self.velocity_ned, "velocity"))
-        if not isfinite(self.free_distance_m) or self.free_distance_m < 0:
-            raise ValueError("free distance must be finite and nonnegative")
+        for name in ("minimum_ned", "maximum_ned", "reference_ned"):
+            object.__setattr__(self, name, _vector(getattr(self, name), name))
+        if any(a >= b for a, b in zip(self.minimum_ned, self.maximum_ned)):
+            raise ValueError("certificate minimum must be below maximum")
+        if any(not lo <= p <= hi for p, lo, hi in
+               zip(self.reference_ned, self.minimum_ned, self.maximum_ned)):
+            raise ValueError("certificate reference must lie within certified region")
+        if self.frame != "local_ned_reference_centers":
+            raise ValueError("unsupported certificate frame")
+        if self.evidence_kind not in ("bootstrap_known_clear", "perception_supported"):
+            raise ValueError("unsupported certificate evidence kind")
+        if type(self.reset_counter) is not int or not 0 <= self.reset_counter <= 255:
+            raise ValueError("certificate reset counter must be uint8")
+        _identity(self.bounds_provenance)
 
 
 @dataclass(frozen=True)
@@ -293,29 +325,36 @@ def _motion_error(data: Inputs, cfg: Config, state: State) -> str | None:
     if permit.capture_stamp.sim_s > permit.stamp.sim_s:
         return "PERCEPTION_FUTURE_DECISION"
     env = cfg.envelope
-    speed, measured = hypot(*command.velocity_ned), hypot(*actual.velocity_ned)
+    speed = hypot(*command.velocity_ned)
     if speed > env.maximum_speed_mps:
         return "REQUESTED_SPEED"
     # Rotation/blind-direction planning is intentionally not implemented here.
     if abs((command.yaw_ned - state.hold_yaw + pi) % (2*pi) - pi) > 1e-6:
         return "YAW_COMMAND_UNSUPPORTED"
-    if measured and not speed:
-        # A zero-command permit does not certify the measured drift corridor.
-        return "DIRECTION_UNSUPPORTED"
-    if speed and measured:
-        dot = sum(a*b for a, b in zip(command.velocity_ned, actual.velocity_ned))
-        if dot / (speed * measured) < 1 - 1e-6:
-            return "DIRECTION_UNSUPPORTED"
-    stopping = max(speed, measured)
+    if (permit.reset_counter != actual.reset_counter
+            or permit.capture_stamp.epoch != actual.stamp.epoch
+            or permit.stamp.epoch != actual.stamp.epoch
+            or permit.bounds_provenance != env.bounds_provenance):
+        return "PERMIT_FRAME_BINDING"
+    if data.lease is None or (data.lease.kind == "mission"
+                             and permit.evidence_kind != "perception_supported"):
+        return "PERMIT_EVIDENCE_KIND"
+    # A ball encloses every direction change, not just two nominal centerlines.
+    # Assumption: speed stays <= this bound during response, then decreases at
+    # least deceleration_mps2; tracking_error_m bounds residual model error.
+    # These explicit exploratory bounds are NOT certified by estimator variance.
+    uncertain_speed = hypot(*(abs(v) + error for v, error in
+                              zip(actual.velocity_ned, env.velocity_error_mps)))
+    stopping = max(speed, uncertain_speed)
     distance = (stopping * env.response_delay_s + stopping**2 / (2*env.deceleration_mps2)
-                + env.extra_margin_m)
-    if not isfinite(distance) or distance > permit.free_distance_m:
+                + env.extra_margin_m + env.position_error_m + env.tracking_error_m)
+    if not isfinite(distance):
         return "STOPPING_ROOM"
-    # Reject paths whose bound leaves the operator's local measured envelope.
-    for p, v, low, high in zip(actual.position_ned, command.velocity_ned,
-                              env.minimum_ned, env.maximum_ned):
-        endpoint = p + (v / speed * distance if speed else 0.)
-        if not low <= endpoint <= high:
+    for p, low, high in zip(actual.position_ned, permit.minimum_ned, permit.maximum_ned):
+        if p - distance < low or p + distance > high:
+            return "STOPPING_ROOM"
+    for p, low, high in zip(actual.position_ned, env.minimum_ned, env.maximum_ned):
+        if p - distance < low or p + distance > high:
             return "PREDICTED_ENVELOPE"
     return None
 
