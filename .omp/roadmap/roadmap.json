@@ -5,8 +5,8 @@
   "root": "C:\\Users\\TRI\\drone-CV",
   "title": "Drone-CV: simulation-first obstacle avoidance",
   "goal": "Sửa contract an toàn trước; chuẩn bị OMP; triển khai G0–G4 với oracle độc lập, đạt ít nhất 45/50 world tĩnh ở G3, không unsafe event trong acceptance suite, không tuyên bố bay thật.",
-  "revision": 59,
-  "updatedAt": "2026-11-03T17:50:04.732Z",
+  "revision": 77,
+  "updatedAt": "2026-11-04T05:19:43.644Z",
   "tasks": [
     {
       "id": "prep-safety",
@@ -201,12 +201,15 @@
       ],
       "milestone": false,
       "verification": "smoke",
-      "status": "pending",
+      "status": "done",
       "blocker": "",
-      "runToken": null,
-      "startedAt": null,
-      "evidenceIds": [],
-      "note": ""
+      "runToken": "33b397cc-3cfd-4dbf-a0f9-b30d607478dd",
+      "startedAt": "2026-11-03T23:34:30.448Z",
+      "evidenceIds": [
+        "r_7441e74d-edee-4835-903d-8b6bdbf9f49c",
+        "r_9a532a59-bad5-4df4-9ffb-0d9fc884a686"
+      ],
+      "note": "Pinned unarmed same-bag replay: support 385 samples; body intersection 285; rotor sweep intersection 281; truth loss before unsafe UNKNOWN/INFRA 73; truth loss after unsafe UNSAFE/INFRA 75. Exact gear support pairs never exempt body/rotor. Native sdformat14 and all visual/collision assets bound in 42-part profile. Independent typed clearance 0.7724005 m matches analytic value. 344 offline tests plus 13 archive tests; project integrity checks 53 evidence hashes. Retained all failed attempts and original bags in docs/replay/oracle-static-01; details docs/G1_ORACLE_RESULTS.md. Sampled static geometry only, no inter-sample swept-volume or flight certificate. No arming or control publisher."
     },
     {
       "id": "g1-supervisor",
@@ -223,12 +226,12 @@
       ],
       "milestone": false,
       "verification": "smoke",
-      "status": "pending",
-      "blocker": "",
-      "runToken": null,
-      "startedAt": null,
+      "status": "blocked",
+      "blocker": "Authorized code/offline slice complete: guarded actual pinned PX4 serialization and lifecycle smoke passed with zero init/nodes/control publishers. Runtime stationary fault injection/ownership and handoff remain unverified and outside approval; no arming or publisher authorization. Runtime gate intentionally incomplete.",
+      "runToken": "23efe9e5-5ba6-41fb-b4ed-3fecad5b8970",
+      "startedAt": "2026-11-04T04:23:19.043Z",
       "evidenceIds": [],
-      "note": ""
+      "note": "User approved full code and offline pinned-message verification only. No control publisher is to be instantiated; no arming. Runtime gate must remain uncompleted."
     },
     {
       "id": "g1-flight",
@@ -680,6 +683,33 @@
         "r_6aa7942d-8c73-4a7b-b81c-61eb97e9ca62"
       ],
       "note": "Complete immutable 90.003 s Disarmed capture spans 19.328 s simulation with 10 s TTL; 429/429 post-warmup observations pair successfully. Actual prefix-only queries show 127 retained/0 expired, then 236 retained/24 expired, then 223 retained/206 expired; no future frames used. Subsequent query has NO_FRESH_FRAMES and zero retained. All six temporal checks pass. Separate strict long-bag geometry/fault replay also passes with explicitly reported worst errors ~5.3 cm, not a calibrated pose bound. Both incomplete attempts, complete bag, manifests, receive trace, source/environment provenance and frame identities preserved under docs/replay/ttl-r51/. No set_pose, control, real +Inf certification or positive navigation claim. Owned runtime/decoder removed; images retained. Model and acquisition results are documented; final full suite passed 143 tests, publication CI remains a separate gate."
+    },
+    {
+      "id": "prep-evidence-semantics",
+      "title": "Repair evidence semantics and measure truth-relative TTL error",
+      "phase": "Unarmed evidence preparation",
+      "acceptance": [
+        "Finite near-depth hazards retain complete capture-pose pixel cones clipped at optical Z 0.3 m; negative infinity remains global fail-closed. Corrected rest fixtures derive from the complete physical profile without erasing retained hazards.",
+        "Pinned-decoder continuous truth measures absolute and all-pairs capture/query relative pose errors within TTL, with full quaternion angle, true ray range, body lever arm, clock-bracket coverage and uncalibrated non-admitting labels.",
+        "Independent retained-frame identity checks exercise a mid-trace camera gap longer than TTL, recovery and an early-only obstacle expiry variant. Actual replay compares historical and model-derived diagnostic envelopes without changing original ROI or grading thresholds.",
+        "Retain frozen sweep failures, baseline recordings, effective inputs and source hashes. An explicit supplemental project checker prevents completed G2 tasks while this preparation task is not done; no native dependency edge is claimed and no G1 task is blocked."
+      ],
+      "dependsOn": [
+        "prep-replay-integrity",
+        "prep-model-profile",
+        "prep-ttl-replay"
+      ],
+      "milestone": false,
+      "verification": "smoke",
+      "status": "done",
+      "blocker": "",
+      "runToken": "a32b5c77-9c7e-473d-88ed-902bb9bfe405",
+      "startedAt": "2026-11-04T04:23:19.334Z",
+      "evidenceIds": [
+        "r_6dd6f3a3-ada2-4462-abb8-45ba993dafd2",
+        "r_5edc2b5c-e93f-4225-92ea-d9f1a36781c8"
+      ],
+      "note": "Implemented full finite-near cones with capture pose/uncertainty, complete-profile rest height, inclusive epoch/TTL identity checks and supplemental G2 checker. Actual pinned decoder:433 captures,1831 query times,315712 all-pairs up to exactly10s;11s camera gap/recovery and early-only obstacle expiry identities pass. Frozen1600 attempts and96 liveness cases retained. Both failed05 and complete disarmed06 bags preserved with hashes/source ZIPs. Primary geometry replay remains failed due documented side-target occlusion; original ROIs/thresholds unchanged, plane residual/coverage diagnostic complete. Stationary uncalibrated/nonadmitting only; supervisor runtime blocked, flight/calibration/G2 remain unmet."
     }
   ],
   "receipts": [
@@ -916,6 +946,149 @@
       "at": "2026-11-03T17:44:54.539Z",
       "outcome": "success",
       "sha256": "9a177d67504fbca80191dc05ac680d586bc9c20e566d6b6fbbac53e5c7a2293b"
+    },
+    {
+      "id": "r_19632c04-a93e-4266-b25e-01182d15418f",
+      "taskId": "g1-oracle",
+      "runToken": "33b397cc-3cfd-4dbf-a0f9-b30d607478dd",
+      "kind": "smoke",
+      "label": "Pinned unarmed oracle support fixture with lossless native Pose_V in shared bag; no arm or control publisher",
+      "toolName": "eval",
+      "toolCallId": "call_e3c306908978462a91e1992e8b4001c7|fc_058798b29a29b7f8016aeaabe9116487d0af222714f2a9c689",
+      "sessionId": "01a1a267-9e25-7156-af4a-e64bfc1dc10a",
+      "at": "2026-11-04T03:52:56.708Z",
+      "outcome": "success",
+      "sha256": "674785fb485e11434a298e70fc6ef8127045fd5dbee18dd443804f24bbda27da"
+    },
+    {
+      "id": "r_c0336b69-0e9f-4b98-a779-c42fb209edcd",
+      "taskId": "g1-oracle",
+      "runToken": "33b397cc-3cfd-4dbf-a0f9-b30d607478dd",
+      "kind": "smoke",
+      "label": "Unarmed support fixture, profile-derived initial height and capture-time truth/PX4 bracket; strict outcome assertions",
+      "toolName": "eval",
+      "toolCallId": "call_6ab98baf3a6e41878fc92c96f9395192|fc_07f5483add614fda016aeaad3e5b1487d08630ec1282744c40",
+      "sessionId": "01a1a267-9e25-7156-af4a-e64bfc1dc10a",
+      "at": "2026-11-04T03:58:24.792Z",
+      "outcome": "failure",
+      "sha256": "235285011293c4cf1538e1fb301ac9b50976499c359f39d65cb016e7cb64f2c4"
+    },
+    {
+      "id": "r_71b94a3f-0465-422d-82bb-f19ab94cda7c",
+      "taskId": "g1-oracle",
+      "runToken": "33b397cc-3cfd-4dbf-a0f9-b30d607478dd",
+      "kind": "smoke",
+      "label": "Frozen unarmed support trial after explicit 10-second simulation bootstrap; no startup clearance claim; strict final outcomes",
+      "toolName": "eval",
+      "toolCallId": "call_7c56c1709db54311aa4895ea97a1d405|fc_07f5483add614fda016aeaade2b77487d088de35710f80f6e6",
+      "sessionId": "01a1a267-9e25-7156-af4a-e64bfc1dc10a",
+      "at": "2026-11-04T04:02:59.042Z",
+      "outcome": "failure",
+      "sha256": "d685ab60ab66384f96484139123b38acb90a57628d981ce3159a0b9a70c99553"
+    },
+    {
+      "id": "r_7441e74d-edee-4835-903d-8b6bdbf9f49c",
+      "taskId": "g1-oracle",
+      "runToken": "33b397cc-3cfd-4dbf-a0f9-b30d607478dd",
+      "kind": "smoke",
+      "label": "Pinned decoder replays immutable support04 with original stored-CDR hashes; strict safety and completeness assertions",
+      "toolName": "eval",
+      "toolCallId": "call_09b2c569d436426da5751b2ff28f856a|fc_07f5483add614fda016aeaaf4cf95487d0b3fba4b9f516eaab",
+      "sessionId": "01a1a267-9e25-7156-af4a-e64bfc1dc10a",
+      "at": "2026-11-04T04:06:56.525Z",
+      "outcome": "success",
+      "sha256": "0a74d1584a677dcf0259e075e33a0f26fd7fbcddc0c25a3209fb64624034d94c"
+    },
+    {
+      "id": "r_9a532a59-bad5-4df4-9ffb-0d9fc884a686",
+      "taskId": "g1-oracle",
+      "runToken": "33b397cc-3cfd-4dbf-a0f9-b30d607478dd",
+      "kind": "smoke",
+      "label": "Four frozen unarmed negatives: body/rotor envelope intersections, truth loss before unsafe, truth loss after unsafe; exact outcome assertions",
+      "toolName": "eval",
+      "toolCallId": "call_cf00e11ffd3d46b09ebf578d503f3e84|fc_07f5483add614fda016aeaaf763fec87d0b5019ec98cb43d5e",
+      "sessionId": "01a1a267-9e25-7156-af4a-e64bfc1dc10a",
+      "at": "2026-11-04T04:14:01.911Z",
+      "outcome": "success",
+      "sha256": "13f3cbd126fdbedd057085054c38e95b5faef7196d9fb377283b50b1ec168789"
+    },
+    {
+      "id": "r_53ea3544-530f-414f-8d28-b5df6b5e3cf7",
+      "taskId": "prep-evidence-semantics",
+      "runToken": "a32b5c77-9c7e-473d-88ed-902bb9bfe405",
+      "kind": "smoke",
+      "label": "Unarmed pinned acquisition after isolating clock bridge; unchanged source lead and freshness limits, retained failed attempt 05",
+      "toolName": "eval",
+      "toolCallId": "call_7ef7f2c06aa64c999f048f032f1839d8|fc_0def6de943f228a7016aeab835aba487d0ac0de9afcad49d21",
+      "sessionId": "01a1a4d6-71ab-778b-a103-9ef0e487530a",
+      "at": "2026-11-04T04:44:52.683Z",
+      "outcome": "success",
+      "sha256": "9b144b43dac0ce652c091e34ed9c8ef91a66663982b7493bd2a932e4a12c2a32"
+    },
+    {
+      "id": "r_4f2a53f2-20bc-46e0-9abe-1be8ade21443",
+      "taskId": "prep-evidence-semantics",
+      "runToken": "a32b5c77-9c7e-473d-88ed-902bb9bfe405",
+      "kind": "smoke",
+      "label": "Execute frozen unarmed support-06 120s recording with separate clock bridge; no control publisher or arming",
+      "toolName": "bash",
+      "toolCallId": "call_16ca2a2af3f54747ba9c39e60dc70016|fc_0def6de943f228a7016aeab84fa86c87d0beb23f20d2dccf9b",
+      "sessionId": "01a1a4d6-71ab-778b-a103-9ef0e487530a",
+      "at": "2026-11-04T04:45:04.737Z",
+      "outcome": "unknown",
+      "sha256": "772791f5a1e1e007a33c1de3fda7018f97e84d10e42c759ce8bfb8915afc87e2"
+    },
+    {
+      "id": "r_f3f5e5f2-8750-4260-a4be-117d96d50a70",
+      "taskId": "g1-supervisor",
+      "runToken": "23efe9e5-5ba6-41fb-b4ed-3fecad5b8970",
+      "kind": "smoke",
+      "label": "Publisher-forbidden actual pinned PX4 message serialization/roundtrip, synthetic lifecycle and fault smoke; not runtime acceptance",
+      "toolName": "eval",
+      "toolCallId": "call_9cb7b1c2125e4ef89bd773bb70f6bbb8|fc_0def6de943f228a7016aeab9e322b887d0809407ac650582cd",
+      "sessionId": "01a1a4d6-71ab-778b-a103-9ef0e487530a",
+      "at": "2026-11-04T04:51:57.832Z",
+      "outcome": "failure",
+      "sha256": "6b95544a9cee121325b46e4484f857c17450c1fd5a83d13bd54b1f9bd657f3c4"
+    },
+    {
+      "id": "r_b08753c7-c95f-4351-bf5e-ab55d19f46e3",
+      "taskId": "g1-supervisor",
+      "runToken": "23efe9e5-5ba6-41fb-b4ed-3fecad5b8970",
+      "kind": "smoke",
+      "label": "Guarded pinned-message smoke after correcting docker cp nested source staging; init/node/publisher forbidden",
+      "toolName": "eval",
+      "toolCallId": "call_50ce702cf49040d7bb4841cf08143dca|fc_0def6de943f228a7016aeaba0ae91487d0b083527acc07f281",
+      "sessionId": "01a1a4d6-71ab-778b-a103-9ef0e487530a",
+      "at": "2026-11-04T04:52:34.565Z",
+      "outcome": "success",
+      "sha256": "aa2eb222b80b58bc24fb2e95a11d63ca59b626bcf6aa667e476fc3913cc76ace"
+    },
+    {
+      "id": "r_6dd6f3a3-ada2-4462-abb8-45ba993dafd2",
+      "taskId": "prep-evidence-semantics",
+      "runToken": "a32b5c77-9c7e-473d-88ed-902bb9bfe405",
+      "kind": "smoke",
+      "label": "Actual strict pinned-decoder support-06 truth all-pairs TTL10, midtrace gap/recovery, early obstacle expiry and unchanged-ROI plane diagnostics",
+      "toolName": "eval",
+      "toolCallId": "call_ac0935eedf0f4d00854023f5f91ffac7|fc_0def6de943f228a7016aeaba3f226c87d0bc9035057341c67d",
+      "sessionId": "01a1a4d6-71ab-778b-a103-9ef0e487530a",
+      "at": "2026-11-04T04:58:45.888Z",
+      "outcome": "success",
+      "sha256": "53b80d3db53fd5e50a5d9c77e3349879b378c061c91d65ce7ad1d201ab30abaa"
+    },
+    {
+      "id": "r_5edc2b5c-e93f-4225-92ea-d9f1a36781c8",
+      "taskId": "prep-evidence-semantics",
+      "runToken": "a32b5c77-9c7e-473d-88ed-902bb9bfe405",
+      "kind": "smoke",
+      "label": "Read back actual pinned truth/TTL/plane artifacts and full frozen1600case sweep; require complete identities/provenance, retain geometry failure and nonadmitting labels",
+      "toolName": "eval",
+      "toolCallId": "call_16c30156a6094558ad9fc9840193a774|fc_0cd5dfb83c08a010016aeac05c390887d09b76eaf8e283bdbb",
+      "sessionId": "01a1a4d6-71ab-778b-a103-9ef0e487530a",
+      "at": "2026-11-04T05:19:34.855Z",
+      "outcome": "success",
+      "sha256": "5b206e9fd6f7a0dc5ebd1786a741949eba805eaf7b1a5dd34aab2f0d9e6dbf09"
     }
   ]
 }

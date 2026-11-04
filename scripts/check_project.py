@@ -40,6 +40,13 @@ def check_roadmap(state: dict) -> None:
 
     for task_id in by_id:
         visit(task_id)
+    # Supplemental approved gate: the native API cannot edit existing DAG edges.
+    # Missing preparation state is not permission to complete a G2 gate.
+    semantics = by_id.get("prep-evidence-semantics")
+    for task_id, task in by_id.items():
+        if (task_id.startswith("g2-") and task["status"] == "done"
+                and (semantics is None or semantics["status"] != "done")):
+            raise ValueError(f"G2 evidence-semantics gate unmet: {task_id}")
 
 
 def english_task_labels(task: dict, labels: dict) -> dict:
@@ -115,9 +122,11 @@ def check_evidence_archive(path: Path) -> None:
                     or hashlib.file_digest(archive.extractfile(member), "sha256").hexdigest() != identity["sha256"]):
                 raise ValueError(f"archived bag identity mismatch: {path.name}:{name}")
         identities = {"fixture.json": manifest["fixture_sha256"]}
-        if manifest.get("recording_schema") in (2, 3):
+        if manifest.get("recording_schema") in (2, 3, 4):
             identities.update({"recording_policy.json": manifest["policy_sha256"],
                                "receive_progress.jsonl": manifest["receive_progress_sha256"]})
+        if manifest.get("recording_schema") == 4:
+            identities["oracle_profile.json"] = manifest["oracle_profile_sha256"]
         for name, expected in identities.items():
             if hashlib.file_digest(archive.extractfile(str(root / name)), "sha256").hexdigest() != expected:
                 raise ValueError(f"archived provenance mismatch: {path.name}:{name}")

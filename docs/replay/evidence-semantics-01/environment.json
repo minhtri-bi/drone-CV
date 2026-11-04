@@ -1,0 +1,19 @@
+{
+  "image_id": "sha256:061a39905d2d84d40859bb46b67048241b6dacf2ed3983889da7f5fd3e718285",
+  "network_mode": "none",
+  "nano_cpus": 4000000000,
+  "memory_bytes": 6442450944,
+  "cap_drop": [
+    "ALL"
+  ],
+  "security_opt": [
+    "no-new-privileges"
+  ],
+  "host_mounts": [],
+  "source_snapshot": "source-snapshot.zip",
+  "clock": "Gazebo /clock only; PX4 UXRCE_DDS_SYNCT=0; use_sim_time=true; no wall stamp override",
+  "limits_changed": false,
+  "all_statuses_disarmed": true,
+  "control_publishers_created": 0,
+  "arming_commands_sent": 0
+}

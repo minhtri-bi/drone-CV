@@ -1,0 +1,11 @@
+{
+  "command": "python spike/freespace/experiments.py --profile docs/replay/evidence-semantics-01/profile.json --trials 400 --output artifacts/g1-oracle-work/semantics-frozen-synthetic",
+  "launch_source_retained": "frozen-sweep-source.zip",
+  "launch_source_sha256": "79ae8d417686b364f0fc3e4186cc69c3474f4690a997c1177f52d7e36d72e48d",
+  "current_source_sha256": "1943871edc5f3329f1aab4deca5820b77033a43ce5a403883f3694c5990c7f87",
+  "only_source_difference": "After the running sweep loaded its source, preserve documented --trials 0 compatibility by allowing n=0 instead of rejecting it. The executed n=400 loop, seeds, budgets, geometry and decisions are identical. Both source versions are retained.",
+  "all_other_sources": "source-snapshot.zip",
+  "attempts_per_configuration": 400,
+  "seed": 11,
+  "all_cases_retained": true
+}

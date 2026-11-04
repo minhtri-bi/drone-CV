@@ -300,5 +300,16 @@
       "Query during the real trace to demonstrate old frames expiring while fresh frames remain, then stale-all STOP; keep raw recordings immutable and distinguish temporal replay queries from sensor captures.",
       "Do not teleport the vehicle, certify no-return semantics, claim positive real-data movement or waive G1/G2 dependencies; kinematic liveness remains a separately scoped decision."
     ]
+  },
+  "prep-evidence-semantics": {
+    "source_sha256": "678492d6dec6034311b024888bcc3e8e00edda88632cc1feae98a1a2745de1e2",
+    "phase": "Unarmed evidence preparation",
+    "title": "Repair evidence semantics and measure truth-relative TTL error",
+    "acceptance": [
+      "Finite near-depth hazards retain complete capture-pose pixel cones clipped at optical Z 0.3 m; negative infinity remains global fail-closed. Corrected rest fixtures derive from the complete physical profile without erasing retained hazards.",
+      "Pinned-decoder continuous truth measures absolute and all-pairs capture/query relative pose errors within TTL, with full quaternion angle, true ray range, body lever arm, clock-bracket coverage and uncalibrated non-admitting labels.",
+      "Independent retained-frame identity checks exercise a mid-trace camera gap longer than TTL, recovery and an early-only obstacle expiry variant. Actual replay compares historical and model-derived diagnostic envelopes without changing original ROI or grading thresholds.",
+      "Retain frozen sweep failures, baseline recordings, effective inputs and source hashes. An explicit supplemental project checker prevents completed G2 tasks while this preparation task is not done; no native dependency edge is claimed and no G1 task is blocked."
+    ]
   }
 }

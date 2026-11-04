@@ -1,0 +1,88 @@
+{
+  "scope": "Unarmed acquisition only; original grading failures retained",
+  "image_id": "sha256:061a39905d2d84d40859bb46b67048241b6dacf2ed3983889da7f5fd3e718285",
+  "failed_attempt_05": {
+    "complete": false,
+    "failure": "ValueError: SOURCE_AHEAD_OF_CLOCK:/drone_cv_g1/fmu/out/vehicle_odometry",
+    "recorded_wall_s": 59.750299286,
+    "all_observed_disarmed": true,
+    "topic_counts": {
+      "/drone_cv_g1/camera/depth/image_raw": 239,
+      "/drone_cv_g1/camera/depth/camera_info": 302,
+      "/clock": 2484,
+      "/tf_static": 1,
+      "/drone_cv_g1/fmu/out/vehicle_odometry": 989,
+      "/drone_cv_g1/evaluator/truth_pose_v": 681,
+      "/drone_cv_g1/fmu/out/vehicle_status_v4": 20
+    },
+    "warmup_end_sim_ns": 15216000000,
+    "record_end_sim_ns": 24424000000,
+    "oracle": {
+      "safety_outcome": "UNKNOWN",
+      "execution_outcome": "INFRA_ERROR",
+      "sample_count": 681,
+      "coverage_complete": false,
+      "reasons": [
+        "ValueError: SOURCE_AHEAD_OF_CLOCK:/drone_cv_g1/fmu/out/vehicle_odometry",
+        "COLLECTION_INCOMPLETE"
+      ]
+    },
+    "orchestration_complete": true,
+    "recorder_exit": 2,
+    "replay_exit": 2
+  },
+  "attempt_06": {
+    "complete": true,
+    "recorded_wall_s": 120.012917737,
+    "record_start_sim_ns": 14696000000,
+    "warmup_end_sim_ns": 15020000000,
+    "record_end_sim_ns": 33432000000,
+    "all_observed_disarmed": true,
+    "topic_counts": {
+      "/drone_cv_g1/camera/depth/image_raw": 452,
+      "/drone_cv_g1/camera/depth/camera_info": 581,
+      "/clock": 4797,
+      "/tf_static": 1,
+      "/drone_cv_g1/fmu/out/vehicle_odometry": 1893,
+      "/drone_cv_g1/evaluator/truth_pose_v": 1305,
+      "/drone_cv_g1/fmu/out/vehicle_status_v4": 38
+    },
+    "oracle": {
+      "safety_outcome": "NO_VIOLATION_OBSERVED",
+      "execution_outcome": "COMPLETED",
+      "sample_count": 1305,
+      "coverage_complete": true
+    }
+  },
+  "primary_geometry_pass": false,
+  "geometry_summary": {
+    "front": {
+      "minimum_support": 0.971830985915493,
+      "first_frame_p95_m": 0.004928755473225133,
+      "worst_frame_p95_m": 0.028971976779383103,
+      "maximum_error_m": 0.029065954451027665
+    },
+    "offaxis": {
+      "minimum_support": 1.0,
+      "first_frame_p95_m": 2.0372192983000343,
+      "worst_frame_p95_m": 2.0888662911403637,
+      "maximum_error_m": 2.128265752138695
+    },
+    "horizontal": {
+      "minimum_support": 1.0,
+      "first_frame_p95_m": 0.0023174839278270244,
+      "worst_frame_p95_m": 0.05899370869249181,
+      "maximum_error_m": 0.059004390768306686
+    },
+    "side": {
+      "minimum_support": 0.9315195417789758,
+      "first_frame_p95_m": 0.0009673824932437236,
+      "worst_frame_p95_m": 0.04176748051234582,
+      "maximum_error_m": 1.5590389975583607
+    }
+  },
+  "health_limits_changed": false,
+  "clock_bridge_process_isolated": true,
+  "control_publishers_created": 0,
+  "arming_commands_sent": 0
+}

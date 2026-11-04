@@ -1,0 +1,243 @@
+{
+  "scope": "Current verified code snapshot; source hashes do not certify runtime gates",
+  "files": {
+    "scripts/check_project.py": {
+      "as_packaged_sha256": "d1c19b92af9c49c182dc7a6a61c444a379b2d363748c46a3dbd4e8dcd99d09b9",
+      "lf_normalized_sha256": "c67719de28b60de43b93e4101b20bdf0c74343014c0ad5b32432eb233cfb74e8"
+    },
+    "scripts/g0_demo.py": {
+      "as_packaged_sha256": "55d667d79ffec18a9b0318a287d37739f285cb5fac0d2c3ca4ddcbf371d80083",
+      "lf_normalized_sha256": "bbb867d217fece949c47dd302f7dd313a720459f419124f1db70a5cccb49050c"
+    },
+    "scripts/g1_oracle.py": {
+      "as_packaged_sha256": "c6caa02d60cb3edd3395bbe4620ba34277a9f447111dfb657cada5db2fd4c1c3",
+      "lf_normalized_sha256": "c6caa02d60cb3edd3395bbe4620ba34277a9f447111dfb657cada5db2fd4c1c3"
+    },
+    "scripts/g1_oracle_run.py": {
+      "as_packaged_sha256": "e8d072a11e7bf093acb02b70e87869b81e41cbec7ddb8a382e4c03f8ee8463d5",
+      "lf_normalized_sha256": "e8d072a11e7bf093acb02b70e87869b81e41cbec7ddb8a382e4c03f8ee8463d5"
+    },
+    "scripts/g1_probe.py": {
+      "as_packaged_sha256": "b830fcbe9b32f52a3a9d778fe2a3e12d041c286456d9d5d36508c288fc97b402",
+      "lf_normalized_sha256": "319d5c60619acd61bb71468c124506b481ff25ad3c36e18864e95dbaff72c7fe"
+    },
+    "scripts/g1_ros_observer.py": {
+      "as_packaged_sha256": "b3eac14bb65915fe45bac0580ce5b1b7f5eb947c408819ee7409ebbd65bfa5c3",
+      "lf_normalized_sha256": "bc6875b5166c7e167b84d541263ec48e29b0423dda19e80e708c12b0e1d18dc0"
+    },
+    "scripts/g1_supervisor.py": {
+      "as_packaged_sha256": "c4dd1b9f3703671be964e319e0b7c74153ea39b4337869510f07176d34b50e52",
+      "lf_normalized_sha256": "c4dd1b9f3703671be964e319e0b7c74153ea39b4337869510f07176d34b50e52"
+    },
+    "scripts/g1_truth_adapter.py": {
+      "as_packaged_sha256": "5d910665bbf763bcf3470439655e93264f79c636a4b20683cb8b8a16e66251d2",
+      "lf_normalized_sha256": "5d910665bbf763bcf3470439655e93264f79c636a4b20683cb8b8a16e66251d2"
+    },
+    "spike/freespace/bag_diagnostics.py": {
+      "as_packaged_sha256": "ec1894cf0e02975233be1e9734c0c3d692d5ddde110ff0cd0f5bb66320b73c69",
+      "lf_normalized_sha256": "0eb7fd8d577fe554bc3b085dbf9d70588915df528d7c618e256d07b4304a25f0"
+    },
+    "spike/freespace/bag_writer.py": {
+      "as_packaged_sha256": "973c11ba76245074f3d81e1b74ff060e6c0df812bf6920f8f7e9d192c19c049c",
+      "lf_normalized_sha256": "c9e641ae36c82314fd112682b3bd4fdb29b5d2049fc6f8e61b3c15d7f4a20924"
+    },
+    "spike/freespace/camera.py": {
+      "as_packaged_sha256": "a451e9b54016cd9d10e5369776532ade7fa2a55ba222abaf31d393919485a457",
+      "lf_normalized_sha256": "73c610f351292c143f12384a71cf2bb5a60259d30724372035b6a441c0edf955"
+    },
+    "spike/freespace/capture.py": {
+      "as_packaged_sha256": "1b8141e4ada8afb5f4cfa2397f78eb87a73a858359525073e4ac9b5dd06ceb9b",
+      "lf_normalized_sha256": "4c283a2a25105e3d36e75d491d6d833707b1bb925f1894677c4f9a77b2c67e45"
+    },
+    "spike/freespace/capture_pose.py": {
+      "as_packaged_sha256": "2b5d022292f0a0ed26d86500d65c8df12423b15e9197e4608a724f58f93a321c",
+      "lf_normalized_sha256": "c6280ef80f572fe5f624c8693f57b1f63302a7a14f1929412ea9ef78fcd89384"
+    },
+    "spike/freespace/evidence.py": {
+      "as_packaged_sha256": "3589ce8fdef9f3f9c59e6f30aecca52eebd89670d445020adb9a11f88d366da5",
+      "lf_normalized_sha256": "6bfb219af02ac5862586ee199e9329030479434cdf01bcc89225505020bc0e1e"
+    },
+    "spike/freespace/evidence_variants.py": {
+      "as_packaged_sha256": "4e6a664f9e3f821d1e9442cc828389436415fb729f9cabebb51ca2f205516238",
+      "lf_normalized_sha256": "4e6a664f9e3f821d1e9442cc828389436415fb729f9cabebb51ca2f205516238"
+    },
+    "spike/freespace/experiments.py": {
+      "as_packaged_sha256": "1943871edc5f3329f1aab4deca5820b77033a43ce5a403883f3694c5990c7f87",
+      "lf_normalized_sha256": "7cf63f57775fd964b2608e31aa7c1755a104b5ea6704d58fb3ca14d5aeda2da6"
+    },
+    "spike/freespace/model_liveness.py": {
+      "as_packaged_sha256": "ea3697f7dfb0c97addf46cee8b972423006c4c7cc7a823b326df8597619d9d81",
+      "lf_normalized_sha256": "e546561ce477778d8e3948dcb4b5a739491549707dafc3fec71b2cf608285bfb"
+    },
+    "spike/freespace/model_profile.py": {
+      "as_packaged_sha256": "c68632c67ea0ad18ca6034bb1521818c84cfe85fb2e37b9c211815a03d3c07cd",
+      "lf_normalized_sha256": "464cb6026419cff488f80e7b5845adc634cb9d7875241c4f8af2af6ee8dd1004"
+    },
+    "spike/freespace/oracle_recording.py": {
+      "as_packaged_sha256": "30bc06b5b6fffe90dd862f9add44f8cb2d6d0a426b0019227725439441ea16d9",
+      "lf_normalized_sha256": "30bc06b5b6fffe90dd862f9add44f8cb2d6d0a426b0019227725439441ea16d9"
+    },
+    "spike/freespace/plane_diagnostics.py": {
+      "as_packaged_sha256": "5aabef45cd23927032b5c56c7ff26357fa1b8c1ae7067665455b38e11bf92a28",
+      "lf_normalized_sha256": "5aabef45cd23927032b5c56c7ff26357fa1b8c1ae7067665455b38e11bf92a28"
+    },
+    "spike/freespace/plot_bag_replay.py": {
+      "as_packaged_sha256": "b7cefdd51301cc3c9ada2424e5b6cbd52d16a2c76a99393f1476fa00e93b1bef",
+      "lf_normalized_sha256": "e7752e2fef25b38e3ff5d745ac97c18bec8a22e21adb152ba5c35d04a25c1293"
+    },
+    "spike/freespace/plots.py": {
+      "as_packaged_sha256": "b8828f2fe654cba0f3816981030bf12e092b3031c3534cd7ec20bd3ade499f2f",
+      "lf_normalized_sha256": "ee4c5145b94f40df67a9cf209d31ef08d4e98db61fbf37d3cb611bee5b1f2de8"
+    },
+    "spike/freespace/record_sensor_bag.py": {
+      "as_packaged_sha256": "5f08ec5542864b303d6adad07fe070a445aa50c3317a331024fa25a07c358906",
+      "lf_normalized_sha256": "cadcf4370e06fdef243b1fe1919b2bd3e82540a171a5cc83f7b9d0f67684bfb7"
+    },
+    "spike/freespace/recording_integrity.py": {
+      "as_packaged_sha256": "0cd51fa2954997c74ca0e0398b43077464f4e27772fa6dbf8ff0a0081d035ddf",
+      "lf_normalized_sha256": "cb80c8c7891f4561a240834fabb1fd0e3cb52e660a1f457371909e91a6814ec1"
+    },
+    "spike/freespace/replay_bag.py": {
+      "as_packaged_sha256": "2c67bc83c5e773835f915935b4063fc0b24d3a592eb3f15313ac5dd8fd2e08b1",
+      "lf_normalized_sha256": "5a2f72b5cde1dd83fec67e27f9ed4bb4d3c887b0dbfadfcc4a0af7b039a484d7"
+    },
+    "spike/freespace/replay_fixture.py": {
+      "as_packaged_sha256": "9c4776fb3ec5403457537e5b8ae994c5bbf5492efd2e013075f8d035f7b0467f",
+      "lf_normalized_sha256": "ecbea7c627aa6a9d02841a6bc3eafced37a64a52a3d77720f0fc6d7e39574cb4"
+    },
+    "spike/freespace/replay_semantics.py": {
+      "as_packaged_sha256": "835783581f3489d5a276bcc9a933219934673efd6fb7521e6201d17f3d489885",
+      "lf_normalized_sha256": "835783581f3489d5a276bcc9a933219934673efd6fb7521e6201d17f3d489885"
+    },
+    "spike/freespace/replay_ttl.py": {
+      "as_packaged_sha256": "284f1f164f7b936e554b2daf1f03ebb41d4e6a163ac87779e4b4a58d1211f8f0",
+      "lf_normalized_sha256": "4635c5ecaa8c5f9d9a4a96acf944b046a78d583732c51fce28f430edf12d5aef"
+    },
+    "spike/freespace/scene.py": {
+      "as_packaged_sha256": "24a9519d78d069aec89fecaadd73c8c7b7fbd81e1faaaffd8e533e890d7c2f00",
+      "lf_normalized_sha256": "1de25397ae791b6fd372b421bc97e7ad80d33717c005031599023a41a495d34c"
+    },
+    "spike/freespace/tests/test_bag_diagnostics.py": {
+      "as_packaged_sha256": "016b82072f50044bd252ec6ff5b8e1497d2dc9ab9b186494e1c0d5cc96a26323",
+      "lf_normalized_sha256": "75e02eb0b609f47203017fe32cd4efdc188e6dfd57c861725748b5ab68843634"
+    },
+    "spike/freespace/tests/test_capture_pose.py": {
+      "as_packaged_sha256": "486a545498e8b2fd2321a81e1ee8cf33495668a75504db943040e97ea5962242",
+      "lf_normalized_sha256": "ca8841c46c267f2ec0db21f0423dea7d400e1e5f863a17d38fb070755acdba45"
+    },
+    "spike/freespace/tests/test_freespace.py": {
+      "as_packaged_sha256": "82332ab7dbb16264e60a834689351598fa958655b450f57a65d925613f9e05d4",
+      "lf_normalized_sha256": "2be3b891df46c8f3ae1433439d856ff6d8eecbae1ea4b0dfbaf02d23780c6adb"
+    },
+    "spike/freespace/tests/test_model_profile.py": {
+      "as_packaged_sha256": "6bc5d3b8891cf7e42f0cee485e2d53aeb7e39d46885a43b26acddf60fde51aa9",
+      "lf_normalized_sha256": "6581efde3edd7d7f83b46edead76b4c3e06b53c1b886b08276232cb3fdf966b2"
+    },
+    "spike/freespace/tests/test_near_evidence.py": {
+      "as_packaged_sha256": "f39685c99d43717391d5ee50b52017d561270a9765ed7c65ac59990107165d0b",
+      "lf_normalized_sha256": "f39685c99d43717391d5ee50b52017d561270a9765ed7c65ac59990107165d0b"
+    },
+    "spike/freespace/tests/test_oracle_recording.py": {
+      "as_packaged_sha256": "84f3af35a51013eb7d554a4765206974f233157752337be1c7126be4ef0a5888",
+      "lf_normalized_sha256": "84f3af35a51013eb7d554a4765206974f233157752337be1c7126be4ef0a5888"
+    },
+    "spike/freespace/tests/test_recording_integrity.py": {
+      "as_packaged_sha256": "129a9801259e9e7e11a9bd26348db6f096b9fd38567aa088bf074b45caed4787",
+      "lf_normalized_sha256": "f98116e486e99975ff5cd9b4cdb54870df8bdbc26f21cfcbaf92b52032dcaea1"
+    },
+    "spike/freespace/tests/test_replay_fixture.py": {
+      "as_packaged_sha256": "51fd6ea43761a5643bf00aa999a656de1a0d5e40dc7cccf1b2b0b527b8e67d1f",
+      "lf_normalized_sha256": "742e249655d1d129ff014c8d9b104133d190560f2eefc357e29c4cf233b6a5d8"
+    },
+    "spike/freespace/tests/test_truth_error.py": {
+      "as_packaged_sha256": "19f48b4f8993b8c6b4885541eedda78929788ac02f23a22c4d163edcab4a0d1c",
+      "lf_normalized_sha256": "19f48b4f8993b8c6b4885541eedda78929788ac02f23a22c4d163edcab4a0d1c"
+    },
+    "spike/freespace/truth_error.py": {
+      "as_packaged_sha256": "7a54811d1e5c7eb046b6a602120632ded2c29255ec1ee40e6a027b15bb93266a",
+      "lf_normalized_sha256": "7a54811d1e5c7eb046b6a602120632ded2c29255ec1ee40e6a027b15bb93266a"
+    },
+    "src/drone_cv/__init__.py": {
+      "as_packaged_sha256": "7724ce33d99e81b8ac38684f9b84c97c76671177794a461b79899097eab20e2a",
+      "lf_normalized_sha256": "4afefeac488a4946c0b41e24204b165991f57b3625abd09628e9cde177601045"
+    },
+    "src/drone_cv/braking.py": {
+      "as_packaged_sha256": "434937adbd4b7e496724e19bb174d9f8bfefed0464711ff8dc5f8fb512eaec95",
+      "lf_normalized_sha256": "bfe5d7e13b79579a99b3a604de016d8d421cd639464e09c7ce30d42cd649d5d1"
+    },
+    "src/drone_cv/depth.py": {
+      "as_packaged_sha256": "42b1f51a609c99f75a96e8695dde8549ed1fc933a62e9ba7314032dd02f5a8b1",
+      "lf_normalized_sha256": "d203a84fede2a427df6923ce25cf3d753865dfa26d6edfbbe8b40b608923e2a1"
+    },
+    "src/drone_cv/frames.py": {
+      "as_packaged_sha256": "48f9292682f9aa927730c5fd95d387c92080fbd29722a107ee27220e8ea0ba31",
+      "lf_normalized_sha256": "c2f859f672e1de9f1a829790f1f5561bfe750f18bf429a94f0b10e34d6913a71"
+    },
+    "src/drone_cv/histogram.py": {
+      "as_packaged_sha256": "3b486d1128417471aec550c5ede3662052ec734677e660c35ebe8507c7fee68b",
+      "lf_normalized_sha256": "95505f18fa72a747a646c12bc2d820973938cda2ecb9f38608172dab9c9ddf11"
+    },
+    "src/drone_cv/oracle.py": {
+      "as_packaged_sha256": "076d7c15350f22318341d5be69ea9852d10e687a71e92070f8a13f8d71273b7a",
+      "lf_normalized_sha256": "076d7c15350f22318341d5be69ea9852d10e687a71e92070f8a13f8d71273b7a"
+    },
+    "src/drone_cv/oracle_mesh.py": {
+      "as_packaged_sha256": "caec63571275d2004650848670e73c914abcc90f67b1538ab9c03e360914f9b9",
+      "lf_normalized_sha256": "caec63571275d2004650848670e73c914abcc90f67b1538ab9c03e360914f9b9"
+    },
+    "src/drone_cv/oracle_profile.py": {
+      "as_packaged_sha256": "c98c5db8ac7e1bce348f324948b8cb415ef728f903c8fa37fdcc02972fa56e90",
+      "lf_normalized_sha256": "c98c5db8ac7e1bce348f324948b8cb415ef728f903c8fa37fdcc02972fa56e90"
+    },
+    "src/drone_cv/oracle_truth.py": {
+      "as_packaged_sha256": "cefc29cba2134bca78a4482550b62ea642fe977a8e03aed0986ed6f0fda899e9",
+      "lf_normalized_sha256": "cefc29cba2134bca78a4482550b62ea642fe977a8e03aed0986ed6f0fda899e9"
+    },
+    "src/drone_cv/projection.py": {
+      "as_packaged_sha256": "cccf834cb91f26d477eba9452eadbd5c634633687c77f6cb58a85523e88f57a2",
+      "lf_normalized_sha256": "4add1d704f40f4524cf4b7174c5654a464f4332a7d6a0ba0ae90309365bd4371"
+    },
+    "src/drone_cv/px4_bridge.py": {
+      "as_packaged_sha256": "f16364686a15da61329448acd7babda6a3c1ddebccbd98c86e97533e9403ae21",
+      "lf_normalized_sha256": "f16364686a15da61329448acd7babda6a3c1ddebccbd98c86e97533e9403ae21"
+    },
+    "src/drone_cv/supervisor.py": {
+      "as_packaged_sha256": "af80b1f4bb8e5b884559583123432405610fc59e1a2f02371608faf519d89d29",
+      "lf_normalized_sha256": "af80b1f4bb8e5b884559583123432405610fc59e1a2f02371608faf519d89d29"
+    },
+    "src/drone_cv/timing.py": {
+      "as_packaged_sha256": "043b32c83faacda80cce3fd1402f60b83dfb8277528ff49bd76192de1c73fc57",
+      "lf_normalized_sha256": "310f0de67c60b15c7b0d70966c14a345352ffbf56ce21c2a4f4ab20595000bc8"
+    },
+    "tests/test_g1_oracle_cli.py": {
+      "as_packaged_sha256": "a100cc2a83dba16c0cd0f6c7a9223bce731cdb0bab38a082f5310852cc6363ad",
+      "lf_normalized_sha256": "a100cc2a83dba16c0cd0f6c7a9223bce731cdb0bab38a082f5310852cc6363ad"
+    },
+    "tests/test_oracle.py": {
+      "as_packaged_sha256": "8cde59d33232081ba2694b7ce9a69e767628e80f3178e2dde77d86d4545c9b52",
+      "lf_normalized_sha256": "8cde59d33232081ba2694b7ce9a69e767628e80f3178e2dde77d86d4545c9b52"
+    },
+    "tests/test_oracle_mesh.py": {
+      "as_packaged_sha256": "3e80174ec0d38444bb9f2c475dcc8f10d7cb590faccd27daf146219a9aaf4e44",
+      "lf_normalized_sha256": "3e80174ec0d38444bb9f2c475dcc8f10d7cb590faccd27daf146219a9aaf4e44"
+    },
+    "tests/test_oracle_profile.py": {
+      "as_packaged_sha256": "b6567fd4d0c8c6c3590adb605317219c499ee53afac25180fe4ca40be7e6959a",
+      "lf_normalized_sha256": "b6567fd4d0c8c6c3590adb605317219c499ee53afac25180fe4ca40be7e6959a"
+    },
+    "tests/test_project_integrity.py": {
+      "as_packaged_sha256": "6b11da1d9636223341afe9d38e16db9c7ee5d0fe4ea87641e4ad29bf22f829f6",
+      "lf_normalized_sha256": "a494d15ebe5439bd2da5ccf7476853337867e774fe75a14ab5c182c76fdbf917"
+    },
+    "tests/test_supervisor.py": {
+      "as_packaged_sha256": "c22e2348abebfd416934f99a78c96795476fce816aea2a12aaef2f32c8fdb941",
+      "lf_normalized_sha256": "c22e2348abebfd416934f99a78c96795476fce816aea2a12aaef2f32c8fdb941"
+    }
+  },
+  "offline_tests": {
+    "command": "python -m pytest -q",
+    "passed": 502,
+    "seconds": 121.5
+  },
+  "source_staging_failure_preserved": "First guarded smoke used a nested stale src copy; corrected exact destination, no behavior workaround."
+}

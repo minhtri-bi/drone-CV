@@ -1,0 +1,139 @@
+{
+  "scope": "OFFLINE_ONLY",
+  "runtime_verified": false,
+  "gate_verified": false,
+  "publishers_created": 0,
+  "rclpy_initialized": false,
+  "armed_commands_sent": 0,
+  "nodes_created": 0,
+  "ownership_locks_acquired": 0,
+  "arm_messages_encoded": 1,
+  "declared_firmware_pin": "61907962c9220437ec01a98fa26bfbf5cbb254b5",
+  "declared_messages_pin": "8fb8277cf95c4ba87094146bc8922e76c4ac0799",
+  "declared_image_pin": "sha256:061a39905d2d84d40859bb46b67048241b6dacf2ed3983889da7f5fd3e718285",
+  "pin_note": "Generated field contract checked; installed source provenance must be verified separately.",
+  "sources": [
+    "https://raw.githubusercontent.com/PX4/px4_msgs/8fb8277cf95c4ba87094146bc8922e76c4ac0799/msg/OffboardControlMode.msg",
+    "https://raw.githubusercontent.com/PX4/px4_msgs/8fb8277cf95c4ba87094146bc8922e76c4ac0799/msg/TrajectorySetpoint.msg",
+    "https://raw.githubusercontent.com/PX4/px4_msgs/8fb8277cf95c4ba87094146bc8922e76c4ac0799/msg/VehicleCommand.msg",
+    "https://raw.githubusercontent.com/PX4/px4_msgs/8fb8277cf95c4ba87094146bc8922e76c4ac0799/msg/VehicleCommandAck.msg",
+    "https://raw.githubusercontent.com/PX4/px4_msgs/8fb8277cf95c4ba87094146bc8922e76c4ac0799/msg/VehicleStatus.msg",
+    "https://raw.githubusercontent.com/PX4/px4_msgs/8fb8277cf95c4ba87094146bc8922e76c4ac0799/msg/VehicleOdometry.msg",
+    "https://raw.githubusercontent.com/PX4/PX4-Autopilot/61907962c9220437ec01a98fa26bfbf5cbb254b5/src/modules/commander/Commander.cpp",
+    "https://raw.githubusercontent.com/PX4/PX4-Autopilot/61907962c9220437ec01a98fa26bfbf5cbb254b5/src/modules/commander/px4_custom_mode.h",
+    "https://raw.githubusercontent.com/PX4/PX4-Autopilot/61907962c9220437ec01a98fa26bfbf5cbb254b5/src/modules/commander/HealthAndArmingChecks/checks/offboardCheck.cpp",
+    "https://raw.githubusercontent.com/PX4/PX4-Autopilot/61907962c9220437ec01a98fa26bfbf5cbb254b5/src/modules/uxrce_dds_client/dds_topics.yaml",
+    "https://raw.githubusercontent.com/PX4/PX4-Autopilot/61907962c9220437ec01a98fa26bfbf5cbb254b5/src/modules/uxrce_dds_client/dds_topics.h.em",
+    "https://raw.githubusercontent.com/PX4/PX4-Autopilot/61907962c9220437ec01a98fa26bfbf5cbb254b5/src/modules/uxrce_dds_client/utilities.hpp"
+  ],
+  "decoded_input_messages": {
+    "VehicleOdometry": {
+      "cdr_bytes": 120,
+      "cdr_sha256": "0e0978e456fb8e2459ced600b60fa152bea47e66347bf731ad2b2c889e277f7d"
+    },
+    "VehicleStatus": {
+      "cdr_bytes": 88,
+      "cdr_sha256": "6c561178143bcc6b2d58b0cccae4de19ca3f869de1f3c9a11040ca281282f71c"
+    },
+    "VehicleCommandAck": {
+      "cdr_bytes": 32,
+      "cdr_sha256": "b7b66d809c6c581adcc265b49a96662ec87ae8d1ea9d45537ddd3cdaabf36e36"
+    }
+  },
+  "transitions": [
+    {
+      "stage": "priming",
+      "messages": {
+        "offboard_control_mode": {
+          "type": "OffboardControlMode",
+          "cdr_bytes": 20,
+          "cdr_sha256": "03c5a34f05a1ecc83ea5b61ddff947abd53687315c14795e415b7191cf6f63d1"
+        }
+      }
+    },
+    {
+      "stage": "mode_wait",
+      "messages": {
+        "offboard_control_mode": {
+          "type": "OffboardControlMode",
+          "cdr_bytes": 20,
+          "cdr_sha256": "fda1d3fd6b9ec2aaccc968bf02ebe7acfe029994a0a1356cfc60997b30e8666d"
+        },
+        "vehicle_command": {
+          "type": "VehicleCommand",
+          "cdr_bytes": 60,
+          "cdr_sha256": "5ddeb736cf55fb75a05805e3a5b46e5fb96dc03df6498427e7fe0b1c29b1c8b0"
+        }
+      }
+    },
+    {
+      "stage": "offboard_disarmed",
+      "messages": {
+        "offboard_control_mode": {
+          "type": "OffboardControlMode",
+          "cdr_bytes": 20,
+          "cdr_sha256": "5c934be3b1af889698c5651ce0cd83e3b21997ffa4219ef581009213e911ae86"
+        },
+        "trajectory_setpoint": {
+          "type": "TrajectorySetpoint",
+          "cdr_bytes": 68,
+          "cdr_sha256": "4ae37e8a8afdfd7bc1a474bacfbc647ccfdb0d1bf6fd0fda92c778e6ca064472"
+        }
+      }
+    },
+    {
+      "stage": "arm_wait",
+      "messages": {
+        "offboard_control_mode": {
+          "type": "OffboardControlMode",
+          "cdr_bytes": 20,
+          "cdr_sha256": "f47bf1c0594e634a9b29da5aef8cf15a9c69c0517bb01aac477649f78347ede8"
+        },
+        "trajectory_setpoint": {
+          "type": "TrajectorySetpoint",
+          "cdr_bytes": 68,
+          "cdr_sha256": "b4cfda0dd4d6c2d5c964320a18cf419cd537cb112c131f7a5fda8c6f38e3d22d"
+        },
+        "vehicle_command": {
+          "type": "VehicleCommand",
+          "cdr_bytes": 60,
+          "cdr_sha256": "118be3e3a0fb4e1a70677b58fe7f079d307eb7b67b69e226236db90fe8ad868e"
+        }
+      }
+    },
+    {
+      "stage": "active",
+      "messages": {
+        "offboard_control_mode": {
+          "type": "OffboardControlMode",
+          "cdr_bytes": 20,
+          "cdr_sha256": "365b2fce68bf8b4bd281f583001553e21001c455ed84aaee4e8124cb9d97931e"
+        },
+        "trajectory_setpoint": {
+          "type": "TrajectorySetpoint",
+          "cdr_bytes": 68,
+          "cdr_sha256": "56c289623f0b531ad0c9502b79229fa7c4733b79f34cf0e6791e4be07ff02c25"
+        }
+      }
+    },
+    {
+      "stage": "handoff_wait",
+      "messages": {
+        "vehicle_command": {
+          "type": "VehicleCommand",
+          "cdr_bytes": 60,
+          "cdr_sha256": "36281c9f4bdd99c17a604dd360066e1fb83b958b69535c9c8eefa77ef74a64a2"
+        }
+      }
+    },
+    {
+      "stage": "released",
+      "messages": {}
+    }
+  ],
+  "fault": "MISSING_ODOMETRY",
+  "bounds": "Synthetic protocol fixture, no flight calibration.",
+  "execution_guard": "rclpy.init, rclpy.create_node and Node.create_publisher replaced with raising guards; all remained uncalled",
+  "observed_messages_source_revision": "8fb8277cf95c4ba87094146bc8922e76c4ac0799",
+  "observed_firmware_package": "px4-gazebo 1.18.0~beta1-noble"
+}

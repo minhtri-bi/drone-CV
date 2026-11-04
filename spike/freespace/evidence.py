@@ -48,16 +48,21 @@ class SensorProfile:
     sigma2: float = 0.0015
     sigma_k: float = 3.0
     fixed_margin_m: float = 0.03
+    near_translation_uncertainty_m: float = 0.0
+    near_rotation_uncertainty_rad: float = 0.0
 
     def __post_init__(self) -> None:
         values = (self.near_trusted_m, self.far_trusted_m, self.sigma0, self.sigma2,
-                  self.sigma_k, self.fixed_margin_m)
+                  self.sigma_k, self.fixed_margin_m, self.near_translation_uncertainty_m,
+                  self.near_rotation_uncertainty_rad)
         if not all(isfinite(v) and v >= 0 for v in values):
             raise ValueError("sensor profile values must be finite and nonnegative")
         if not 0 < self.near_trusted_m < self.far_trusted_m:
             raise ValueError("trusted range must satisfy 0 < near < far")
         if type(self.no_return_certified) is not bool:
             raise ValueError("no-return certification must be an explicit boolean")
+        if self.near_rotation_uncertainty_rad > np.pi:
+            raise ValueError("near rotation uncertainty must not exceed pi")
 
     def margin(self, z: NDArray) -> NDArray:
         return self.fixed_margin_m + self.sigma_k * (self.sigma0 + self.sigma2 * z * z)
@@ -169,11 +174,14 @@ class EvidenceStore:
         return EvidenceStore(self.camera, self.profile, self.frames + (frame,))
 
     def retained(self, epoch: str, now_s: float, ttl_s: float) -> tuple[Frame, ...]:
-        """Same epoch, not from the future, not older than ttl."""
-        if not isfinite(ttl_s) or ttl_s <= 0:
-            raise ValueError("ttl must be finite and positive")
+        """Same epoch and inclusive TTL, on the recording's nanosecond time grid."""
+        if not isfinite(ttl_s) or ttl_s <= 0 or not isfinite(now_s) or now_s < 0:
+            raise ValueError("query time and ttl must be finite; time >= 0 and ttl > 0")
+        now_ns, ttl_ns = round(now_s*1e9), round(ttl_s*1e9)
+        if ttl_ns <= 0:
+            raise ValueError("ttl must span at least one nanosecond")
         return tuple(f for f in self.frames
-                     if f.epoch == epoch and f.time_s <= now_s and now_s - f.time_s <= ttl_s)
+                     if f.epoch == epoch and now_ns-ttl_ns <= round(f.time_s*1e9) <= now_ns)
 
 
 def _frame_support(frame: Frame, camera: CameraModel, profile: SensorProfile,
@@ -210,6 +218,60 @@ def _frame_support(frame: Frame, camera: CameraModel, profile: SensorProfile,
     free[idx] = ok & (nearest >= z[idx] + margin[idx])
     hidden[idx] = nearest_valid < z[idx] - margin[idx]
     return in_view, free, hidden
+
+
+def _finite_near_intersects(frame: Frame, camera: CameraModel, profile: SensorProfile,
+                            envelope: Envelope) -> bool:
+    """Conservatively intersect complete near pixel cones with a continuous sweep.
+
+    Each finite positive sub-trusted return occupies its whole pixel cone from
+    optical Z=0 through near_trusted_m, not just the center ray or measured Z.
+    The capture-world AABB encloses the apex and all four far-plane corners.
+    XY expansion by the capsule radius uses a square rather than a disc, so both
+    enclosures can cause false positives (especially with rotated captures).
+    There is no pixel subsampling, frame dropping or envelope point sampling.
+    """
+    v, u = np.nonzero(np.isfinite(frame.depth) & (frame.depth > 0)
+                      & (frame.depth < profile.near_trusted_m))
+    if not len(u):
+        return False
+    k = camera.intrinsics
+    offsets = np.array([[-.5, -.5], [-.5, .5], [.5, -.5], [.5, .5]])
+    pixels = np.stack((u, v), axis=1)[:, None, :] + offsets
+    optical = np.empty((len(u), 4, 3), dtype=np.float64)
+    optical[:, :, 0] = (pixels[:, :, 0] - k.cx) / k.fx
+    optical[:, :, 1] = (pixels[:, :, 1] - k.cy) / k.fy
+    optical[:, :, 2] = 1.
+    rotation, origin = camera.world_from_optical(frame.pose)
+    corners = (optical * profile.near_trusted_m) @ rotation.T + origin
+    lower = np.minimum(corners.min(axis=1), origin)
+    upper = np.maximum(corners.max(axis=1), origin)
+    # Pose rotation is about the body origin, so include the optical lever arm.
+    # A convex cone's farthest body-origin point is at a vertex (or its apex).
+    rho = np.maximum(np.linalg.norm(corners-frame.pose.position, axis=2).max(axis=1),
+                     np.linalg.norm(origin-frame.pose.position))
+    padding = (profile.fixed_margin_m + profile.near_translation_uncertainty_m
+               + 2*sin(profile.near_rotation_uncertainty_rad/2)*rho + 1e-12)
+    overlaps = ((upper[:, 2] + padding >= envelope.z_lo)
+                & (lower[:, 2] - padding <= envelope.z_hi))
+    if not overlaps.any():
+        return False
+    radius = envelope.radius_m + padding
+    lower = lower[overlaps, :2] - radius[overlaps, None]
+    upper = upper[overlaps, :2] + radius[overlaps, None]
+    start = np.asarray(envelope.start_xy)
+    delta = np.asarray(envelope.end_xy) - start
+    enter, leave = np.zeros(len(lower)), np.ones(len(lower))
+    possible = np.ones(len(lower), dtype=bool)
+    for axis in range(2):
+        if delta[axis] == 0:
+            possible &= (start[axis] >= lower[:, axis]) & (start[axis] <= upper[:, axis])
+        else:
+            a = (lower[:, axis] - start[axis]) / delta[axis]
+            b = (upper[:, axis] - start[axis]) / delta[axis]
+            enter = np.maximum(enter, np.minimum(a, b))
+            leave = np.minimum(leave, np.maximum(a, b))
+    return bool(np.any(possible & (enter <= leave)))
 
 
 def observed_surface_points(frame: Frame, camera: CameraModel, profile: SensorProfile) -> NDArray:
@@ -250,8 +312,12 @@ def _counts(status: NDArray) -> dict:
 
 def decide(store: EvidenceStore, envelope: Envelope, *, epoch: str, now_s: float,
            ttl_s: float = 10.0, spacing_m: float = 0.05) -> tuple[Decision, NDArray, NDArray]:
-    """Allow the swept motion only if every envelope sample is FREE and no observed
-    surface lies inside the (margin-inflated) envelope. Returns decision, samples, status."""
+    """Allow only sampled FREE coverage with no retained intersecting hazard.
+
+    Finite near returns use conservative full-cone/continuous-sweep intersection;
+    unresolved -Inf remains globally fail closed. AABB/square enclosures can
+    overblock. Other free coverage remains a sampled diagnostic, not a proof.
+    """
     frames = store.retained(epoch, now_s, ttl_s)
     samples = envelope.sample(spacing_m)
     if not frames:
@@ -262,9 +328,11 @@ def decide(store: EvidenceStore, envelope: Envelope, *, epoch: str, now_s: float
         return Decision(False, "NO_ENVELOPE_SAMPLES", _counts(status),
                         frames_used=len(frames)), samples, status
     latest = max(frames, key=lambda f: (f.time_s, f.sequence))
-    # A dropout cannot clear an unlocalized near hazard. Keep it for the same
-    # retained epoch/TTL window as the free evidence; expiry alone is not motion permission.
-    if any(np.any(store.profile.classify(frame.depth) == Pixel.TOO_CLOSE) for frame in frames):
+    # -Inf cannot be localized reliably: unlike a finite positive near return,
+    # it remains a global fail-closed hazard for its entire retained epoch/TTL.
+    if (any(np.isneginf(frame.depth).any() for frame in frames)
+            or any(_finite_near_intersects(frame, store.camera, store.profile, envelope)
+                   for frame in frames)):
         status = np.full(len(samples), Status.OCCLUDED, dtype=np.uint8)
         return Decision(False, "TOO_CLOSE", _counts(status), len(samples), len(frames)), samples, status
     status = classify_points(samples, frames, store.camera, store.profile)

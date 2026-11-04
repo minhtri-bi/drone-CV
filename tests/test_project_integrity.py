@@ -102,3 +102,47 @@ def test_entire_missing_checksum_inventory_cannot_hide_a_bundle(tmp_path):
     (directory / "report.json").write_text("{}")
     with pytest.raises(ValueError, match="missing evidence checksum inventory"):
         PROJECT.check_evidence_root(tmp_path)
+
+
+@pytest.mark.parametrize("changed", ["recording_policy.json", "receive_progress.jsonl",
+                                     "oracle_profile.json"])
+def test_oracle_archive_binds_policy_receive_trace_and_physical_profile(tmp_path, changed):
+    import hashlib
+    import io
+    import tarfile
+    payloads = {"fixture.json": b"{}", "recording_policy.json": b'{"schema":4}',
+                "receive_progress.jsonl": b'{"source_ns":100}\n',
+                "oracle_profile.json": b'{"schema":1}'}
+    manifest = {"recording_schema": 4, "bag_files": {},
+                "fixture_sha256": hashlib.sha256(payloads["fixture.json"]).hexdigest(),
+                "policy_sha256": hashlib.sha256(payloads["recording_policy.json"]).hexdigest(),
+                "receive_progress_sha256": hashlib.sha256(payloads["receive_progress.jsonl"]).hexdigest(),
+                "oracle_profile_sha256": hashlib.sha256(payloads["oracle_profile.json"]).hexdigest()}
+    archive_path = tmp_path/"recording.tar.gz"
+    with tarfile.open(archive_path, "w:gz") as archive:
+        values = {**payloads, changed: b"tampered", "manifest.json": json.dumps(manifest).encode()}
+        for name, data in values.items():
+            member = tarfile.TarInfo("recording/"+name)
+            member.size = len(data)
+            archive.addfile(member, io.BytesIO(data))
+    with pytest.raises(ValueError, match="archived provenance mismatch"):
+        PROJECT.check_evidence_archive(archive_path)
+
+
+@pytest.mark.parametrize("preparation_status", [None, "pending", "in_progress", "blocked"])
+def test_g2_cannot_complete_without_finished_evidence_semantics(preparation_status):
+    tasks = [{"id": "g2-adapter", "status": "done", "acceptance": ["contract"]}]
+    if preparation_status is not None:
+        tasks += [{"id": "prep-evidence-semantics", "status": preparation_status,
+                   "acceptance": ["contract"]}]
+    with pytest.raises(ValueError, match="G2 evidence-semantics gate unmet"):
+        PROJECT.check_roadmap({"tasks": tasks})
+
+
+def test_evidence_semantics_never_blocks_g1_or_rejects_ready_g2():
+    tasks = [{"id": "g1-oracle", "status": "done", "acceptance": ["contract"]},
+             {"id": "g2-adapter", "status": "pending", "acceptance": ["contract"]}]
+    PROJECT.check_roadmap({"tasks": tasks})
+    PROJECT.check_roadmap({"tasks": [
+        {**tasks[1], "status": "done"},
+        {"id": "prep-evidence-semantics", "status": "done", "acceptance": ["contract"]}]})

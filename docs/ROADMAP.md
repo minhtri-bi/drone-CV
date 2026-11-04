@@ -4,7 +4,7 @@
 
 Progress comes from `.omp/roadmap/roadmap.json`; English display text comes from `docs/roadmap.en.json`. Workspace binding and receipts are excluded.
 
-Revision: 59. A completed task does not certify that later gates have passed.
+Revision: 77. A completed task does not certify that later gates have passed.
 
 ## Preparation
 
@@ -75,7 +75,7 @@ Status: **done**. Dependencies: `prep-roadmap`.
 
 ### `g1-oracle` — Contact/clearance oracle and logger before flight
 
-Status: **pending**. Dependencies: `g1-environment`.
+Status: **done**. Dependencies: `g1-environment`.
 
 - Known-free/known-contact fixtures demonstrate that the observer is live and that the geometry/propeller envelope and landing-contact allowlist are correct.
 - Record phase-aware clearance, a contact ledger, and raw logs; the planner must not read the oracle.
@@ -83,11 +83,13 @@ Status: **pending**. Dependencies: `g1-environment`.
 
 ### `g1-supervisor` — Minimal supervisor and single-owner Offboard bridge
 
-Status: **pending**. Dependencies: `g1-environment`, `g0-safety`.
+Status: **blocked**. Dependencies: `g1-environment`, `g0-safety`.
 
 - The supervisor/bridge is independent of the planner/inference, with explicit command TTL/epoch/progress.
 - Priming/acknowledgment/mode/arming ownership, unused PX4 fields, and handoff have contracts appropriate to the firmware.
 - Stationary fault injection demonstrates that stale commands/owner conflicts do not authorize movement; do not treat this as a flight braking test.
+
+Blocker (verbatim native diagnostic): Authorized code/offline slice complete: guarded actual pinned PX4 serialization and lifecycle smoke passed with zero init/nodes/control publishers. Runtime stationary fault injection/ownership and handoff remain unverified and outside approval; no arming or publisher authorization. Runtime gate intentionally incomplete.
 
 ### `g1-flight` — Empty-world mission: takeoff, square, hold, land, disarm
 
@@ -263,3 +265,14 @@ Status: **done**. Dependencies: `prep-replay-integrity`.
 - Capture a bounded stationary Disarmed sequence longer than the declared simulation-time evidence TTL under the integrity recorder; retain raw messages and wall/sim diagnostics with explicit limits and failure reasons.
 - Query during the real trace to demonstrate old frames expiring while fresh frames remain, then stale-all STOP; keep raw recordings immutable and distinguish temporal replay queries from sensor captures.
 - Do not teleport the vehicle, certify no-return semantics, claim positive real-data movement or waive G1/G2 dependencies; kinematic liveness remains a separately scoped decision.
+
+## Unarmed evidence preparation
+
+### `prep-evidence-semantics` — Repair evidence semantics and measure truth-relative TTL error
+
+Status: **done**. Dependencies: `prep-replay-integrity`, `prep-model-profile`, `prep-ttl-replay`.
+
+- Finite near-depth hazards retain complete capture-pose pixel cones clipped at optical Z 0.3 m; negative infinity remains global fail-closed. Corrected rest fixtures derive from the complete physical profile without erasing retained hazards.
+- Pinned-decoder continuous truth measures absolute and all-pairs capture/query relative pose errors within TTL, with full quaternion angle, true ray range, body lever arm, clock-bracket coverage and uncalibrated non-admitting labels.
+- Independent retained-frame identity checks exercise a mid-trace camera gap longer than TTL, recovery and an early-only obstacle expiry variant. Actual replay compares historical and model-derived diagnostic envelopes without changing original ROI or grading thresholds.
+- Retain frozen sweep failures, baseline recordings, effective inputs and source hashes. An explicit supplemental project checker prevents completed G2 tasks while this preparation task is not done; no native dependency edge is claimed and no G1 task is blocked.
