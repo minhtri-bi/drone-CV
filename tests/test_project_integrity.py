@@ -1,3 +1,4 @@
+import hashlib
 import importlib.util
 import json
 from pathlib import Path
@@ -135,7 +136,7 @@ def test_g2_cannot_complete_without_finished_evidence_semantics(preparation_stat
     if preparation_status is not None:
         tasks += [{"id": "prep-evidence-semantics", "status": preparation_status,
                    "acceptance": ["contract"]}]
-    with pytest.raises(ValueError, match="G2 evidence-semantics gate unmet"):
+    with pytest.raises(ValueError, match="supplemental preparation gate unmet: prep-evidence-semantics"):
         PROJECT.check_roadmap({"tasks": tasks})
 
 
@@ -174,3 +175,77 @@ def test_evidence_review_does_not_block_g1_or_calibration_acquisition():
         {"id": "g1-supervisor", "status": "in_progress", "acceptance": ["contract"]},
         {"id": "g1-calibration", "status": "in_progress", "acceptance": ["contract"]},
         {"id": "prep-evidence-review", "status": "blocked", "acceptance": ["contract"]}]})
+
+
+@pytest.mark.parametrize("preparation,target,selector,statuses", [
+    ("prep-evidence-semantics", "g2-", "prefix", ("done",)),
+    ("prep-evidence-review", "g2-", "prefix", ("done",)),
+    ("prep-flight-oracle", "g1-flight", "exact", ("in_progress", "done")),
+    ("prep-depth-path-audit", "g1-calibration", "exact", ("done",)),
+])
+@pytest.mark.parametrize("status", ["pending", "blocked", "in_progress", "done"])
+def test_supplemental_policy_status_boundaries(preparation, target, selector, statuses, status):
+    task_id = target + "future-task" if selector == "prefix" else target
+    tasks = [{"id": task_id, "status": status, "acceptance": ["contract"]}]
+    tasks += [{"id": identity, "status": "done", "acceptance": ["contract"]}
+              for identity in ("prep-evidence-semantics", "prep-evidence-review",
+                               "prep-flight-oracle", "prep-depth-path-audit")
+              if identity != preparation]
+    if status in statuses:
+        with pytest.raises(ValueError, match=f"supplemental preparation gate unmet: {preparation}"):
+            PROJECT.check_roadmap({"tasks": tasks})
+    else:
+        PROJECT.check_roadmap({"tasks": tasks})
+
+
+def translated_state(tasks):
+    state = {"revision": 1, "tasks": [
+        {**task, "phase": "Test phase", "title": task["id"]} for task in tasks]}
+    labels = {}
+    for task in state["tasks"]:
+        source = {key: task[key] for key in ("title", "phase", "acceptance")}
+        encoded = json.dumps(source, ensure_ascii=False, sort_keys=True,
+                             separators=(",", ":")).encode("utf-8")
+        labels[task["id"]] = {**source, "source_sha256": hashlib.sha256(encoded).hexdigest()}
+    return state, labels
+
+
+def test_generated_gate_table_covers_all_four_policies_without_geometry_dependency():
+    state, labels = translated_state([])
+    report = PROJECT.portable_roadmap(state, labels)
+    table = report.split("| Prerequisite |", 1)[1].split(
+        "Geometry contradictions", 1)[0]
+    assert table.count("| `prep-") == 4
+    for prerequisite, target, selector, statuses in [
+            ("prep-evidence-semantics", "g2-", "prefix", ("done",)),
+            ("prep-evidence-review", "g2-", "prefix", ("done",)),
+            ("prep-flight-oracle", "g1-flight", "exact", ("in_progress", "done")),
+            ("prep-depth-path-audit", "g1-calibration", "exact", ("done",))]:
+        row = next(line for line in table.splitlines() if f"`{prerequisite}`" in line)
+        assert f"{selector} `{target}`" in row
+        assert ", ".join(f"`{status}`" for status in statuses) in row
+    assert "prep-geometry-crosscheck" not in table
+    assert "affected-profile use" in report
+
+
+@pytest.mark.parametrize("policy_index", range(4))
+def test_changed_policy_drives_both_enforcement_and_portable_table(monkeypatch, policy_index):
+    original = PROJECT.SUPPLEMENTAL_GATES
+    changed = original[policy_index]._replace(
+        prerequisite="prep-changed", target="trial-", selector="prefix",
+        guarded_statuses=("blocked", "in_progress"))
+    monkeypatch.setattr(PROJECT, "SUPPLEMENTAL_GATES",
+                        original[:policy_index] + (changed,) + original[policy_index+1:])
+    tasks = [{"id": "trial-future", "status": "in_progress", "acceptance": ["contract"]}]
+    with pytest.raises(ValueError, match="prep-changed for trial-future"):
+        PROJECT.check_roadmap({"tasks": tasks})
+    state, labels = translated_state(tasks)
+    report = PROJECT.portable_roadmap(state, labels)
+    row = next(line for line in report.splitlines() if "| `prep-changed` |" in line)
+    assert "prefix `trial-`" in row
+    assert "`blocked`, `in_progress`" in row
+    assert f"| `{original[policy_index].prerequisite}` |" not in report
+    PROJECT.check_roadmap({"tasks": [
+        *tasks, {"id": "prep-changed", "status": "done", "acceptance": ["contract"]}]})
+    PROJECT.check_roadmap({"tasks": [{**tasks[0], "status": "done"}]})
+    PROJECT.check_roadmap({"tasks": [{**tasks[0], "id": "unrelated", "status": "in_progress"}]})

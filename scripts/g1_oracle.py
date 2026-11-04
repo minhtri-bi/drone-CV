@@ -323,6 +323,8 @@ def main(argv=None):
         return 2
     failure = "ORACLE_INITIALIZATION_FAILED"
     state, samples, complete, inputs = None, [], False, {}
+    moving = False
+    fixture = {}
     try:
         oracle = import_module("drone_cv.oracle")
         state = oracle.ObserverState()
@@ -330,6 +332,7 @@ def main(argv=None):
         profile, fixture = _json(args.profile), _json(args.fixture)
         moving = "moving_contract" in fixture
         if moving:
+            state = None
             if args.mode != "evaluate":
                 raise ValueError("MOVING_CONTRACT_REQUIRES_INDEPENDENT_OFFLINE_OBSERVATION_LEDGERS")
             state = import_module("drone_cv.oracle_observation").MovingObserverState.create(profile, fixture)
@@ -353,12 +356,20 @@ def main(argv=None):
                   "continuous_clearance_certified": False}
     else:
         result = state.finish(complete=complete)
+    if moving and state is None:
+        # Initialization failure must not silently revert to the static schema.
+        result.pop("continuous_clearance_certified")
+        result.update(clearance_conditional_on_declared_motion_bounds=False,
+                      moving_intervals=[], motion_assumptions=None,
+                      **import_module("drone_cv.oracle_observation")._motion_scope(
+                          fixture["moving_contract"]))
     result.update(schema=1, mode=args.mode, inputs=inputs, truth_samples=samples,
-                  scope="OFFLINE_TYPED_FIXTURE" if args.mode == "evaluate" else "RECORDED_CONTINUOUS_TRUTH",
+                  scope=("OFFLINE_DECLARED_MOVING_CONTRACT" if moving else
+                         "OFFLINE_TYPED_FIXTURE" if args.mode == "evaluate" else "RECORDED_CONTINUOUS_TRUTH"),
                   live_acceptance_certified=False, flight_admission=False,
                   sampling_scope=("Declared bounded-motion enclosures; independent evaluator phase and "
                                   "cooperative discovery ledgers; offline assumptions only."
-                                  if hasattr(state, "intervals")
+                                  if moving
                                   else "Sampled static-fixture endpoints only; no inter-sample swept-volume certificate."))
     try:
         (args.output/"report.json").write_text(json.dumps(result, indent=2, allow_nan=False)+"\n",

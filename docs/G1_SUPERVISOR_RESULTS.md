@@ -19,7 +19,7 @@ Priming emits only `OffboardControlMode`, never `TrajectorySetpoint` before fres
 
 Unused setpoint fields are NaN only at the PX4 encoding boundary. Mode/arm fields consumed by pinned Commander remain finite where required. Handoff output is not proof that PX4 accepted the mode or that the vehicle stopped. When valid odometry is absent, the code does not synthesize a hold setpoint.
 
-The current bridge requires explicit exploratory-simulation configuration and read-only pinned live-parameter agreement before publisher construction. Revocation stops publication while bounded terminal status observation continues. These runtime mechanisms have offline tests, not an exercised live-readback or fallback certificate; the runtime gate remains blocked. See [the new contract, evidence and limitations](SIM_REPAIR_RESULTS.md#r4-policy-readback-and-terminal-observation).
+The current bridge requires explicit exploratory-simulation configuration, a recomputed conditionally eligible held-out empirical profile with exact workload/environment/policy applicability, finite per-source clock contracts, and loss-response budgets bound to read-only pinned live parameters before publisher construction. None grants calibrated motion authority. Revocation stops publication while bounded terminal status observation continues. These mechanisms have offline verification only; actual healthy matched-baseline/fault trials, live readback and fallback remain blocked. See [the repair contract and current limitations](SIM_REPAIR_RESULTS.md).
 
 ## Exercised pinned path
 

@@ -201,6 +201,16 @@ def _known_violation(profile, fixture, observation, phase, evaluation):
                for pair in evaluation["pairs"])
 
 
+def _motion_scope(contract):
+    motion = contract.get("motion") if isinstance(contract, dict) else None
+    return {
+        "motion_bounds_provenance": motion.get("provenance") if isinstance(motion, dict) else None,
+        "motion_bounds_calibrated": False,
+        "independent_motion_bound_evidence_present": False,
+        "motion_bounds_scope": "supplied_offline_intervals_only_no_independent_bound_evidence",
+    }
+
+
 def _interval(profile, fixture, before, after, first_phase, last_phase, sampled_unsafe):
     contract = fixture["moving_contract"]
     reasons = []
@@ -278,7 +288,8 @@ def _interval(profile, fixture, before, after, first_phase, last_phase, sampled_
             "start_epoch": before["epoch"], "end_epoch": after["epoch"],
             "outcome": outcome, "reasons": list(dict.fromkeys(reasons)), "pairs": pairs,
             "scope": "declared_conservative_enclosure_not_physics_contact",
-            "continuous_clearance_certified": outcome == "CLEAR"}
+            "clearance_conditional_on_declared_motion_bounds": outcome == "CLEAR",
+            **_motion_scope(contract)}
 
 
 @dataclass(frozen=True)
@@ -337,7 +348,7 @@ class MovingObserverState:
                     interval["reasons"].append("PRIOR_OBSERVATION_FAILURE")
                     if interval["outcome"] != "SAMPLED_VIOLATION":
                         interval["outcome"] = "UNKNOWN"
-                        interval["continuous_clearance_certified"] = False
+                        interval["clearance_conditional_on_declared_motion_bounds"] = False
                 intervals += (_freeze(interval),)
             state = replace(self, sampled=sampled, records=self.records+(frozen,),
                             phases=self.phases+(_freeze(phase),), intervals=intervals)
@@ -382,6 +393,10 @@ class MovingObserverState:
 
     def finish(self, complete: bool) -> dict:
         result = self.sampled.finish(complete)
+        # The sampled observer's static-only flag is not a moving-path alias.
+        result.pop("continuous_clearance_certified")
+        for interval in result["coverage_intervals"]:
+            interval.pop("continuous_clearance_certified")
         contract = json.loads(self.fixture_json)["moving_contract"]
         records = [json.loads(item) for item in self.records]
         intervals = [json.loads(item) for item in self.intervals]
@@ -401,7 +416,8 @@ class MovingObserverState:
             reasons.extend(interval["reasons"])
             if interval["outcome"] == "POTENTIAL_VIOLATION":
                 reasons.append("POTENTIAL_INTERVAL_VIOLATION")
-        interval_clear = bool(intervals and all(item["outcome"] == "CLEAR" for item in intervals))
+        interval_clear = bool(intervals and all(
+            item["clearance_conditional_on_declared_motion_bounds"] for item in intervals))
         coverage = bool(result["coverage_complete"] and interval_clear and discovery_complete
                         and not self.errors)
         if not intervals:
@@ -410,7 +426,8 @@ class MovingObserverState:
                       "NO_VIOLATION_OBSERVED" if coverage else "UNKNOWN",
                       execution_outcome="COMPLETED" if coverage else
                       "INFRA_ERROR" if self.errors or result["execution_outcome"] == "INFRA_ERROR" else "INCOMPLETE",
-                      coverage_complete=coverage, continuous_clearance_certified=coverage,
+                      coverage_complete=coverage,
+                      clearance_conditional_on_declared_motion_bounds=coverage,
                       reasons=list(dict.fromkeys(reasons)), moving_intervals=intervals,
                       phase_ledger=[json.loads(item) for item in self.phases],
                       discovery={"ledger": discovery, "unexpected_readers": [json.loads(item)
@@ -419,6 +436,7 @@ class MovingObserverState:
                                  "dds_security_certified": False,
                                  "scope": "bounded_cooperative_detection_not_access_control"},
                       motion_assumptions=contract.get("motion"),
+                      **_motion_scope(contract),
                       scope="OFFLINE_DECLARED_MOVING_CONTRACT", flight_admission=False,
                       live_acceptance_certified=False)
         return result

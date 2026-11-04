@@ -1,5 +1,7 @@
 # Simulation repair plan after PR #12 review
 
+**Current approval boundary:** sections 1–5 record the first-round plan. [Section 6](#6-second-round-plan-n1n7) is approved for the requested N1–N7 code/offline work after commit `46e1771`, including the user's baseline-validity, per-tick crash invariant and RTF-derived deadline additions. It does not authorize operational execution.
+
 ## 1. Review status and authority
 
 **Approved for roadmap registration and code/offline implementation.** After reviewing this plan, the user instructed: “cập nhật road map và làm đi”. The source report at `C:\Users\TRI\Downloads\drone-CV-loi-can-sua-tong-hop.md` remains unchanged. Its findings are inputs to assess, not operational instructions or verified runtime results.
@@ -202,3 +204,187 @@ Planned checks after implementation, not executed by this plan:
 Review resolved: the user approved the conservative stopping-region contract, four bounded preparation tasks and supplemental gates, and requested implementation. Later operational trials remain separately authorized. No installation or operational permission follows merely from code/offline approval.
 
 **Still unmet at this planning boundary:** independent dy crosscheck, supervisor runtime/ownership/fallback proof, moving oracle interval/phase/isolation proof, depth-loss localization, actual flight, braking/tracking/timing calibration, G2 wall-stop and every hardware gate.
+
+## 6. Second-round plan (N1–N7)
+
+### 6.1 Authority, baseline and non-goals
+
+Input: `C:\Users\TRI\Downloads\drone-CV-de-xuat-sua-va-danh-sach-loi.md`, which reviews PR #12 head `46e1771455ba8c8457f47b657cf7866db762c9c1`. Preserve that source document unchanged. Its numerical/parser observations are review inputs; they are not new runtime acceptance or permission.
+
+At approval the native state was revision **90**: 36 tasks, 14 done, 5 blocked and 17 pending. The last exercised first-round implementation had 648 passing tests, green Ubuntu/Windows CI and an integrity check covering 83 evidence hashes. See [first-round results](SIM_REPAIR_RESULTS.md). Those historical results do not verify second-round changes.
+
+After the requested plan amendments, the user instructed **“ok làm đi”**. This approves implementation, existing-task progress updates and actual code/offline verification below. It does not authorize simulator startup, a new recording, publisher construction, mode/arming commands, parameter writes, installation or hardware. Keep immutable evidence and the original PDF unchanged; use the native API for task progress and regenerate the portable view. No new native task ID is authorized: this work refines the existing blocked scopes. A later genuinely separate preparation branch requires agreement before native registration.
+
+R5/R8 remain closed for their exercised code boundary, not for flight. Keep the complete physical outer bound, 0.5 m navigation clearance, original grading limits, failed geometry/acquisition evidence and hardware exclusion. N4 is deferred; active braking is not selected merely because the external report proposes it.
+
+### 6.2 Stable task mapping and readiness
+
+| Findings | Existing task / current status | Prerequisites and remaining barrier |
+| --- | --- | --- |
+| N1, N2, N3; remaining R1/R4 | `g1-supervisor`: runtime blocked | Native prerequisites `g1-environment` and `g0-safety` are done. Code/offline work is approved; justified trial assumptions, held-out eligibility, live readback/ownership/fallback evidence and exact operational approval remain missing. |
+| N5; remaining R3 | `prep-flight-oracle`: blocked | `g1-oracle` and `g1-environment` are done. Offline labels cannot supply actual phase/support/transport/graph evidence or calibrated motion bounds. |
+| N6 | Cross-cutting maintenance for `prep-evidence-review`, `prep-flight-oracle`, `prep-depth-path-audit` | Record code/offline work through the existing tasks; their operational criteria stay unmet. Consolidating checker/display declarations does not install native edges or complete any preparation. |
+| N7; remaining R2 | `prep-evidence-review`: blocked | Its native prerequisites are done. A witnessed replay exit improves provenance only; fresh matching-fixture primary/dy acquisition and justified numerical budgets remain unmet. |
+| Remaining E7 | `prep-depth-path-audit`: blocked | Source/bridge authoritative instrumentation and an approved common-window acquisition remain missing. Recorder-only counts cannot close it. |
+| Remaining R7/R10 | `prep-geometry-crosscheck`: blocked | Retain the current outer AABB. Independent Gazebo loading/multiview evidence remains missing. No new shape is authorized. |
+| N4, R6 | Later G2/G3 design/liveness; existing tasks pending | Do not optimize admission geometry before the response/dynamics contract is justified. Do not lower clearance or remove retained near evidence. |
+
+The existing chain remains `g1-supervisor` before `g1-flight`, `g1-flight` before `g1-calibration`, and calibration before G2. `prep-flight-oracle` is a supplemental **preflight** requirement; `prep-depth-path-audit` supplements calibration completion; the evidence/y branch gates G2 only. Dependency completion is not operational readiness.
+
+**No calibration cycle:** requiring completed `g1-calibration` before the first `g1-flight` would contradict [S02](SAFETY.md#s02-no-circular-dependency). Bootstrap uses explicitly constrained, separately approved exploratory trials and cannot claim calibrated stopping/continuous-clearance guarantees. Actual calibration follows that flight and gates later navigation. Unmeasured behavior stays unmeasured; do not relabel exploratory constraints as calibrated bounds to make the graph appear ready.
+
+#### Mandatory runtime fault-injection validity gate
+
+This gate applies to every proposed `g1-supervisor` fault scenario. A supervisor that already revokes on `ODOMETRY_UNCERTAINTY` has not demonstrated stale-command or owner-conflict handling. Silence from an unreachable control stage is not a passing fault test.
+
+1. **Name the trial profile.** Use an immutable empirical candidate produced by N2, with profile/input hashes, derivation membership, a distinct held-out recording/window, per-axis uncertainty/health assumptions and the frozen workload/clock/RTF envelope. The candidate must meet its predeclared held-out trial-eligibility criteria; observed bound violations or unresolved coverage block its runtime use. An in-sample fit, the existing synthetic 0.01 assumptions, or merely changing a target label is insufficient. Held-out agreement remains empirical evidence, not a future hard-bound/calibration certificate.
+2. **Require a matched healthy baseline.** Before injecting a scenario's fault, its no-fault baseline must reach the exact stage being tested and remain there without revocation for the frozen pre-fault and matched observation windows. Bind the same profile, image/firmware, parameter policy, sources, workload/RTF, fixture/seed, authorization and scenario conditions; declare any intentional differences. Observe actual supervisor stage and corresponding PX4 telemetry/ACK/control-output eligibility, not a fabricated internal state. A disarmed stage cannot stand in for ACTIVE or armed fallback.
+3. **Block the fault family if its baseline is invalid.** Failure to reach the target stage, any baseline revocation, insufficient independent observation or an out-of-envelope condition makes that scenario `test_validity: INVALID_TEST`; its fault behavior is not evaluated as PASS. Preserve the attempt, first reason, timestamps and missing prerequisite. Do not trim the baseline window, replace the seed or relax a ceiling until it passes.
+4. **Prove fault activation and causality.** The fault run must independently reach the same healthy target stage before the frozen injection point. Retain evidence that the intended injection actually activated. Freeze the expected first revocation reason and any narrowly justified equivalent mapping before execution. A valid controlled fault run passes only if it revokes for that expected reason, suppresses authority/output within its declared deadline and satisfies the required observation coverage. Revoke for an unrelated reason is never success; absent/wrong expected response in an otherwise valid controlled trial is a failure. A pre-existing or independently demonstrated unrelated fault that masks the target makes the evidence invalid, not a substitute PASS.
+5. **Keep validity separate from safety.** `test_validity`/fault verdicts supplement, not replace, the S03 safety/execution outcomes and exit rules. Known unsafe events stay latched even if the baseline, injection or observer is invalid. Report planned, valid, passed, failed and invalid counts; never turn invalid trials into successful exclusions or `SAFE_ABORT`.
+
+Acceptance for the future classifier includes: variance revocation before the target stage yields invalid evidence; a healthy matched baseline plus the intended stale-command/owner fault yields the expected reason and bounded output suppression; an unactivated injection, wrong first reason or missing coverage never passes. Existing r39/support-06 no-admission diagnostics remain unchanged and cannot serve as healthy runtime baselines.
+
+
+### 6.3 N1 — Bind response budgets to actual Offboard-loss behavior
+
+Confirmed code gap: the current stopping calculation uses `Envelope.response_delay_s`, while live parameter validation reads `COM_OF_LOSS_T` without binding the two. An offline configuration-validation counterexample accepted response delay 0.2 s with a declared Offboard-loss timeout 0.5 s. It did not read a live PX4 instance or create ROS/control resources.
+
+The [pinned firmware check](https://github.com/PX4/PX4-Autopilot/blob/61907962c9220437ec01a98fa26bfbf5cbb254b5/src/modules/commander/HealthAndArmingChecks/checks/offboardCheck.cpp) evaluates Offboard signal age using PX4 HRT and `COM_OF_LOSS_T`. That proves the timeout participates in signal validity; it does not by itself prove how long the last velocity is physically tracked or which fallback is executed.
+
+**Selected design:** keep immediate output suppression as the default loss-of-authority/failure path, but require the stopping/admission model to cover the complete relevant persistence and transition window. Do not add `Stage.BRAKING` in this slice.
+
+1. Define one small typed latency contract shared by `supervisor.py`, `px4_bridge.py`/`px4_failsafe.py`, config decoding and offline fixtures. State whether motion-response seconds are simulation-motion time; bind epoch, clock source, workload/RTF envelope, scope and provenance. No implicit clock-domain conversions.
+2. Record the start/end of each budget leg: failure detection, last valid control publication, PX4 receipt/signal timeout, failsafe/mode transition and actual controller/braking response. Include transport, scheduling, clock-offset/lead allowances and any additional delay activated by the frozen failsafe policy. Check the effective pinned policy, including relevant `COM_FAIL_ACT_T` behavior, not only the name of one parameter.
+3. Bind the observed readback values to the effective contract before admitting the corresponding motion authority. A missing, inconsistent, unsupported or unbounded leg rejects that admission. Do not invent `mode_switch_latency_s`, a safety multiplier or a default zero. Readback alone is not a measured transition bound.
+4. Do not directly add `max_tick_gap_wall_s` to PX4/simulation seconds. Either justify a common-domain end-to-end bound or convert with a frozen, justified clock/RTF envelope and retain the original domains. A runtime outside that envelope revokes the assumption; adaptive rescaling must not indefinitely extend authority.
+5. Do not count a measured end-to-end response interval and its constituent timeout/detection legs twice. Store interval endpoints and whether a leg is included. Treat cooperative handoff, immediate suppression, competing owner and process death as different paths; one short successful handoff does not bound a dead bridge.
+6. A separately approved disarmed protocol-observation trial may measure readback/ACK/status timing without admitting motion. It cannot certify armed fallback or braking. If first-motion exploratory constraints are needed before calibration, keep their known-clear volume, low-speed/operator-stop scope and non-certified label explicit; do not bypass the bootstrap/calibration ordering.
+
+**Per-admitted-tick crash invariant.** For every tick `k` that admits a control command, the certificate available at that tick and the local geofence must contain the entire required stopping reachability if the supervisor dies immediately after that tick and supplies no further command, heartbeat, permit or intervention. Cover the last actually issued or possibly still effective setpoint as well as the new request and measured-velocity error set; a new zero request must not erase an older nonzero setpoint from the loss case.
+
+With every time term justified in the same simulation-motion domain, the conservative ball contract is:
+
+```text
+T_loss,k = tick_gap_sim_budget
+           + COM_OF_LOSS_T_sim_budget
+           + failsafe_transition_sim_budget(effective frozen policy, including COM_FAIL_ACT_T)
+           + additional_nonoverlapping_transport_clock_tracking_onset_budget
+
+d_loss,k = s_loss,k * T_loss,k + s_loss,k**2 / (2 * a_min,k)
+           + position_error_k + tracking_error_k + extra_margin_k
+
+B(p_reference,k, d_loss,k) is contained in certified_reference_center_region_k
+and in local_geofence_k.
+```
+
+`s_loss,k` must upper-bound relevant true speed through the persistence/transition interval, including measured uncertainty and any retained effective velocity target; `a_min,k` must be justified for the actual fallback/braking path. Footprint and phase clearance are already applied to the certified reference-center region and are not added again. The reserve includes the maximum tick gap, the period in which the old setpoint may persist under `COM_OF_LOSS_T`, effective failsafe switching behavior, and the braking distance. The tick-gap term is a conservative allowance, not a claim that a dead process executes another tick.
+
+If converting a wall tick-gap bound to maximum simulated travel time, use a justified **upper** simulation-clock/RTF rate over that interval, not `RTF_min`; retain clock/epoch and offset/lead assumptions. An end-to-end measured leg may cover constituent terms, but its inclusion mapping must count each leg once. A fallback without a justified finite braking bound cannot yield a finite stopping certificate. Unmeasured exploratory constraints remain conditional and do not bypass S02 or become calibrated guarantees.
+
+Acceptance: exercise crash immediately after each admitted tick, including a prior nonzero setpoint followed by a zero/lower request; independently check the reachable enclosure through persistence, switching and braking. Reject a certificate/geofence short by any required leg, test exact containment boundaries, and do not rely on a later successful supervisor tick to stop the vehicle. Offline checks prove the conditional model only; actual process-death behavior still needs an independent observer and separately approved runtime evidence.
+
+**Valid tightening option:** a lower positive `COM_OF_LOSS_T` in the frozen trial policy can legitimately shorten the retained-setpoint window. This tightens timeout policy; it is not a relaxation of a safety threshold. Freeze its rationale, supported heartbeat/transport/jitter margin and workload before the trial, read back the actual value, and re-evaluate the invariant and healthy baseline. Do not tune it after failed trials, silently write a parameter, or assume earlier fallback is itself proved safe. Any actual PX4 parameter write requires separate authorization.
+
+
+Acceptance after implementation approval:
+
+- Reject a response model smaller than its required same-domain nonoverlapping loss/transition budget, including the 0.2-versus-0.5 s counterexample. Test exact boundaries, missing provenance, inconsistent clocks/epochs, policy mismatch, excess RTF and accidental double counting.
+- Preserve immediate silence on owner conflict, expired operator authority, failsafe, PX4 Offboard exit, clock/reset discontinuity and invalid required telemetry. No new Hold/zero-velocity command may reclaim authority.
+- Preserve the first failure, last publication, addressed ACK/status observations and separate process-death observation. Offline state/encoding checks are not runtime proof.
+- Later, separately approved stationary trials must observe the actual last publication, PX4 mode sequence and deadlines. Disarmed mode timing must not be promoted to an armed stopping bound. Unknown coverage or timing remains a blocker.
+
+**Deferred alternative:** active braking would require a separately reviewed emergency-authority contract: valid current lease, PX4 status, clock, ownership, odometry and a justified braking envelope; finite entry/exit/deadline semantics; no re-entry into ACTIVE; immediate cancellation on authority/source loss; and actual tracking/fault evidence. Graph exclusivity plus valid odometry alone is insufficient. Do not assume that publishing zero velocity produces the declared deceleration.
+
+### 6.4 N2 — Empirical consistency without manufacturing a hard bound
+
+The current diagnostic configuration explicitly declares `synthetic_offline` and `physical_bounds_verified: false`. Its 0.01 m / 0.01 m/s assumptions are not a measured runtime profile. The report's larger observed errors reinforce this distinction; they do not turn an empirical maximum into a future guarantee.
+
+**Selected design:** add an evaluator-only empirical consistency analysis, not an automatic runtime profile generator.
+
+- Use the existing pinned decoder and independent truth path. Freeze input manifests, sample windows, epoch/reset/alignment and body reference point. Compare positions/velocities in the same frame, clock and point; signed components remain valid. Distinguish absolute frame error from capture-to-query relative error according to the actual certificate transform, not only the fact that coordinates are named NED.
+- Prefer independently available truth velocity/twist at the relevant time. If deriving velocity from position brackets, report finite-difference/interval-average scope and coverage; sampled constant position does not prove zero instantaneous velocity between samples. Do not subtract unmatched stamps or ignore body/optical lever-arm rotation.
+- Report per-axis sample counts, extrema, percentiles, missing/rejected identities, error exceedances and provenance. An explicitly frozen sample maximum plus a declared margin is an empirical candidate for that workload/window only. It is not calibration, operational motion authority or proof for another seed, flight or load.
+- Freeze derivation and evaluation membership before examining outcomes. A candidate derived from a trace and checked on that same trace must be labelled in-sample. Prefer a declared derivation input and untouched held-out recording/window; preserve held-out failures rather than enlarging margins repeatedly. Zero in-sample exceedances are descriptive, not independent verification.
+- Separate estimator-health ceilings from deterministic position/velocity/tracking error sets. If per-axis health ceilings are introduced, prefer explicit NED three-vectors matching existing telemetry; migrate every config/fixture/consumer atomically and remove the obsolete scalar path. Threshold changes need a documented workload/health rationale, not an admission target.
+- Do not make `k_sigma * sqrt(variance)` a hard-bound constructor or sufficient startup-consistency proof. It requires statistical/distribution/coverage assumptions and remains statistical even when dimensionally correct. A scalar Euclidean error radius also cannot be justified by checking each axis against that radius independently. A chosen k or a source-classification string cannot certify it.
+- A real motion-admitting profile must bind the separately justified/calibrated uncertainty and response model. A stationary truth diagnostic must not become runtime-capable merely by changing its target label.
+- For a runtime fault-injection profile, held-out evaluation is **mandatory**, not merely preferred. Record the exact candidate and its eligibility evidence at the runtime validity gate above. A candidate with unresolved held-out error/health/coverage failures cannot be used to manufacture a healthy baseline; revising it requires preserving prior failures and a newly frozen evaluation protocol.
+
+Acceptance: the old synthetic assumptions are tested for observed consistency without changing their published bytes; candidate evaluation reports every exceedance and authority refusal reason; invalid frame/time/reset/body-point bindings reject; missing coverage stays unknown. Numeric, sign, norm/axis and provenance boundaries receive behavioral regressions. Report actual transition outcomes by reason without requiring zero revokes or enlarging health ceilings to get an ALLOWED count. G1/calibration remain incomplete even if a frozen candidate fits every evaluated sample.
+
+### 6.5 N3 — Per-stream age and progress, not clock-only health
+
+Confirmed: current status freshness includes receive-wall age, and `progress_wall_s` is also shared by dynamic streams. Removing `STATUS_stale_wall` alone would not settle the progress contract. A nominal 0.504 s simulation period is 3.36 s wall at RTF 0.15, before jitter; this must be compared with an explicitly supported service envelope. A refusal outside that envelope is not automatically false.
+
+**Selected design:** preserve [S05](SAFETY.md#s05-freshness-and-latency-with-explicit-clock-domains).
+
+1. Keep acquisition/source simulation age separate from monotonic receive/processing age and per-source progress. Use node simulation time for source-age checks; do not substitute a queued `/clock` callback or wall stamp for capture time.
+2. Define finite per-stream deadlines and their measurement endpoints. Status cadence may differ from odometry, command, permit and original perception capture. Bind workload, minimum supported progress/RTF, queue behavior and allowed jitter before choosing values. A nominal mean period alone is not a worst-case bound.
+3. Keep independent wall-time supervision of compute/transport and each required source. A progressing `/clock` cannot certify live status, planner, safety or camera. Cached/restamped/resequenced data must not renew command, permit or capture authority.
+4. Preserve operator-lease wall expiry, session/tick/handoff deadlines and owner/failsafe checks. A frozen or very slow simulation must not silently extend human authorization. Only an explicitly confirmed runner pause can enter a separately defined non-admitting pause/revalidation path.
+5. Do not remove a finite guard or enlarge a deadline simply to obtain zero `STATUS_stale_wall` rows. Any changed service envelope must be justified and frozen; observed out-of-envelope failures remain in the report. Hardware targets remain unsupported.
+
+**Per-source wall-deadline derivation.** For every required simulation-cadenced source `i`, the frozen progress/receive service deadline must satisfy at least:
+
+```text
+wall_deadline_i >= nominal_source_period_sim_i / RTF_min + jitter_wall_budget_i
+```
+
+Declare all units and endpoints. Include source-period variation, transport, queue and scheduler jitter once; if source jitter is specified in simulation seconds, convert it with the justified lower clock-progress/RTF rate before combining it with wall jitter. Use a validated bounded cadence/jitter envelope rather than treating a nominal mean as a hard limit. Wall-cadenced producers need an explicit wall-period/jitter contract, not a guessed simulation conversion. Source simulation-age checks and the independent fixed wall limits on human leases, sessions, ticks and handoffs are not automatically stretched by this formula.
+
+The lowest previously observed RTF, **0.196**, is input to choosing a justified supported `RTF_min`, not proof of a future floor. Freeze the selected minimum, measurement window, warmup/pause handling, workload and provenance before validation; do not choose 0.196 or 0.15 solely to admit this trace. Validate the actual supported range and record out-of-range cases. Below the supported minimum, refuse authority with an explicit out-of-supported-RTF classification (proposed reason `RTF_OUTSIDE_SUPPORTED_RANGE`), not an assertion that healthy data unexpectedly became stale. A missing/unreliable RTF observation is unknown/invalid, not assumed in-range. Preserve first-failure and unsafe latching if another violation occurred earlier.
+
+Acceptance additionally covers a source at its declared nominal period and worst admitted jitter at `RTF_min` and across the supported range; it must not fail merely because an old universal 3 s progress constant remains. A source that stops while `/clock` progresses must still time out. Test just below the supported RTF floor as a valid out-of-envelope refusal, exact deadline boundaries and invalid RTF coverage. A no-fault runtime baseline outside this envelope is invalid fault-test evidence under the gate above.
+
+
+Acceptance: deterministic schedules exercise the declared RTF range, including the proposed 0.15–1.0 range only if its finite deadlines are justified; source loss while `/clock` continues, cached/replayed identity, startup without status, clock pause/reset, wall expiry and tick/queue stalls all refuse authority as specified. Retained support-06 replay reports all reasons under both declared configurations. No blanket zero-revoke target; no source-lead/TTL weakening or synthesized healthy status.
+
+### 6.6 N4 — Keep the ball until a narrower set has a valid dynamics proof
+
+Defer optimization. Under the current assumption of arbitrary direction changes during response, `conv({command} union measured-error-box)` need not contain every allowed intermediate velocity direction. A lateral response excursion can satisfy the speed bound while leaving that narrow set. Random tests cannot replace the containment argument.
+
+Only after a reviewed bounded direction/acceleration/tracking model and relevant runtime evidence may a narrower convex reachable enclosure be proposed. Prove containment under those exact assumptions, then add independent counterexamples/property checks and compare liveness on the same frozen scenarios. Keep permit coverage, physical envelope, phase clearance and near-hazard retention unchanged. Failure to justify the enclosure means retain the ball, not special-case a convenient input.
+
+### 6.7 N5 — Conditional oracle outputs and bootstrap ordering
+
+Confirmed: both the interval and moving summary can currently set `continuous_clearance_certified: true` from declared-motion CLEAR results, while `flight_admission`/`live_acceptance_certified` remain false. The prose limitations are real but the machine-readable label is too easy to misuse.
+
+Plan an atomic moving-output cutover:
+
+- Replace the misleading moving-path certificate flag with an explicitly conditional clearance result, true only when the supplied interval passes all applicable checks. Include the actual motion-bound provenance/scope and whether independent bound evidence is absent. Missing bounds never become true.
+- The summary may aggregate complete **conditional** interval coverage, not an unconditional certificate. Keep incomplete/UNKNOWN, potential enclosure overlap, demonstrated sampled geometry and physical-contact claims distinct; retain unsafe latching.
+- A `calibrated` boolean or provenance string alone cannot grant certification. Any future calibrated claim must bind the actual gate evidence, workload, geometry, clock/epoch and scope.
+- Migrate every emitter/consumer/CLI/fixture/test together; no legacy alias that continues to emit a misleading true value. Historical reports remain byte-for-byte historical, not rewritten to the new schema. Static sampled output is not silently upgraded.
+- Keep the native order: explicit bootstrap constraints before approved exploratory flight, actual calibration afterward, then calibrated navigation. Do not require completed `g1-calibration` as a prerequisite of the flight that produces it.
+
+Acceptance: actual offline CLI clear/thin/rotation/gap/source-loss cases emit the correct conditional scope; no uncalibrated report can be consumed as unconditional clearance or flight authority; unsafe observations still dominate later observer failure. Updated reporting does not complete `prep-flight-oracle` or `g1-flight`.
+
+### 6.8 N6 — One supplemental-gate declaration for enforcement and display
+
+The current checker contains the original evidence-semantics G2 guard plus three newer preparations, while the portable view has separately authored explanatory text. Consolidate those **four** policies into one structured source containing prerequisite ID, affected task selector and guarded statuses. Both validation and the generated supplemental-gates table must derive from it.
+
+The table must distinguish native prerequisites from checker gates, show the preflight `in_progress`/`done` rule for `g1-flight`, and retain completion-only gates elsewhere. Missing preparation fails closed. Preserve G2 prefix coverage for future G2 tasks; do not let the y/evidence branch block unrelated G1 work. Geometry contradictions remain a separately scoped affected-profile-use rule, not a fabricated generic DAG edge.
+
+Acceptance: meaningful validator/renderer integration checks cover a changed policy, missing/incomplete preparations, unrelated G1 and display of the same guarded statuses. Regenerate `docs/ROADMAP.md` with the exporter only after approved implementation. The native API still cannot edit existing dependency/acceptance metadata; no delete/re-add, hand edit or unsupported action is a substitute.
+
+### 6.9 N7 — Witness a new replay exit, preserve the old uncertainty
+
+The old plane summary explicitly states `original_process_exit_observed: false` and binds original artifact hash `04f69883f90a870a866ac6e9173ef09119819bcb9faf6d5fbbfb9b87628a3a7d`. Do not retroactively fill that field or rewrite its bundle.
+
+After separate approval of the code/offline slice, run the same pinned decoder/plane-analysis inputs with a frozen source identity and a finite deadline sufficient for the actual workload. Use an owned process/lifecycle that retains completion and exit status; a Docker-exec client timeout alone does not prove its container child stopped. Retain exact argv, image/source/input identities, stdout/stderr, observed process exit, artifact parse/readback and bounded owned cleanup.
+
+Write a new exclusive output/bundle. Compare the new artifact hash with the old bound hash and record equality or difference honestly. A mismatch requires explaining source/environment/numeric/content differences, not replacing the old hash or forcing a match. An exit 0 or complete diagnostic coverage still does not make the old occluding fixture pass, supply a dy error budget, or complete `prep-evidence-review`.
+
+### 6.10 Approved execution order and review decisions
+
+1. N1–N3 were reviewed together: explicit latency domains, immediate-suppression authority, empirical versus operational uncertainty and finite per-stream health. No automatic active-braking stage.
+2. Implement the N5/N6 reporting/gate cutovers and N7 witnessed replay independently where possible. Preserve every prior failed/partial result.
+3. Implement the approved N1 binding and N2/N3 diagnostic/contract changes with one owner for shared `Envelope`/config/bridge boundaries. Use LSP references before exported-symbol changes; reuse existing frozen dataclasses and pinned decoders, not a new schema/config framework. Migrate every caller in the same cutover.
+4. Run targeted behavioral checks and actual affected offline CLIs; use guarded pinned-message/retained-bag execution without ROS initialization, nodes or publishers. Run the integrated suite once after integration, then integrity/export checks as applicable. A finite holdout failure remains a failure, not an instruction to tune.
+5. Only after contracts and explicit prerequisites are satisfied, request exact separate approval for any non-admitting disarmed observation or stationary control-publisher trial. Armed fallback, flight and new acquisition are distinct requests. The relevant existing native task remains blocked until its own current-run criteria hold.
+6. Keep R2 fresh acquisition/dy budgets, R3 live isolation/phase evidence, R4 actual fallback, E7 authoritative taps and R10 loader observations as explicit unmet gates. Approved bootstrap flight precedes actual calibration; calibration and the unchanged supplemental gates precede G2. N4 remains later work.
+
+Approval update: the user accepted the existing-task mapping, no `Stage.BRAKING`, N2 in-sample/held-out separation, atomic N5 code/test migration, single-source N6 gates and N7 witnessed replay. The required additions are now explicit: healthy matched runtime baseline and causal fault verdicts, the per-tick crash invariant with a legitimate tighter-timeout option, and RTF-derived finite per-source wall deadlines. **Code/offline implementation is approved; operational trials and parameter writes are not.**
+
+Verify changed behavior through the actual affected offline CLIs and integrated regression suite, then update current results and native blockers with observed evidence. No code/offline receipt completes the outstanding runtime/acquisition gates. Export the portable roadmap after native state changes. Historical planning verification at revision 90 remains historical.

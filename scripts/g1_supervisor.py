@@ -25,6 +25,7 @@ from drone_cv.supervisor import (
     Permit, Stage, State, Status, transition,
 )
 from drone_cv.timing import Clock, FreshnessPolicy, Stamp
+from drone_cv.supervision_contract import ClockContract, LossResponse, RateWindow, SourceBudget
 
 
 def offline_smoke() -> dict:
@@ -35,12 +36,22 @@ def offline_smoke() -> dict:
     cfg = Config(
         owner="offline_owner", planner="offline_planner", safety="offline_safety",
         source_system=42, source_component=191, target_system=1, target_component=1,
-        freshness=FreshnessPolicy(.5, .5), status_freshness=FreshnessPolicy(3., 3.),
-        progress_wall_s=3., clock_stall_wall_s=.5, max_clock_step_s=.5,
+        request_freshness=FreshnessPolicy(.5, .5),
+        clock_contract=ClockContract("offline_epoch", .196, 1., .01, .1,
+                                    "Synthetic protocol RTF range, not workload evidence", "gazebo_sim", .004, .05),
+        source_budgets=tuple(SourceBudget(name, ttl, period, jitter, "simulation",
+                                         "Synthetic per-source protocol cadence")
+            for name, ttl, period, jitter in (
+                ("ODOMETRY", .5, .02, .05), ("STATUS", 3., .5, .1),
+                ("COMMAND", .5, .02, .05), ("PERMIT", .5, .02, .05),
+                ("PERCEPTION", .5, .02, .05))),
+        loss_response=LossResponse("offline_epoch", FIRMWARE_PIN, .05, .02, .01, .02, 5,
+                                   "Synthetic crash-after-tick fixture", "synthetic_offline"),
+        clock_stall_wall_s=.5, max_clock_step_s=.5,
         max_tick_gap_wall_s=.3, prime_sim_s=.2, prime_wall_s=.2,
         request_timeout_s=1., session_timeout_s=20., max_command_ttl_s=.5,
-        envelope=Envelope((-5., -5., -5.), (5., 5., 0.), 1., .1, .2, .1,
-                          .2, .01, .01, "offline synthetic fixture; NOT measured or certified",
+        envelope=Envelope((-5., -5., -5.), (5., 5., 0.), .2, .25, .1,
+                          .2, (.01,)*3, (.01,)*3, "offline synthetic fixture; NOT measured or certified",
                           (.01, .01, .01), .01, .01, "synthetic_offline"),
     )
     def data(t, nav=2, armed=False, action=None, ack=None):
@@ -55,7 +66,8 @@ def offline_smoke() -> dict:
                    cfg.envelope.bounds_provenance),
             Lease(cfg.owner, stamp, 10., 10., "bootstrap"), True,
             OperatorRequest(cfg.owner, stamp, action) if action else None,
-            Ack(stamp, ack, 0, 42, 191, False) if ack else None)
+            Ack(stamp, ack, 0, 42, 191, False) if ack else None,
+            RateWindow(Clock(stamp.epoch, t-.02, t-.02), Clock(stamp.epoch, t, t)))
     # Exercise the installed generated input schemas and acquisition-time decoder,
     # not stand-in classes. Serialization imports alone do not initialize ROS.
     odom = types.VehicleOdometry()
@@ -144,8 +156,10 @@ def offline_smoke() -> dict:
 def read_config(path):
     values = json.loads(Path(path).read_text(encoding="utf-8"))
     values["envelope"] = Envelope(**values["envelope"])
-    values["freshness"] = FreshnessPolicy(**values["freshness"])
-    values["status_freshness"] = FreshnessPolicy(**values["status_freshness"])
+    values["request_freshness"] = FreshnessPolicy(**values["request_freshness"])
+    values["clock_contract"] = ClockContract(**values["clock_contract"])
+    values["loss_response"] = LossResponse(**values["loss_response"])
+    values["source_budgets"] = tuple(SourceBudget(**budget) for budget in values["source_budgets"])
     return Config(**values)
 
 

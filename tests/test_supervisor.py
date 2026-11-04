@@ -9,18 +9,29 @@ from drone_cv.supervisor import (
     Permit, Stage, State, Status, transition,
 )
 from drone_cv.timing import Clock, FreshnessPolicy, Stamp
+from drone_cv.supervision_contract import ClockContract, LossResponse, RateWindow, SourceBudget
 
 
 def config():
     return Config(
         owner="test_owner", planner="planner", safety="independent_safety",
         source_system=42, source_component=191, target_system=1, target_component=1,
-        freshness=FreshnessPolicy(.5, .5), status_freshness=FreshnessPolicy(3., 3.),
-        progress_wall_s=3., clock_stall_wall_s=.5, max_clock_step_s=.5,
+        request_freshness=FreshnessPolicy(.5, .5),
+        clock_contract=ClockContract("epoch", .196, 1., .01, .1,
+                                    "Synthetic test range; not a measured supported workload", "gazebo_sim", .004, .05),
+        source_budgets=tuple(SourceBudget(name, ttl, period, jitter, "simulation",
+                                         "Synthetic service fixture; not a runtime contract")
+            for name, ttl, period, jitter in (
+                ("ODOMETRY", .5, .02, .05), ("STATUS", 3., .5, .1),
+                ("COMMAND", .5, .02, .05), ("PERMIT", .5, .02, .05),
+                ("PERCEPTION", .5, .02, .05))),
+        loss_response=LossResponse("epoch", "a"*40, .05, .02, .01, .02, 5,
+                                   "Synthetic nonoverlapping loss budget", "synthetic_offline"),
+        clock_stall_wall_s=.5, max_clock_step_s=.5,
         max_tick_gap_wall_s=.3, prime_sim_s=.2, prime_wall_s=.2,
         request_timeout_s=1., session_timeout_s=20., max_command_ttl_s=.5,
-        envelope=Envelope((-5., -5., -5.), (5., 5., 0.), 1., .1, .2, .1,
-                          .2, .01, .01, "offline synthetic bounds, not calibrated",
+        envelope=Envelope((-5., -5., -5.), (5., 5., 0.), .2, .25, .1,
+                          .2, (.01,)*3, (.01,)*3, "offline synthetic bounds, not calibrated",
                           (.01, .01, .01), .01, .01, "synthetic_offline"),
     )
 
@@ -44,6 +55,7 @@ def inputs(t=1., *, stage=2, armed=False, action=None, command=True):
                t, t if armed else 0.),
         cmd, permit, Lease("test_owner", stamp, 10., 10., "bootstrap"),
         True, OperatorRequest("test_owner", stamp, action) if action else None,
+        rate=RateWindow(Clock("epoch", t-.02, t-.02), Clock("epoch", t, t)),
     )
 
 
@@ -140,7 +152,6 @@ def test_faults_revoke_and_never_publish_a_fake_hold(fault, reason):
     ({"reset_counter": 1}, "ODOMETRY_RESET"),
     ({"velocity_ned": (1.1, 0., 0.)}, "MEASURED_SPEED"),
     ({"position_ned": (6., 0., -1.)}, "MEASURED_ENVELOPE"),
-    ({"velocity_ned": (-.2, 0., 0.)}, "STOPPING_ROOM"),
     ({"position_variance": (.1,) * 3}, "ODOMETRY_UNCERTAINTY"),
 ])
 def test_measured_telemetry_not_request_or_truth_controls_authority(change, reason):
@@ -194,7 +205,8 @@ def test_actual_speed_is_used_for_stopping_room():
     data = inputs(1.3, stage=14, armed=True)
     data = replace(data, odometry=replace(data.odometry, velocity_ned=(.9, 0., 0.)),
                    permit=replace(data.permit, maximum_ned=(.1, .5, -.5)))
-    state, output = transition(active(), data, config())
+    cfg = replace(config(), envelope=replace(config().envelope, maximum_speed_mps=1.))
+    state, output = transition(active(), data, cfg)
     assert state.reason == "STOPPING_ROOM" and not output.heartbeat
 
 
@@ -210,9 +222,11 @@ def test_clock_reset_and_discontinuity_revoke():
 def test_stalled_clock_and_tick_watchdog_are_wall_based():
     state = active()
     data = inputs(1.3, stage=14, armed=True)
-    state, _ = transition(state, data, config())
+    cfg = replace(config(), clock_stall_wall_s=.1, clock_contract=replace(
+        config().clock_contract, maximum_observation_age_wall_s=2.))
+    state, _ = transition(state, data, cfg)
     for wall in (1.5, 1.7, 1.9):
-        state, output = transition(state, replace(data, now=Clock("epoch", 1.3, wall)), config())
+        state, output = transition(state, replace(data, now=Clock("epoch", 1.3, wall)), cfg)
     assert state.stage == Stage.REVOKED and "CLOCK_STALLED" in state.reason
     assert not output.heartbeat
     state, output = transition(active(), inputs(1.6, stage=14, armed=True), config())
@@ -282,14 +296,16 @@ def test_new_permit_does_not_refresh_original_capture(capture, reason):
 
 
 def test_repeated_capture_with_new_decisions_has_its_own_wall_progress_deadline():
-    cfg = replace(config(), progress_wall_s=.04)
+    cfg = replace(config(), source_budgets=tuple(
+        replace(value, period_s=.001, jitter_wall_s=.035) if value.name == "PERCEPTION" else value
+        for value in config().source_budgets))
     state = active()
     capture = sample(1.25)
     for t in (1.27, 1.3):
         data = inputs(t, stage=14, armed=True)
         data = replace(data, permit=replace(data.permit, capture_stamp=capture))
         state, output = transition(state, data, cfg)
-    assert state.reason == "PERCEPTION_PROGRESS_STALLED" and not output.heartbeat
+    assert state.reason == "PERCEPTION_stale_wall" and not output.heartbeat
 
 
 def test_capture_resequence_cannot_relabel_the_same_acquisition_time():
@@ -318,7 +334,8 @@ def test_zero_request_with_measured_drift_cannot_skip_swept_direction():
                    permit=replace(data.permit, velocity_ned=(0., 0., 0.)),
                    odometry=replace(data.odometry, position_ned=(4.99, 0., -1.),
                                     velocity_ned=(.9, 0., 0.)))
-    state, output = transition(active(), data, config())
+    cfg = replace(config(), envelope=replace(config().envelope, maximum_speed_mps=1.))
+    state, output = transition(active(), data, cfg)
     assert state.reason == "STOPPING_ROOM" and not output.heartbeat
 
 
@@ -355,7 +372,8 @@ def test_session_deadline_cannot_be_extended_by_new_operator_leases():
 @pytest.mark.parametrize("field", ["command", "permit"])
 def test_command_and_permit_expire_at_their_exact_original_ttl(field):
     data = inputs(1.5, stage=14, armed=True)
-    value = replace(getattr(data, field), stamp=sample(1.25), ttl_s=.25)
+    # A late receive isolates simulation expiry from the independent wall-age cap.
+    value = replace(getattr(data, field), stamp=Stamp("epoch", 1250000, 1.25, 1.49), ttl_s=.25)
     state, output = transition(active(), replace(data, **{field: value}), config())
     assert state.reason == field.upper() + "_EXPIRED" and not output.heartbeat
 
@@ -514,7 +532,9 @@ def test_capture_cannot_follow_the_verdict_that_authorizes_it():
 
 def test_refreshed_permit_receive_time_does_not_extend_capture_wall_age():
     state = active()
-    cfg = replace(config(), freshness=FreshnessPolicy(2., .04))
+    cfg = replace(config(), source_budgets=tuple(
+        replace(value, sim_ttl_s=2., period_s=.001, jitter_wall_s=.035)
+        if value.name == "PERCEPTION" else value for value in config().source_budgets))
     for t in (1.27, 1.3):
         data = inputs(t, stage=14, armed=True)
         repeated = Stamp("epoch", 1250000, 1.25, t)
@@ -620,15 +640,14 @@ def test_seeded_arbitrary_direction_stopping_paths_stay_inside_admitted_box():
         state, _ = transition(active(), data, cfg)
         assert state.stage == Stage.ACTIVE
         # Independent time integration, changing direction at every interval.
-        upper = np.linalg.norm(np.abs(velocity) + .01)
-        upper = max(upper, .1)
-        duration = cfg.envelope.response_delay_s + upper / cfg.envelope.deceleration_mps2
+        upper = max(np.linalg.norm(np.abs(velocity) + .01), cfg.envelope.maximum_speed_mps)
+        duration = cfg.response_delay_s + upper / cfg.envelope.deceleration_mps2
         dt = duration / 200
         position = np.array(data.odometry.position_ned)
         for t in np.linspace(0, duration, 200, endpoint=False):
             direction = rng.normal(size=3)
             direction /= np.linalg.norm(direction)
-            speed = max(0., upper - max(0., t-cfg.envelope.response_delay_s)
+            speed = max(0., upper - max(0., t-cfg.response_delay_s)
                         * cfg.envelope.deceleration_mps2)
             position = position + dt*speed*direction
             assert np.all(position >= data.permit.minimum_ned)

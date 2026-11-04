@@ -21,6 +21,7 @@ from drone_cv.supervisor import (
     Stage, State, Status, revoke, transition,
 )
 from drone_cv.timing import Clock, Stamp
+from drone_cv.supervision_contract import rate_window
 
 FIRMWARE_PIN = "61907962c9220437ec01a98fa26bfbf5cbb254b5"
 MESSAGES_PIN = "8fb8277cf95c4ba87094146bc8922e76c4ac0799"
@@ -197,6 +198,9 @@ class RuntimeAuthorization:
     readback_wall_s: float
     terminal_observation_wall_s: float
     instance: int
+    empirical_profile: dict
+    empirical_evaluation: dict
+    workload: str
 
     def validate(self, cfg: Config):
         if self.target != "exploratory_simulation" or cfg.envelope.target != self.target:
@@ -204,6 +208,31 @@ class RuntimeAuthorization:
         if type(self.instance) is not int or self.instance != 0:
             raise ValueError("pinned local readback supports explicit PX4 instance zero only")
         validate_policy(self.parameter_policy, self.policy_rationale, self.readback_wall_s)
+        if self.epoch != cfg.clock_contract.epoch:
+            raise ValueError("startup and frozen timing contract epoch mismatch")
+        cfg.loss_response.bind_policy(self.parameter_policy, self.firmware)
+        from drone_cv.empirical_profile import digest, empirical_trial_refusals
+        env = cfg.envelope
+        refusals = empirical_trial_refusals(
+            self.empirical_profile, self.empirical_evaluation,
+            position_variance_max=env.position_variance_max,
+            velocity_variance_max=env.velocity_variance_max,
+            velocity_error_mps=env.velocity_error_mps,
+            position_error_m=env.position_error_m, tracking_error_m=env.tracking_error_m)
+        if refusals:
+            raise ValueError("EMPIRICAL_PROFILE_INELIGIBLE:" + ",".join(refusals))
+        if not isinstance(self.workload, str) or not self.workload or len(self.workload) > 512:
+            raise ValueError("explicit bounded trial workload identity required")
+        applicability = {
+            "image": self.image, "firmware": self.firmware, "messages": self.messages,
+            "parameter_policy_sha256": digest(self.parameter_policy),
+            "clock_source": cfg.clock_contract.source,
+            "rtf_min": cfg.clock_contract.minimum_rtf, "rtf_max": cfg.clock_contract.maximum_rtf,
+            "rtf_window_wall_s": cfg.clock_contract.window_wall_s,
+            "workload": self.workload, "body_point": "base_link_origin", "frame": "local_ned",
+        }
+        if self.empirical_profile["protocol"]["applicability"] != applicability:
+            raise ValueError("EMPIRICAL_APPLICABILITY_MISMATCH")
         if (not isfinite(self.terminal_observation_wall_s)
                 or self.terminal_observation_wall_s <= 0):
             raise ValueError("bounded terminal observation deadline required")
@@ -331,6 +360,7 @@ class RosBridge:
             qos = QoSProfile(depth=1, reliability=ReliabilityPolicy.BEST_EFFORT,
                              durability=DurabilityPolicy.VOLATILE)
             self.clock_value, self.clock_progress = None, time.monotonic()
+            self.clock_samples = ()
             self.node.create_subscription(ClockMessage, "/clock", self._clock, qos)
             for key, name in INPUT_TYPES.items():
                 kind = {"vehicle_odometry": "odometry", "vehicle_status_v4": "status",
@@ -344,7 +374,11 @@ class RosBridge:
             deadline, stable = time.monotonic()+authorization.discovery_wall_s, None
             while time.monotonic() < deadline:
                 rclpy.spin_once(self.node, timeout_sec=min(.05, authorization.tick_wall_s))
-                valid = self._graph() and self.clock_value is not None
+                check_now = Clock(authorization.epoch,
+                                  self.node.get_clock().now().nanoseconds/1e9, time.monotonic())
+                valid = (self._graph() and self.clock_value is not None
+                         and cfg.clock_contract.error(
+                             rate_window(self.clock_samples, cfg.clock_contract), check_now) is None)
                 stable = (stable if stable is not None else time.monotonic()) if valid else None
                 if stable is not None and time.monotonic()-stable >= authorization.discovery_stable_s:
                     break
@@ -355,9 +389,14 @@ class RosBridge:
             self.parameter_readback = read_parameters(
                 authorization.parameter_policy, authorization.policy_rationale,
                 authorization.readback_wall_s, authorization.firmware)
-            # Readback may take time: recheck graph before creating publishers.
-            if not self._graph():
-                raise RuntimeError("DDS ownership changed during parameter readback")
+            cfg.loss_response.bind_policy(self.parameter_readback["observed"], authorization.firmware)
+            # Readback may take time: recheck original clock evidence and graph.
+            check_now = Clock(authorization.epoch,
+                              self.node.get_clock().now().nanoseconds/1e9, time.monotonic())
+            if (not self._graph() or self.state.stage == Stage.REVOKED
+                    or cfg.clock_contract.error(
+                        rate_window(self.clock_samples, cfg.clock_contract), check_now)):
+                raise RuntimeError("ownership/timing changed during parameter readback")
             for key, name in OUTPUT_TYPES.items():
                 self.publishers[key] = self.node.create_publisher(getattr(self.types, name),
                     f"{authorization.namespace}/fmu/in/{key}", qos)
@@ -392,9 +431,27 @@ class RosBridge:
         value = msg.clock.sec + msg.clock.nanosec/1e9
         if self.clock_value is not None and value < self.clock_value:
             self.state, _ = revoke(self.state, "CLOCK_RESET")
+            return
         if self.clock_value is None or value > self.clock_value:
             self.clock_progress = time.monotonic()
         self.clock_value = value
+        wall = time.monotonic()
+        # Explicit callback source progress has its own watchdog above. Rate uses
+        # the node's delivered ROS clock: a queued /clock callback can be older.
+        delivered_sim = self.node.get_clock().now().nanoseconds/1e9
+        if self.clock_samples and delivered_sim < self.clock_samples[-1].sim_s:
+            self.state, _ = revoke(self.state, "CLOCK_RESET")
+            return
+        samples = (*self.clock_samples, Clock(self.authorization.epoch, delivered_sim, wall))
+        # Keep one predecessor of the frozen window. Refuse overload, never
+        # silently truncate needed observations or construct an assumed RTF.
+        before = [i for i, sample in enumerate(samples)
+                  if wall-sample.wall_s >= self.cfg.clock_contract.window_wall_s]
+        samples = samples[before[-1]:] if before else samples
+        if len(samples) > 16384:
+            self.state, _ = revoke(self.state, "CLOCK_OBSERVATION_CAPACITY")
+        else:
+            self.clock_samples = samples
 
     def _receive_px4(self, kind, msg):
         try:
@@ -479,7 +536,8 @@ class RosBridge:
             now = Clock(self.authorization.epoch, self.node.get_clock().now().nanoseconds/1e9, wall)
             data = Inputs(now, self.latest.get("odometry"), self.latest.get("status"),
                 self.latest.get("command"), self.latest.get("permit"), self.latest.get("lease"),
-                self._graph(), self.latest.get("request"), self.latest.get("ack"))
+                self._graph(), self.latest.get("request"), self.latest.get("ack"),
+                rate_window(self.clock_samples, self.cfg.clock_contract))
             self.state, output = transition(self.state, data, self.cfg)
             messages = encode(output, int(now.sim_s*1e6), self.cfg, self.types)
             # No callback interleaves the graph check and this send in the single executor.

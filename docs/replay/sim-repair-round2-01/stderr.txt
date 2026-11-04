@@ -1,0 +1,1 @@
+[INFO] [1793811616.849962285] [rosbag2_storage]: Opened database '/workspace/support06/bag/bag_0.db3' for READ_ONLY.

@@ -10,6 +10,9 @@ from enum import Enum
 from math import hypot, isfinite, pi
 
 from drone_cv.timing import Clock, FreshnessPolicy, Stamp, freshness_error
+from drone_cv.supervision_contract import (
+    ClockContract, LossResponse, RateWindow, REQUIRED_SOURCES, SourceBudget,
+)
 
 
 def _positive(value: float, name: str) -> None:
@@ -35,11 +38,10 @@ class Envelope:
     maximum_ned: tuple[float, float, float]
     maximum_speed_mps: float
     deceleration_mps2: float
-    response_delay_s: float
     extra_margin_m: float
     yaw_error_rad: float
-    position_variance_max: float
-    velocity_variance_max: float
+    position_variance_max: tuple[float, float, float]
+    velocity_variance_max: tuple[float, float, float]
     bounds_provenance: str
     velocity_error_mps: tuple[float, float, float]
     tracking_error_m: float
@@ -51,10 +53,14 @@ class Envelope:
             object.__setattr__(self, name, _vector(getattr(self, name), name))
         if any(a >= b for a, b in zip(self.minimum_ned, self.maximum_ned)):
             raise ValueError("envelope minimum must be below maximum")
-        for name in ("maximum_speed_mps", "deceleration_mps2", "response_delay_s",
-                     "extra_margin_m", "yaw_error_rad", "position_variance_max",
-                     "velocity_variance_max"):
+        for name in ("maximum_speed_mps", "deceleration_mps2",
+                     "extra_margin_m", "yaw_error_rad"):
             _positive(getattr(self, name), name)
+        for name in ("position_variance_max", "velocity_variance_max"):
+            value = _vector(getattr(self, name), name)
+            if any(v <= 0 for v in value):
+                raise ValueError("per-axis variance health ceilings must be positive")
+            object.__setattr__(self, name, value)
         _identity(self.bounds_provenance)
         object.__setattr__(self, "velocity_error_mps",
                            _vector(self.velocity_error_mps, "velocity error"))
@@ -77,9 +83,10 @@ class Config:
     source_component: int
     target_system: int
     target_component: int
-    freshness: FreshnessPolicy
-    status_freshness: FreshnessPolicy
-    progress_wall_s: float
+    request_freshness: FreshnessPolicy
+    clock_contract: ClockContract
+    source_budgets: tuple[SourceBudget, ...]
+    loss_response: LossResponse
     clock_stall_wall_s: float
     max_clock_step_s: float
     max_tick_gap_wall_s: float
@@ -101,12 +108,33 @@ class Config:
                 raise ValueError(f"{name} must be a non-broadcast uint8; no mode-executor identity")
         if (self.source_system, self.source_component) == (self.target_system, self.target_component):
             raise ValueError("external command identity must differ from the PX4 target")
-        for name in ("progress_wall_s", "clock_stall_wall_s", "max_clock_step_s",
+        for name in ("clock_stall_wall_s", "max_clock_step_s",
                      "max_tick_gap_wall_s", "prime_sim_s", "prime_wall_s",
                      "request_timeout_s", "session_timeout_s", "max_command_ttl_s"):
             _positive(getattr(self, name), name)
-        if self.max_command_ttl_s > self.freshness.sim_ttl_s:
-            raise ValueError("command TTL may not exceed freshness policy")
+        object.__setattr__(self, "source_budgets", tuple(self.source_budgets))
+        if (len(self.source_budgets) != len(REQUIRED_SOURCES)
+                or {value.name for value in self.source_budgets} != REQUIRED_SOURCES):
+            raise ValueError("one explicit budget per required dynamic source is mandatory")
+        for budget in self.source_budgets:
+            budget.wall_deadline(self.clock_contract)
+        if self.clock_stall_wall_s < self.clock_contract.progress_deadline_wall_s:
+            raise ValueError("clock wall watchdog is below supported cadence/RTF plus jitter")
+        if any(self.max_command_ttl_s > self.source(name).sim_ttl_s
+               for name in ("COMMAND", "PERMIT")):
+            raise ValueError("command TTL may not exceed source freshness policy")
+        self.loss_response.required_delay(self.max_tick_gap_wall_s, self.clock_contract)
+        expected_scope = ("synthetic_offline" if self.envelope.target == "synthetic_offline"
+                          else "exploratory_conditional")
+        if self.loss_response.scope != expected_scope:
+            raise ValueError("response scope does not bind the motion target")
+
+    def source(self, name: str) -> SourceBudget:
+        return next(value for value in self.source_budgets if value.name == name)
+
+    @property
+    def response_delay_s(self) -> float:
+        return self.loss_response.required_delay(self.max_tick_gap_wall_s, self.clock_contract)
 
 
 @dataclass(frozen=True)
@@ -281,6 +309,7 @@ class Inputs:
     graph_exclusive: bool
     request: OperatorRequest | None = None
     ack: Ack | None = None
+    rate: RateWindow | None = None
 
 
 @dataclass(frozen=True)
@@ -296,6 +325,7 @@ class State:
     reset_counter: int | None = None
     pending_since: Clock | None = None
     ack_accepted: bool = False
+    issued_speed_bound_mps: float = 0.
 
 
 @dataclass(frozen=True)
@@ -345,8 +375,10 @@ def _motion_error(data: Inputs, cfg: Config, state: State) -> str | None:
     # These explicit exploratory bounds are NOT certified by estimator variance.
     uncertain_speed = hypot(*(abs(v) + error for v, error in
                               zip(actual.velocity_ned, env.velocity_error_mps)))
-    stopping = max(speed, uncertain_speed)
-    distance = (stopping * env.response_delay_s + stopping**2 / (2*env.deceleration_mps2)
+    # Include the entire declared tracking-speed envelope, all possibly effective
+    # earlier outputs and measured uncertainty. A new zero request cannot shrink it.
+    stopping = max(env.maximum_speed_mps, speed, uncertain_speed, state.issued_speed_bound_mps)
+    distance = (stopping * cfg.response_delay_s + stopping**2 / (2*env.deceleration_mps2)
                 + env.extra_margin_m + env.position_error_m + env.tracking_error_m)
     if not isfinite(distance):
         return "STOPPING_ROOM"
@@ -379,6 +411,9 @@ def transition(state: State, data: Inputs, cfg: Config) -> tuple[State, Output]:
             return revoke(state, "CLOCK_JUMP")
         if now.wall_s - old.wall_s > cfg.max_tick_gap_wall_s:
             return revoke(state, "TICK_DEADLINE")
+    rate_error = cfg.clock_contract.error(data.rate, now)
+    if rate_error:
+        return revoke(state, rate_error)
     progress = (now.wall_s if state.previous is None or now.sim_s > state.previous.sim_s
                 else state.clock_progress_wall_s)
     if now.wall_s - progress > cfg.clock_stall_wall_s:
@@ -424,7 +459,8 @@ def transition(state: State, data: Inputs, cfg: Config) -> tuple[State, Output]:
             if (stamp.epoch, stamp.sequence, stamp.sim_s) == (old.epoch, old.sequence, old.sim_s):
                 # A fresh verdict cannot refresh the old capture's wall age.
                 value = stamp = old
-        policy = cfg.status_freshness if name == "STATUS" else cfg.freshness
+        budget = cfg.source(name) if name in REQUIRED_SOURCES else None
+        policy = budget.freshness(cfg.clock_contract) if budget else cfg.request_freshness
         if isinstance(value, Lease):
             policy = FreshnessPolicy(value.sim_ttl_s, value.wall_ttl_s)
         error = freshness_error(stamp, now, policy)
@@ -442,7 +478,7 @@ def transition(state: State, data: Inputs, cfg: Config) -> tuple[State, Output]:
                     or stamp.received_wall_s < old_stamp.received_wall_s):
                 return revoke(state, name + "_SEQUENCE")
             wall = now.wall_s
-        if name not in ("REQUEST", "AUTHORIZATION") and now.wall_s - wall > cfg.progress_wall_s:
+        if budget is not None and now.wall_s - wall > budget.wall_deadline(cfg.clock_contract):
             return revoke(state, name + "_PROGRESS_STALLED")
         if isinstance(value, OperatorRequest) and value != old:
             if value.owner != cfg.owner:
@@ -468,8 +504,8 @@ def transition(state: State, data: Inputs, cfg: Config) -> tuple[State, Output]:
     if any(not low <= p <= high for p, low, high in zip(
             odom.position_ned, env.minimum_ned, env.maximum_ned)):
         return revoke(state, "MEASURED_ENVELOPE")
-    if (max(odom.position_variance) > env.position_variance_max
-            or max(odom.velocity_variance) > env.velocity_variance_max):
+    if (any(v > bound for v, bound in zip(odom.position_variance, env.position_variance_max))
+            or any(v > bound for v, bound in zip(odom.velocity_variance, env.velocity_variance_max))):
         return revoke(state, "ODOMETRY_UNCERTAINTY")
     if state.started and abs((odom.yaw_ned-state.hold_yaw+pi) % (2*pi)-pi) > env.yaw_error_rad:
         return revoke(state, "MEASURED_YAW")
@@ -526,7 +562,7 @@ def transition(state: State, data: Inputs, cfg: Config) -> tuple[State, Output]:
                 and ack.target_system == cfg.source_system and ack.target_component == cfg.source_component
                 and not ack.from_external and ack.stamp.sim_s > pending.sim_s
                 and ack.stamp.received_wall_s > pending.wall_s
-                and freshness_error(ack.stamp, now, cfg.freshness) is None):
+                and freshness_error(ack.stamp, now, cfg.request_freshness) is None):
             if ack.result != 0:
                 return revoke(state, f"COMMAND_REJECTED_{ack.result}")
             state = replace(state, ack_accepted=True)
@@ -548,6 +584,9 @@ def transition(state: State, data: Inputs, cfg: Config) -> tuple[State, Output]:
         # Priming signals availability only. PX4 warns against injecting ROS
         # trajectory setpoints into another mode's internal control pipeline.
         return state, Output(heartbeat=True, vehicle_command=command_out)
+    state = replace(state, issued_speed_bound_mps=max(
+        state.issued_speed_bound_mps, env.maximum_speed_mps,
+        hypot(*data.command.velocity_ned) if data.command else 0.))
     if state.stage == Stage.ACTIVE:
         if data.command is None:
             return revoke(state, "MISSING_COMMAND")

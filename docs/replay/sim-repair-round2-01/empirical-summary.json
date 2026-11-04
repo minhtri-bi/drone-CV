@@ -1,0 +1,103 @@
+{
+  "scope": "RETAINED_RETROSPECTIVE_EMPIRICAL_ANALYSIS_NOT_RUNTIME_ACCEPTANCE",
+  "frozen_sha256": "38579a31e4161c2e84a7562bc7cce5255137add07407d752c49d608023a1df27",
+  "profile_sha256": "b79c6133bf4d0a9d8be8eb7b2687fcd3e86e7bc34f4ee5248ff384169b61290c",
+  "evaluation_sha256": "6c623fe4df4cea7ecb0d36826b43906109ab0e85cd7345b4cc6d34b7dd9acc21",
+  "candidate": {
+    "position_axis_m": [
+      0.0439757239073515,
+      0.02743459306657314,
+      0.0602348148822784
+    ],
+    "velocity_axis_mps": [
+      0.021923834457993507,
+      0.01822241209447384,
+      0.11902181059122086
+    ],
+    "position_box_enclosing_radius_m": 0.07946542716053577,
+    "position_variance_ceiling": [
+      0.01,
+      0.01,
+      0.01
+    ],
+    "velocity_variance_ceiling": [
+      0.01,
+      0.01,
+      0.01
+    ],
+    "tracking_error_m": null
+  },
+  "refusals": [
+    "DERIVATION_COVERAGE_UNRESOLVED",
+    "DERIVATION_VIOLATIONS",
+    "HELDOUT_COVERAGE_UNRESOLVED",
+    "HELDOUT_VIOLATIONS",
+    "INSTANTANEOUS_VELOCITY_UNCOVERED",
+    "NO_UNTOUCHED_BLINDED_HOLDOUT",
+    "INDEPENDENT_TRACKING_EVIDENCE_MISSING",
+    "FROZEN_RUNTIME_APPLICABILITY_MISSING"
+  ],
+  "trial_profile_eligible": false,
+  "runtime_admission": false,
+  "derivation": {
+    "identities": 1216,
+    "available_position_and_interval_velocity": 921,
+    "uncovered": 295,
+    "violations": 3648,
+    "violations_by_field": {
+      "position_variance": 3648
+    },
+    "missing_by_reason": {
+      "RAW_SERIALIZED_IDENTITY_MISSING": 295,
+      "CONTINUOUS_TRUTH_MISSING_SCHEMA_2": 295,
+      "MATCHING_TRUTH_OR_HEALTH_MISSING": 295
+    },
+    "instantaneous_velocity_coverage": 0,
+    "position_max_abs_axis_m": [
+      0.0439757239073515,
+      0.02743459306657314,
+      0.0602348148822784
+    ],
+    "interval_velocity_max_abs_axis_mps": [
+      0.021923834457993507,
+      0.01822241209447384,
+      0.11902181059122086
+    ],
+    "health_position_max_axis": [
+      0.011806044727563858,
+      0.011807531118392944,
+      0.032284725457429886
+    ]
+  },
+  "heldout": {
+    "identities": 1212,
+    "available_position_and_interval_velocity": 919,
+    "uncovered": 293,
+    "violations": 3802,
+    "violations_by_field": {
+      "position_variance": 3636,
+      "position_error_ned": 166
+    },
+    "missing_by_reason": {
+      "RAW_SERIALIZED_IDENTITY_MISSING": 293,
+      "CONTINUOUS_TRUTH_MISSING_SCHEMA_2": 293,
+      "MATCHING_TRUTH_OR_HEALTH_MISSING": 293
+    },
+    "instantaneous_velocity_coverage": 0,
+    "position_max_abs_axis_m": [
+      0.02324990741908551,
+      0.027244647964835163,
+      0.06402713060379024
+    ],
+    "interval_velocity_max_abs_axis_mps": [
+      0.011152579449117184,
+      0.015564466826617718,
+      0.09738050401210785
+    ],
+    "health_position_max_axis": [
+      0.011808562092483044,
+      0.011810585856437683,
+      0.030983874574303627
+    ]
+  }
+}

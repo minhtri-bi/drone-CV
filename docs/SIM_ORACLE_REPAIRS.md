@@ -1,7 +1,7 @@
 # Offline moving-oracle repair contract
 
-This implements the code/offline portion of R3 in
-[SIM_REPAIR_PLAN.md](SIM_REPAIR_PLAN.md#r3--moving-oracle-requirements-before-flight).
+This implements the code/offline portion of R3 and the N5/N6 reporting and
+supplemental-checker cutovers in [SIM_REPAIR_PLAN.md](SIM_REPAIR_PLAN.md).
 It does not launch ROS, Gazebo or PX4, publish control, discover a live graph,
 create a recording, establish DDS access control, or authorize flight. Existing
 static fixtures, captured bags and published reports are unchanged.
@@ -19,13 +19,32 @@ actual `evaluate` path. Its observations document must contain exactly two array
 bags do not contain the required independently bound phase/discovery evidence;
 there is no implicit upgrade or synthesized dynamic certificate.
 
-The report retains the original sampled geometry ledger and adds
-`moving_intervals`, `phase_ledger`, `discovery`, and `motion_assumptions`. All input
-files retain CLI SHA-256 bindings. `sampling_scope` identifies the declared moving
-contract. Exit status is 1 for retained demonstrated sampled unsafe geometry, 2
-for unknown/incomplete/error coverage, and 0 for complete declared offline
+The report retains the sampled geometry ledger and adds `moving_intervals`,
+`phase_ledger`, `discovery`, and `motion_assumptions`. All input files retain CLI
+SHA-256 bindings. `sampling_scope` identifies the declared moving contract. Exit
+status remains 1 for retained demonstrated sampled unsafe geometry, 2 for
+unknown/incomplete/error coverage, and 0 for complete conditional offline
 coverage without a violation. `flight_admission` and
 `live_acceptance_certified` remain false even on exit 0.
+
+Moving intervals and their summary emit
+`clearance_conditional_on_declared_motion_bounds`, not
+`continuous_clearance_certified`. The inherited static-only flag is also removed
+from moving reports' sampled `coverage_intervals`; those remain endpoint coverage,
+not moving enclosure results. There is no legacy alias. The static evaluate/replay
+path retains its existing false certificate flag and sampled-only semantics.
+Historical reports and raw evidence are not migrated.
+
+Each moving interval and summary includes the supplied
+`motion_bounds_provenance` (null when absent), `motion_bounds_calibrated: false`,
+`independent_motion_bound_evidence_present: false`, and
+`motion_bounds_scope: supplied_offline_intervals_only_no_independent_bound_evidence`.
+These fields describe the current implementation's lack of independent bound
+evidence, not a judgment that a caller's provenance text proves calibration.
+A caller-provided `calibrated` boolean or source label cannot change them or
+grant flight authority. Raw `motion_assumptions` are declarations only.
+Malformed moving initialization still emits a non-admitting conditional report,
+not a silent fallback to the static schema.
 
 ## Frozen schema
 
@@ -124,11 +143,12 @@ new tolerance that enlarges a rate or timing limit.
 `CLEAR` means every expanded component/surface pair meets the authorized phase
 margin, or a gear-only support enclosure is wholly contained in one frozen
 allowlisted contact zone with corroborated landed/support observations at both
-endpoints. Body/rotor intersections are never exempted. An interval crossing a
-phase window is UNKNOWN rather than extrapolating its exemption. Landing before
-landed/support confirmation retains the navigation margin. A full expanded
-support intersection that escapes its zone is not certified, even when both
-sampled contacts fit.
+endpoints. Only that conditional success sets the interval's
+`clearance_conditional_on_declared_motion_bounds` true. Body/rotor intersections
+are never exempted. An interval crossing a phase window is UNKNOWN rather than
+extrapolating its exemption. Landing before landed/support confirmation retains
+the navigation margin. A full expanded support intersection that escapes its zone
+does not establish conditional clearance, even when both sampled contacts fit.
 
 `POTENTIAL_VIOLATION` means the conservative enclosure cannot establish
 clearance. It is **not** demonstrated intersection along the actual trajectory
@@ -154,9 +174,11 @@ explicit UNKNOWN interval; malformed supplied bounds/provenance reject contract
 initialization. No later recovery erases a prior gap or unsafe latch. Lost phase
 authority remains invalid for the rest of that immutable observer; changing the
 epoch, skipping/backtracking a phase or losing required phase observations never
-re-enables later contact exemptions. Continuous
-clearance is asserted only for the supplied fully covered offline interval set
-and its explicit assumptions, never for unobserved time or a live flight.
+re-enables later contact exemptions. The summary's conditional flag requires
+nonempty, fully CLEAR interval coverage, complete sampled/discovery coverage and
+no retained observation failures. An individually CLEAR interval can remain
+conditional true while incomplete collection or a discovery failure makes the
+summary false. Neither result certifies bounds, unobserved time or a live flight.
 
 ## Bounded cooperative discovery, not security
 
@@ -177,22 +199,45 @@ coverage; a newly observed geometric violation at the truth-ledger count limit
 still retains the unsafe latch. Immutable JSON snapshots detach all nested input
 objects; state transitions return new frozen states.
 
+## Supplemental roadmap gates
+
+`scripts/check_project.py` declares the four approved supplemental policies in
+one immutable `SUPPLEMENTAL_GATES` tuple. Each entry contains its prerequisite ID,
+exact/prefix target selector and guarded statuses. Both enforcement and the
+exported portable roadmap table consume that same tuple; the table is not
+independently maintained prose and does not modify native dependencies.
+
+Flight-oracle preparation guards `g1-flight` at both `in_progress` and `done`.
+The two evidence preparations guard completion of every `g2-` task, including
+future IDs. The depth-path preparation guards calibration completion, not
+acquisition start. Missing or incomplete preparations fail closed at their
+declared statuses. The evidence/y branch does not block unrelated G1 work.
+Geometry contradictions separately block affected-profile use, not an invented
+generic dependency. No gate is completed by changing these declarations.
+
 ## Offline verification handoff
 
 No tests, lint, builds, formatter or simulator were executed by the delegated
 implementation worker. The integrator should run once after all sibling edits:
 
 ```text
-python -m pytest -q tests/test_oracle.py tests/test_oracle_observation.py
+python -m pytest -q tests/test_oracle.py tests/test_oracle_observation.py tests/test_g1_oracle_cli.py tests/test_project_integrity.py
 python -m pytest -q tests/test_oracle_observation.py -k cli
+python scripts/check_project.py --export-roadmap
+python scripts/check_project.py
 ```
 
-The second command exercises the real CLI/report/exit-code path with synthetic
-thin crossing, rotation, curved excursion, missing bounds, source gap, retained
+The CLI regressions exercise report/exit-code behavior with synthetic thin
+crossing, rotation, curved excursion, missing bounds, source gap/loss, retained
 unsafe/source loss, skipped phase, disappearing unexpected reader, and clear
-positive cases. Tests also cover exact gap/rate boundaries, epoch loss, support
-zone containment, body/rotor contacts, immutable inputs and bounded capacity.
+positive cases. Tests cover conditional-only outputs, ignored calibration
+assertions, malformed moving initialization, exact gap/rate boundaries, epoch
+loss, support containment, immutable inputs and bounded capacity. Checker tests
+exercise all policy/status boundaries and change each policy's prerequisite,
+selector and guarded statuses to establish shared enforcement/render behavior.
 These are callable verification commands, not claims of passing execution.
+The exporter must run before the ordinary integrity check because the generated
+table changes the portable view; it does not mutate the native roadmap.
 
 ## Runtime prerequisites still missing
 

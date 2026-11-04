@@ -1,0 +1,48 @@
+{
+  "scope": "GUARDED_PINNED_OFFLINE_ONLY_NO_RUNTIME_ACCEPTANCE",
+  "image": "sha256:061a39905d2d84d40859bb46b67048241b6dacf2ed3983889da7f5fd3e718285",
+  "network": "none",
+  "mounts": [],
+  "empirical_command": [
+    "python3",
+    "/workspace/scripts/sim_profile_consistency.py",
+    "evaluate",
+    "--protocol",
+    "/workspace/artifacts/sim-repair-round2-work/empirical-protocol-v2.json",
+    "--output",
+    "/workspace/round2-empirical-consistency.json"
+  ],
+  "supervisor_command": [
+    "python3",
+    "/workspace/scripts/sim_supervisor_replay.py",
+    "--recording",
+    "/workspace/r39",
+    "--recording",
+    "/workspace/support06",
+    "--output",
+    "/workspace/round2-supervisor-node-clock.json"
+  ],
+  "observed_combined_exit_code": 0,
+  "source_sha256": {
+    "src/drone_cv/supervision_contract.py": "1a9af96f686cce86ca38aed2572a9b879391c74953cb4741b40394cc5db77e25",
+    "src/drone_cv/supervisor.py": "a256f56bfc08f9c4f65b18b88514e247835ab11dd8f67f76f9cee27d68e10842",
+    "src/drone_cv/px4_bridge.py": "96e215e4e94bc5a81ebef40cf2e849948ae2cbb1dd3cf2e0adccff9554c9d55c",
+    "src/drone_cv/empirical_profile.py": "6b43aa1b7e63b8c6af509a491ad787f64201c7eb76ca4c08c327249422c7e369",
+    "scripts/g1_supervisor.py": "5680605d576dbd784fbee1ad1910a78a2efbd538ac022fd030fa873996d3e962",
+    "scripts/sim_supervisor_replay.py": "b105aceaff61540a9acc12a6ea5d035e82d10c6b0c0c5ee118cc81c0b6b502e8",
+    "scripts/sim_profile_consistency.py": "8aff2920f4bcd5fb97ca59e9bade3a021390940876b0a308aab70a3620cc035f"
+  },
+  "clock_attempts": {
+    "supervisor.json": "Earlier diagnostic used explicit /clock callback source stamps. It measures delivered callback source progress, not node ROS-clock rate. Preserved unchanged, not current runtime basis.",
+    "supervisor-node-clock.json": "Final path uses node ROS-clock snapshots at monotonic receive time. Separate explicit source watchdog still applies. Independent conditional ticks are not continuous runtime proof."
+  },
+  "rtf_floor": 0.196,
+  "rtf_floor_scope": "Retrospective diagnostic hypothesis from earlier long-window observation, not a validated minimum over 1-second workload windows. Retained below-floor windows stay refused; no floor retuning.",
+  "initial_ros_control_effects": {
+    "rclpy_initialized": false,
+    "nodes_created": 0,
+    "publishers_created": 0,
+    "arming_commands_sent": 0
+  },
+  "dynamic_bounds_calibrated": false
+}

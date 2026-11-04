@@ -1,0 +1,1 @@
+{"scope": "DIRECT_PLANE_TRUTH_CROSSCHECK_NOT_CALIBRATION", "motion_authority": false, "all_checks_pass": true}

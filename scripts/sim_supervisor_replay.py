@@ -18,14 +18,29 @@ from drone_cv.px4_bridge import decode_odometry, decode_status, message_types
 from drone_cv.supervisor import (Command, Config, Envelope, Inputs, Lease, Permit,
                                  Stage, State, _motion_error, transition)
 from drone_cv.timing import Clock, FreshnessPolicy, Stamp
+from drone_cv.px4_bridge import FIRMWARE_PIN
+from drone_cv.supervision_contract import ClockContract, LossResponse, SourceBudget, rate_window
 
 
 def diagnostic_config() -> Config:
     return Config("diagnostic_owner", "diagnostic_planner", "diagnostic_safety",
-        42, 191, 1, 1, FreshnessPolicy(.5, .5), FreshnessPolicy(3., 3.),
-        3., .5, .5, .3, .2, .2, 1., 20., .5,
-        Envelope((-20., -20., -20.), (20., 20., 20.), 1., .1, .2, .1,
-                 .2, .01, .01, "conditional synthetic diagnostic v1; not measured",
+        42, 191, 1, 1, FreshnessPolicy(.5, .5),
+        ClockContract("conditional_retained_epoch", .196, 1., 1., .2,
+                      "Retrospective diagnostic candidate floor equals prior observed minimum; "
+                      "no supported workload or untouched validation is claimed", "gazebo_sim", .004, .05),
+        tuple(SourceBudget(name, ttl, period, jitter, "simulation",
+                           "Declared retrospective service hypothesis, not measured runtime guarantee")
+              for name, ttl, period, jitter in (
+                  ("ODOMETRY", .5, .02, .05), ("STATUS", 3., .504, .1),
+                  ("COMMAND", .5, .02, .05), ("PERMIT", .5, .02, .05),
+                  ("PERCEPTION", .5, .064, .1))),
+        LossResponse("conditional_retained_epoch", FIRMWARE_PIN, .05, .02, .01, .02, 5,
+                     "Synthetic diagnostic response; no actual fallback readback/execution",
+                     "synthetic_offline"),
+        .5, .5, .3, .2, .2, 1., 20., .5,
+        Envelope((-20., -20., -20.), (20., 20., 20.), 1., .1, .1,
+                 .2, (.01, .01, .01), (.01, .01, .01),
+                 "conditional synthetic diagnostic v2; not measured",
                  (.01, .01, .01), .01, .01, "synthetic_offline"))
 
 
@@ -44,7 +59,17 @@ def replay(recording: Path) -> dict:
     maximum_position_variance = maximum_velocity_variance = 0.
     latest_status, reference, reset = None, None, manifest["alignment"]["reset_counter"]
     epoch = "conditional_retained_epoch"
+    clock_samples, observed_rates = (), []
     for row in sorted(rows, key=lambda item: item["received_wall_ns"]):
+        if row["topic"] == "/clock" and row["source_ns"] is not None:
+            # Recorded node ROS-time snapshot, not queued explicit callback age.
+            sample = Clock(epoch, row["received_sim_ns"]/1e9, row["received_wall_ns"]/1e9)
+            clock_samples = (*clock_samples, sample)
+            earlier = [i for i, item in enumerate(clock_samples)
+                       if sample.wall_s-item.wall_s >= cfg.clock_contract.window_wall_s]
+            if earlier:
+                clock_samples = clock_samples[earlier[-1]:]
+            continue
         key = (row["topic"], row["source_ns"])
         if key not in indexed:
             continue
@@ -75,8 +100,11 @@ def replay(recording: Path) -> dict:
         state = State(stage=Stage.MODE_WAIT, reason="conditional_mode_wait", started=now,
                       hold_ned=reference.position_ned, hold_yaw=reference.yaw_ned,
                       reset_counter=reset, pending_since=now)
+        rate = rate_window(clock_samples, cfg.clock_contract)
+        if rate is not None:
+            observed_rates.append(rate.rtf)
         data = Inputs(now, odom, latest_status, command, permit,
-                      Lease(cfg.owner, stamp, 1., 1., "bootstrap"), True)
+                      Lease(cfg.owner, stamp, 1., 1., "bootstrap"), True, rate=rate)
         result, output = transition(state, data, cfg)
         results[result.reason if result.stage == Stage.REVOKED else result.stage.value] += 1
         geometry_results[_motion_error(data, cfg, state) or "CONTAINED"] += 1
@@ -92,12 +120,20 @@ def replay(recording: Path) -> dict:
             "observed_position_variance_max": float(maximum_position_variance),
             "observed_velocity_variance_max": float(maximum_velocity_variance),
             "health_limits_unchanged": True,
+            "clock_contract": {"minimum_rtf": cfg.clock_contract.minimum_rtf,
+                               "maximum_rtf": cfg.clock_contract.maximum_rtf,
+                               "window_wall_s": cfg.clock_contract.window_wall_s,
+                               "observed_minimum_rtf": min(observed_rates) if observed_rates else None,
+                               "observed_maximum_rtf": max(observed_rates) if observed_rates else None,
+                               "runtime_supported_range_established": False},
+            "source_wall_deadlines_s": {budget.name: budget.wall_deadline(cfg.clock_contract)
+                                        for budget in cfg.source_budgets},
             "maximum_raw_squared_norm_error": max(norms),
             "window": "all stored odometry matched to original receive identities; missing causal status reported",
             "scope": "independent conditional ticks, not continuous runtime/clock/watchdog or dynamics validation",
             "bounds": {"velocity_error_axis_mps": .01, "tracking_error_m": .01,
                        "position_error_m": .01, "deceleration_mps2": .1,
-                       "response_delay_s": .2, "extra_margin_m": .1},
+                       "response_delay_s": cfg.response_delay_s, "extra_margin_m": .1},
             "physical_bounds_verified": False, "synthetic_clear_region": [-10., 10.]}
 
 

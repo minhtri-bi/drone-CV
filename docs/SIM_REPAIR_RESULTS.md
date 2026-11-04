@@ -1,5 +1,7 @@
 # Simulation review repairs: code and offline results
 
+Sections R1–R10 below retain first-round evidence at `46e1771`. The [second-round section](#second-round-n1n7-code-and-offline-results) records the current N1–N7 cutover; it does not upgrade historical results.
+
 ## Scope and roadmap
 
 The user approved [the repair plan](SIM_REPAIR_PLAN.md), native roadmap updates and code/offline implementation. The native API registered `prep-evidence-review`, `prep-flight-oracle`, `prep-depth-path-audit` and `prep-geometry-crosscheck`. There are now 36 tasks. Their real acquisition/runtime criteria are not replaced by offline results.
@@ -88,3 +90,99 @@ The [unchanged-profile geometry audit](replay/sim-repair-offline-01/geometry-aud
 The first focused regression found two incorrectly sized synthetic test certificates; those fixtures were corrected rather than weakening containment. The first integrated suite found an old manually constructed writer fixture missing the new counter state; it was migrated and the full suite passed. The pinned helper initially overwrote the sourced ROS import path, then exposed legitimate variance refusals, then exposed numpy-float JSON serialization. Import handling and serialization were corrected; variance/stale checks remained unchanged, and results now distinguish geometry from admission rather than requiring a false no-revoke result. Prior local partial output is not overwritten. A standalone oracle attempt without its documented PYTHONPATH failed before evaluation and remains a failed staging attempt, not geometry evidence.
 
 No flight, calibration, G2 wall-stop, hardware operation, live failsafe/readback or new acquisition gate passed. PR #12 stays draft. Future operational approvals must name their exact target, scope and trial conditions.
+
+## Second round N1–N7: code and offline results
+
+### Authority and unchanged gates
+
+After the requested plan amendments, the user approved code/offline work. Existing native IDs are reused; no new task, `Stage.BRAKING`, operational execution, parameter write or calibration-before-bootstrap dependency is introduced. The complete outer geometry, 0.5 m navigation clearance and independent safety boundaries remain unchanged.
+
+Actual verification used the existing isolated pinned image for decoding, serialization, file-based replay and bounded storage only. ROS initialization, nodes and publishers were forbidden in those paths. No simulator, new recording, control trial, live parameter readback, arming or hardware operation was performed.
+
+### N1: one explicit crash-after-tick response horizon
+
+`supervision_contract.LossResponse` replaces the free `Envelope.response_delay_s`. `Config.response_delay_s` is derived, not independently configurable:
+
+```text
+T_loss = max_tick_gap_wall_s * maximum_rtf
+       + COM_OF_LOSS_T + COM_FAIL_ACT_T
+       + mode_transition_s + transport_clock_s
+s_loss = max(declared maximum speed, requested speed,
+             norm(abs(measured velocity) + per-axis velocity error),
+             retained possibly issued speed bound)
+d_loss = s_loss * T_loss + s_loss**2 / (2 * minimum_deceleration)
+       + position_error + tracking_error + extra_margin
+```
+
+Every admitted setpoint tick requires the whole all-direction ball to fit both the permit's absolute reference-center box and the geofence. A new zero request cannot erase an older potentially effective setpoint. The complete declared tracking-speed envelope is included even during a position hold; this is deliberately more conservative than assuming an instantaneous commanded velocity is the maximum future speed.
+
+The delay legs are explicitly nonoverlapping simulation-motion seconds; only the wall tick gap uses the declared upper RTF conversion. The mode-transition leg excludes `COM_FAIL_ACT_T`. Frozen expected policy and actual readback must match the response's firmware, `COM_OF_LOSS_T`, `COM_FAIL_ACT_T` and `COM_OBL_RC_ACT`. Missing/invalid legs or mismatched readback reject. A lower positive frozen loss timeout tightens the horizon; its heartbeat/jitter rationale and actual fallback proof remain required. No parameter setter was added.
+
+These are conditional model assumptions, not measured dynamics or a safe-abort certificate. The synthetic message-lifecycle fixture uses explicitly synthetic 0.2 m/s maximum speed, 0.25 m/s² deceleration and a 0.4 s response horizon to exercise the protocol. It is not a tuned real-flight profile. Revocation still suppresses output immediately, with no automatic Hold command, retry, re-entry or new braking stage.
+
+### N2: exact empirical split fails, without retuning
+
+See [the empirical and paired-fault contract](SIM_PROFILE_CONTRACT.md) and [compact results](replay/sim-repair-round2-01/empirical-summary.json). The [v2 protocol](replay/sim-repair-round2-01/empirical-protocol-v2.json) was frozen before this evaluation: 1,216 derivation identities and 1,212 distinct heldout identities over the entire declared post-warmup windows. Historical traces were already reviewed, so the heldout set is retrospective and derivation-disjoint, **not untouched/blinded**. The unexecuted v1 remains preserved; v2 corrects schema-two source-domain metadata before outcomes.
+
+| Split | Declared identities | Position + interval-average velocity available | Missing continuous truth/CDR identity | Position-health axis exceedances | Candidate position-error axis exceedances |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Derivation | 1,216 | 921 | 295 | 3,648 | 0 |
+| Heldout | 1,212 | 919 | 293 | 3,636 | 166 |
+
+The descriptive derivation position maxima are `(0.0439757239073515, 0.02743459306657314, 0.0602348148822784)` m in local NED. Heldout absolute Z error reaches `0.06402713060379024` m, exceeding that unchanged candidate. The enclosing position-box radius is `0.07946542716053577` m; it is not an empirically certified hard bound. Additional margins are frozen at zero to avoid inventing a passing reserve. Health ceilings remain the original 0.01, now represented as explicit NED three-vectors and compared per axis.
+
+Support-06 has Pose_V positions, not independent instantaneous twist. Finite differences remain interval-average diagnostics; instantaneous velocity coverage is zero. r39 retains decoded estimator-health values but has no continuous truth and no synthesized CDR hashes. Missing truth, real held-out failures, health violations, absent untouched/blinded evidence, tracking justification and runtime applicability all remain explicit. `trial_profile_eligible`, runtime admission and deterministic-bound certification are false. No runtime profile is generated or enabled.
+
+The bridge recomputes the supplied empirical payloads and binds exact Envelope values plus image, firmware, message pin, frozen parameter-policy digest, clock/rate window, workload, body origin and NED frame before any ROS construction. This checks a conditional prerequisite only; content hashes and labels do not authenticate provenance, calibrate bounds or authorize a trial.
+
+### Runtime fault validity, not vacuous suppression
+
+The actual [classifier CLI smoke](replay/sim-repair-round2-01/fault-classifier-execution.json) uses **analytical synthetic records only**, not runtime trials. Its four cases retain one valid causal PASS, one valid wrong-reason FAIL, two INVALID_TEST cases, and one unsafe latch surviving a missing baseline file. Expected aggregate exit is 1. Exact smoke inputs are retained in the accompanying ZIP with CRC/byte readback.
+
+`FaultProtocol` freezes distinct trial IDs, known profile/evaluation identities, target stage, actual PX4 mode/arming requirements, matched windows, source/workload/policy bindings, injection identity, expected first reasons and finite deadlines. Unknown future trace hashes are not preregistration requirements: the post-run manifest binds the actual resulting trace hashes. A baseline that previously revoked cannot be resurrected by choosing a later healthy window. A fault must reach the healthy target independently, show actual injection, and suppress output immediately after the first observed revoke. Wrong/absent causal response in a valid trial is FAIL; unrelated masking or an invalid baseline is never PASS. Missing/unattempted trials stay in the planned denominator. Unsafe evidence and S03 execution outcomes remain separate.
+
+No real healthy matched baseline or causal injection is demonstrated. Existing Disarmed recordings cannot substitute for an armed ACTIVE target; typed ACK/observer booleans do not replace raw addressed-message and independence evidence.
+
+### N3: finite per-source cadence and measured clock basis
+
+Each dynamic source declares its cadence domain, nominal period, bounded wall jitter and unchanged simulation freshness. For a simulation-cadenced source, wall freshness and progress use `period_sim / RTF_min + jitter_wall`; a wall-cadenced source uses its own wall period. Explicit clock progress has the same minimum service-budget check. Human leases, command TTL, request, handoff, session and tick deadlines are not stretched by slow simulation.
+
+The bridge measures rate from the node's delivered Gazebo ROS-clock snapshots at monotonic receive time, not an older queued explicit `/clock` message. The separate explicit-source progress watchdog remains. Missing, short, future, stale, wrong-epoch or outside-range observations revoke with explicit reasons. Startup waits for actual observations before publisher construction.
+
+The retained replay uses 0.196–1.0 as a **retrospective diagnostic hypothesis**, not a validated workload range. The prior 0.196 long-window observation is not a guarantee for every frozen one-second window. [Final node-clock replay](replay/sim-repair-round2-01/supervisor-node-clock.json) observed minima 0.17462875456963206 for r39 and 0.053682691941849776 for support-06. Below-floor windows remain refused; the floor was not lowered to admit them.
+
+| Recording | Actual refusal counts with final node-clock basis |
+| --- | --- |
+| r39, 630 odometry rows | 20 missing RTF windows; 177 outside supported range; 433 odometry uncertainty |
+| support-06, 1,893 odometry rows | 20 missing causal status; 1,870 outside supported range; 2 odometry uncertainty; 1 stale RTF observation |
+
+Conditional synthetic geometry still contains 630 and 1,873 eligible diagnostic samples respectively. Neither trace establishes stationary admission. The earlier [explicit-callback diagnostic](replay/sim-repair-round2-01/supervisor.json) is retained unchanged and identified as superseded in [execution provenance](replay/sim-repair-round2-01/offline-execution.json); callback-source throughput is not silently relabelled node-clock rate.
+
+### N5, N6 and N7: conditional outputs, one-source gates, witnessed exit
+
+The actual moving-oracle clear CLI exits 0 with `clearance_conditional_on_declared_motion_bounds: true`; the thin-crossing negative exits 2 with UNKNOWN/INCOMPLETE and the conditional flag false. Both report calibration/flight admission false. Moving emitters and consumers remove the legacy certificate key atomically, including inherited sampled intervals and malformed-initialization output. Static reports and historical evidence remain unchanged.
+
+All four supplemental checker policies now live in one immutable structured declaration. Enforcement and the generated roadmap table derive from the same prerequisite, exact/prefix target selector and guarded statuses. Future G2-prefix tasks fail closed; unrelated G1 work is not blocked. These remain checker policies, not invented native dependency edges.
+
+[N7 provenance](replay/sim-repair-round2-01/provenance.json) witnesses actual pinned replay exit **0**, no 600 s deadline expiry, and an owned child that was reaped. [Readback comparison](replay/sim-repair-round2-01/planes-comparison.json) has the identical uncompressed report SHA-256 `04f69883f90a870a866ac6e9173ef09119819bcb9faf6d5fbbfb9b87628a3a7d`. All 433 rows retain zero passing original-primary frames and missing justified dy budgets. Diagnostic completion is not dy/primary/G2 acceptance. The old bundle's `original_process_exit_observed: false` remains unchanged.
+
+Full plane and empirical JSON reports are retained losslessly as `planes.json.gz` and `empirical-consistency.json.gz`. [Compression identities](replay/sim-repair-round2-01/compression.json) bind compressed/uncompressed hashes, sizes and exact decompression readback. No historical bytes were overwritten.
+
+### Exercised second-round verification and remaining blockers
+
+- `python -m pytest -q`: **724 passed in 83.13 s** after integration.
+- Focused response/source/bridge/failsafe regressions: **113 passed** before the final positive applicability boundary and integrated run.
+- Actual pinned message lifecycle, retained r39/support-06 decode and bounded storage roundtrip: completed with zero ROS initialization/nodes/publishers/arming effects.
+- Actual frozen empirical CLI: computation exited 0; the candidate **failed** heldout/health/coverage prerequisites and remains non-admitting. Computation exit is not profile acceptance.
+- Actual conditional oracle CLI: clear exit 0; thin-crossing expected exit 2.
+- Actual synthetic paired-fault classifier CLI: expected exit 1, four analytical cases retained; zero real runtime trials.
+- Actual N7 decoder: exit 0 observed, exact hash equality, owned child reaped. Exact gzip decompression and synthetic-input ZIP CRC/byte readback passed.
+- Final `python scripts/check_project.py --export-roadmap` and `python scripts/check_project.py` both passed: original PDF identity, 36 acyclic tasks, 65 scenario IDs, local links and **103 evidence hashes**. Native revision **101** and its portable view retain 14 done, 5 blocked and 17 pending tasks.
+- The owned offline-only container was stopped after execution; its existing image and previous evidence were retained.
+
+The first focused check found two old TTL fixtures hitting the newly independent finite receive-wall deadline before simulation expiry. Their receive times were separated from their original simulation acquisition times to isolate the intended exact-TTL boundary; no source TTL, wall deadline or safety threshold was widened. The first retained rate diagnostic used queued explicit callback source stamps; its artifact remains, and the final adapter/replay use the node ROS-clock receive snapshot with a separate source-progress watchdog.
+An intervening integrity check encountered a transient unlisted duplicate check ledger during evidence publication. The redundant generated file was removed; both final checks passed against the unchanged 20-file evidence inventory.
+
+
+`g1-supervisor`, `prep-evidence-review`, `prep-flight-oracle`, `prep-depth-path-audit` and `prep-geometry-crosscheck` retain their unmet operational/acquisition criteria. In particular, no eligible untouched profile, justified tracking/stopping/RTF workload range, actual healthy baseline/causal faults, live parameter/fallback/ownership observation, new dy acquisition, evaluator isolation/phase/support proof, authoritative source/bridge taps or independent mesh-loader observation was supplied. No flight, calibration, G2 or hardware gate passes. PR #12 remains draft.
+

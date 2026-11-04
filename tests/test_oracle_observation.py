@@ -71,7 +71,7 @@ def test_thin_crossing_is_possible_not_demonstrated_sampled_intersection():
     assert not result["observed_unsafe"]
     assert result["moving_intervals"][0]["outcome"] == "POTENTIAL_VIOLATION"
     assert result["safety_outcome"] == "UNKNOWN"
-    assert not result["continuous_clearance_certified"]
+    assert not result["clearance_conditional_on_declared_motion_bounds"]
     # Analytic straight-line midpoint is a witness, not an observed ledger sample.
     assert evaluate(profile(), observation(x=0)["world_from_body"], world, "rest")["unsafe"]
 
@@ -123,13 +123,23 @@ def test_unsupported_intervals_are_unknown(change, reason):
     assert result["safety_outcome"] == "UNKNOWN"
 
 
-def test_exact_gap_and_translation_rate_boundary_can_certify_declared_model():
-    state = MovingObserverState.create(profile(), fixture())
+def test_exact_gap_and_translation_rate_boundary_is_conditional_only():
+    world = fixture()
+    state = MovingObserverState.create(profile(), world)
     state = state.observe(observation()).observe(observation(1_000_000_000, x=4))
     result = finish(state)
     assert result["moving_intervals"][0]["outcome"] == "CLEAR"
-    assert result["continuous_clearance_certified"]
+    assert result["clearance_conditional_on_declared_motion_bounds"]
+    assert result["moving_intervals"][0]["clearance_conditional_on_declared_motion_bounds"]
+    assert result["motion_bounds_provenance"] == world["moving_contract"]["motion"]["provenance"]
+    assert not result["motion_bounds_calibrated"]
+    assert not result["independent_motion_bound_evidence_present"]
+    assert result["motion_bounds_scope"] == "supplied_offline_intervals_only_no_independent_bound_evidence"
+    assert "continuous_clearance_certified" not in result
+    assert all("continuous_clearance_certified" not in item
+               for item in result["coverage_intervals"] + result["moving_intervals"])
     assert not result["flight_admission"]
+    assert not result["live_acceptance_certified"]
 
 
 def test_sampled_violation_survives_source_loss_and_discovery_error():
@@ -141,6 +151,8 @@ def test_sampled_violation_survives_source_loss_and_discovery_error():
     assert result["safety_outcome"] == "UNSAFE_OBSERVED"
     assert result["moving_intervals"][0]["outcome"] == "SAMPLED_VIOLATION"
     assert not result["coverage_complete"]
+    assert not result["clearance_conditional_on_declared_motion_bounds"]
+    assert not result["moving_intervals"][0]["clearance_conditional_on_declared_motion_bounds"]
 
 
 def test_phase_schedule_rejects_skips_backwards_and_planner_stage():
@@ -328,8 +340,8 @@ def test_planner_landing_label_cannot_exempt_navigation_contact():
     assert not result["ledger"][-1]["evaluation"]["pairs"][0]["allowed_support"]
 
 
-@pytest.mark.parametrize("case", ["rotation", "curved", "gap", "missing_bounds",
-                                  "latch", "phase", "reader", "clear"])
+@pytest.mark.parametrize("case", ["thin", "rotation", "curved", "gap", "missing_bounds",
+                                  "source_loss", "latch", "phase", "reader", "clear"])
 def test_cli_offline_contract_smoke_cases(tmp_path, case):
     spec = importlib.util.spec_from_file_location("g1_oracle_smoke", Path(__file__).parents[1]/"scripts/g1_oracle.py")
     assert spec is not None and spec.loader is not None
@@ -338,7 +350,10 @@ def test_cli_offline_contract_smoke_cases(tmp_path, case):
     vehicle, world = profile(), fixture()
     first, last = observation(), observation(1_000_000_000)
     snapshots = [graph(0), graph(1_000_000_000)]
-    if case == "rotation":
+    if case == "thin":
+        world["surfaces"] = [{"id": "wire", "lo": [-.01, -10, -10], "hi": [.01, 10, 10]}]
+        first, last = observation(x=-1), observation(1_000_000_000, x=1)
+    elif case == "rotation":
         vehicle = profile((1.8, -.05, -.05), (2., .05, .05))
         world["surfaces"] = [{"id": "corner", "lo": [1.3, 1.3, -.1], "hi": [1.4, 1.4, .1]}]
         world["moving_contract"]["motion"]["translation_speed_m_s"] = 0.
@@ -349,6 +364,8 @@ def test_cli_offline_contract_smoke_cases(tmp_path, case):
         last = observation(1_000_000_001)
     elif case == "missing_bounds":
         del world["moving_contract"]["motion"]
+    elif case == "source_loss":
+        del last["telemetry"]
     elif case == "latch":
         first = observation(x=10)
         del last["telemetry"]
@@ -368,7 +385,19 @@ def test_cli_offline_contract_smoke_cases(tmp_path, case):
     assert code == (1 if case == "latch" else 0 if case == "clear" else 2)
     assert report["safety_outcome"] == ("UNSAFE_OBSERVED" if case == "latch" else
                                       "NO_VIOLATION_OBSERVED" if case == "clear" else "UNKNOWN")
-    if case in {"rotation", "curved"}:
+    assert report["clearance_conditional_on_declared_motion_bounds"] is (case == "clear")
+    assert not report["motion_bounds_calibrated"]
+    assert not report["independent_motion_bound_evidence_present"]
+    assert report["motion_bounds_provenance"] == (
+        None if case == "missing_bounds" else world["moving_contract"]["motion"]["provenance"])
+    assert not report["flight_admission"]
+    assert not report["live_acceptance_certified"]
+    assert "continuous_clearance_certified" not in report
+    assert all("continuous_clearance_certified" not in item
+               for item in report["moving_intervals"] + report["coverage_intervals"])
+    assert report["moving_intervals"][0]["clearance_conditional_on_declared_motion_bounds"] is (
+        case in {"clear", "reader"})
+    if case in {"thin", "rotation", "curved"}:
         assert report["moving_intervals"][0]["outcome"] == "POTENTIAL_VIOLATION"
     if case == "reader":
         assert report["discovery"]["unexpected_readers"][0]["gid"] == "bad"
@@ -435,3 +464,75 @@ def test_lost_phase_authority_never_reenables_later_support():
     assert "PHASE_AUTHORITY_LOST" in result["phase_ledger"][-1]["reasons"]
     assert not result["phase_ledger"][-1]["valid"]
     assert not result["ledger"][-1]["evaluation"]["pairs"][0]["allowed_support"]
+
+
+@pytest.mark.parametrize("calibrated", [False, True])
+def test_declaration_labels_cannot_supply_calibration_evidence(calibrated):
+    world = fixture()
+    world["moving_contract"]["motion"].update(
+        calibrated=calibrated, provenance="calibrated: caller assertion without bound evidence")
+    state = MovingObserverState.create(profile(), world)
+    report = finish(state.observe(observation()).observe(observation(1_000_000_000)))
+    assert report["clearance_conditional_on_declared_motion_bounds"]
+    assert not report["motion_bounds_calibrated"]
+    assert not report["independent_motion_bound_evidence_present"]
+    assert not report["flight_admission"]
+    assert not report["live_acceptance_certified"]
+
+
+def test_prior_failure_and_incomplete_collection_never_aggregate_conditional_success():
+    state = MovingObserverState.create(profile(), fixture()).observe(observation())
+    failed = state.fail("SOURCE_LOST").observe(observation(1_000_000_000))
+    report = finish(failed)
+    assert report["moving_intervals"][0]["outcome"] == "UNKNOWN"
+    assert not report["moving_intervals"][0]["clearance_conditional_on_declared_motion_bounds"]
+    assert not report["clearance_conditional_on_declared_motion_bounds"]
+    clear = state.observe(observation(1_000_000_000)).discover(graph(0)).discover(graph(1_000_000_000))
+    incomplete = clear.finish(complete=False)
+    assert incomplete["moving_intervals"][0]["clearance_conditional_on_declared_motion_bounds"]
+    assert not incomplete["clearance_conditional_on_declared_motion_bounds"]
+
+
+def test_cli_malformed_moving_contract_cannot_fall_back_to_static_claims(tmp_path):
+    spec = importlib.util.spec_from_file_location(
+        "g1_oracle_invalid", Path(__file__).parents[1]/"scripts/g1_oracle.py")
+    assert spec is not None and spec.loader is not None
+    cli = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(cli)
+    world = fixture()
+    world["moving_contract"]["motion"]["translation_speed_m_s"] = -1.
+    for name, value in {"profile": profile(), "fixture": world, "observations": {
+            "observations": [observation(), observation(1_000_000_000)],
+            "discovery": [graph(0), graph(1_000_000_000)]}}.items():
+        (tmp_path/f"{name}.json").write_text(json.dumps(value), encoding="utf-8")
+    assert cli.main(["evaluate", "--profile", str(tmp_path/"profile.json"),
+                     "--fixture", str(tmp_path/"fixture.json"), "--observations",
+                     str(tmp_path/"observations.json"), "--output", str(tmp_path/"report")]) == 2
+    report = json.loads((tmp_path/"report/report.json").read_text(encoding="utf-8"))
+    assert not report["clearance_conditional_on_declared_motion_bounds"]
+    assert not report["motion_bounds_calibrated"]
+    assert report["motion_bounds_provenance"] == world["moving_contract"]["motion"]["provenance"]
+    assert "continuous_clearance_certified" not in report
+    assert not report["flight_admission"]
+
+
+def test_cli_static_contract_retains_sampled_only_schema(tmp_path):
+    spec = importlib.util.spec_from_file_location(
+        "g1_oracle_static", Path(__file__).parents[1]/"scripts/g1_oracle.py")
+    assert spec is not None and spec.loader is not None
+    cli = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(cli)
+    world = fixture()
+    del world["moving_contract"]
+    for name, value in {"profile": profile(), "fixture": world, "observations": [
+            observation(), observation(1_000_000_000)]}.items():
+        (tmp_path/f"{name}.json").write_text(json.dumps(value), encoding="utf-8")
+    assert cli.main(["evaluate", "--profile", str(tmp_path/"profile.json"),
+                     "--fixture", str(tmp_path/"fixture.json"), "--observations",
+                     str(tmp_path/"observations.json"), "--output", str(tmp_path/"report")]) == 0
+    report = json.loads((tmp_path/"report/report.json").read_text(encoding="utf-8"))
+    assert not report["continuous_clearance_certified"]
+    assert "clearance_conditional_on_declared_motion_bounds" not in report
+    assert all(not item["continuous_clearance_certified"] for item in report["coverage_intervals"])
+    assert not report["flight_admission"]
+    assert not report["live_acceptance_certified"]
