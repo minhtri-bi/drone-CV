@@ -89,6 +89,8 @@ Complete-profile liveness exercised **96 cases** with profile-derived rest heigh
 
 The final offline suite passed **502 tests in 121.50 s**. The exact-deadline authorization regression asserts revocation/output suppression rather than incidental error wording; the epoch-isolation fixture uses a sampling spacing appropriate to its tiny probe. Source ZIP CRC/full hash readback and both complete/incomplete raw bag archive readback also passed. These checks do not change the primary geometry failure or complete supervisor runtime, flight or calibration.
 
+The first PR CI run stopped because the existing synthetic-smoke workflow still called the old CLI without its now-required complete `--profile`. The caller was updated to the retained `profile.json`; the actual zero-trial CLI then exercised all three camera profiles locally without changing geometry or safety thresholds. The earlier 400-trial sweep and source/recording identities remain unchanged.
+
 ## Reproduction
 
 Inside the existing pinned decoder image, preserve the repository layout and use `PYTHONPATH=src:spike/freespace`. Extract `support-06.tar.gz` into a fresh directory. With `R` pointing to its `run/recording`, and fresh output filenames:
