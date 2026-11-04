@@ -9,6 +9,13 @@ from capture_pose import OdomSample, interpolate_pose
 
 
 SCHEMA = 3
+ORACLE_SCHEMA = 4
+TRUTH_TOPIC = "/drone_cv_g1/evaluator/truth_pose_v"
+REQUIRED_ORACLE_STREAMS = frozenset({
+    "/drone_cv_g1/camera/depth/image_raw", "/drone_cv_g1/camera/depth/camera_info",
+    "/drone_cv_g1/fmu/out/vehicle_odometry", "/drone_cv_g1/fmu/out/vehicle_status_v4",
+    TRUTH_TOPIC,
+})
 
 
 def validate_policy(policy: dict) -> None:
@@ -16,7 +23,7 @@ def validate_policy(policy: dict) -> None:
     if policy["schema"] == 2:
         # Immutable historical bags retain their declared wall-progress contract.
         limits = policy["stream_progress_wall_s"]
-    elif policy["schema"] == SCHEMA:
+    elif policy["schema"] in (SCHEMA, ORACLE_SCHEMA):
         limits = policy["stream_age_sim_s"]
         values += [policy["clock_progress_wall_s"]]
         if (type(policy["max_source_clock_lead_ns"]) is not int
@@ -28,6 +35,11 @@ def validate_policy(policy: dict) -> None:
             if (type(policy["writer_queue_items"]) is not int or policy["writer_queue_items"] < 1):
                 raise ValueError("INVALID_WRITER_QUEUE_POLICY")
             values += [policy["writer_shutdown_wall_s"]]
+        if policy["schema"] == ORACLE_SCHEMA:
+            if set(limits) != REQUIRED_ORACLE_STREAMS:
+                raise ValueError("POLICY_REQUIRED_STREAMS_MISMATCH")
+            if "writer_queue_items" not in policy or "writer_shutdown_wall_s" not in policy:
+                raise ValueError("INVALID_WRITER_QUEUE_POLICY")
     else:
         raise ValueError("UNSUPPORTED_ACQUISITION_POLICY")
     if (not limits or any(not isfinite(value) or value <= 0 for value in [*values, *limits.values()])
@@ -36,6 +48,9 @@ def validate_policy(policy: dict) -> None:
 
 
 def source_stamp_ns(topic: str, message) -> int | None:
+    if topic == TRUTH_TOPIC:
+        from drone_cv.oracle_truth import decode_wire, stamp_ns
+        return stamp_ns(decode_wire(message))
     if topic == "/tf_static":
         return None
     if topic == "/clock":
@@ -56,7 +71,8 @@ def advance_progress(progress: dict, topic: str, source_ns: int, wall_ns: int) -
     return {**progress, topic: {"source_ns": source_ns, "wall_ns": wall_ns}}
 
 
-def require_fresh(progress: dict, policy: dict, now_ns: int, *, sim_now_ns: int | None = None) -> None:
+def require_fresh(progress: dict, policy: dict, now_ns: int, *, sim_now_ns: int | None = None,
+                  allow_startup_missing: bool = False) -> None:
     if policy["schema"] == 2:
         for topic, limit_s in policy["stream_progress_wall_s"].items():
             if topic not in progress:
@@ -66,15 +82,23 @@ def require_fresh(progress: dict, policy: dict, now_ns: int, *, sim_now_ns: int 
                 raise ValueError(f"STREAM_PROGRESS_STALLED:{topic}")
         return
     if "/clock" not in progress:
-        raise ValueError("REQUIRED_STREAM_MISSING:/clock")
-    clock = progress["/clock"]
-    clock_age = now_ns-clock["wall_ns"]
-    if clock_age < 0 or clock_age > policy["clock_progress_wall_s"]*1e9:
-        raise ValueError("STREAM_PROGRESS_STALLED:/clock")
+        if not allow_startup_missing:
+            raise ValueError("REQUIRED_STREAM_MISSING:/clock")
+    else:
+        clock = progress["/clock"]
+        clock_age = now_ns-clock["wall_ns"]
+        if clock_age < 0 or clock_age > policy["clock_progress_wall_s"]*1e9:
+            raise ValueError("STREAM_PROGRESS_STALLED:/clock")
     if sim_now_ns is None:
         raise ValueError("MISSING_NODE_CLOCK_SNAPSHOT")
+    if allow_startup_missing and ("/clock" not in progress or sim_now_ns == 0):
+        # Preserve pre-clock raw preflight observations, but never call them fresh.
+        # Startup admission still requires a live /clock and all required streams.
+        return
     for topic, limit_s in policy["stream_age_sim_s"].items():
         if topic not in progress:
+            if allow_startup_missing:
+                continue
             raise ValueError(f"REQUIRED_STREAM_MISSING:{topic}")
         age_ns = sim_now_ns-progress[topic]["source_ns"]
         if age_ns < -policy["max_source_clock_lead_ns"]:
@@ -108,12 +132,17 @@ def make_alignment(world_body: np.ndarray, capture_ns: int, samples: list,
                     {"timestamp_ns": sample.timestamp_ns, "position_ned": sample.position_ned,
                      "quaternion_wxyz": sample.quaternion_wxyz,
                      "reset_counter": sample.reset_counter, "pose_frame": sample.pose_frame}
-                    for sample in bracket]}
+                    for sample in bracket],
+                "bracket_endpoint_delta_ns": [sample.timestamp_ns-capture_ns for sample in bracket],
+                "bracket_gap_ns": bracket[-1].timestamp_ns-bracket[0].timestamp_ns,
+                "interpolation_fraction": (0. if len(bracket) == 1 else
+                    (capture_ns-bracket[0].timestamp_ns)/(bracket[-1].timestamp_ns-bracket[0].timestamp_ns)),
+                "timing_note": "Shared simulation epoch assumed; bracket deltas include sampling cadence and do not independently establish synchronization."}
     return world_body @ np.linalg.inv(odom_body), contract
 
 
 def validate_alignment(manifest: dict, maximum_gap_ns: int) -> dict:
-    if manifest.get("recording_schema") not in (2, SCHEMA) or "alignment" not in manifest:
+    if manifest.get("recording_schema") not in (2, SCHEMA, ORACLE_SCHEMA) or "alignment" not in manifest:
         raise ValueError("LEGACY_UNBOUND_ALIGNMENT")
     contract = manifest["alignment"]
     if (contract["clock_epoch"] != 0 or type(contract["reset_counter"]) is not int
@@ -128,6 +157,15 @@ def validate_alignment(manifest: dict, maximum_gap_ns: int) -> dict:
     if (rebuilt["reset_counter"] != contract["reset_counter"]
             or not np.allclose(alignment, manifest["world_from_odom"], atol=1e-9, rtol=0)):
         raise ValueError("ALIGNMENT_PROVENANCE_MISMATCH")
+    if manifest["recording_schema"] == ORACLE_SCHEMA:
+        from oracle_recording import decode_packet
+        packet = manifest["alignment_source"]["truth_packet"]
+        sample = decode_packet(packet, manifest["truth_entities"])
+        if (sample.source_ns != contract["capture_ns"]
+                or not np.allclose(sample.world_from_body, contract["world_body"], atol=1e-12, rtol=0)
+                or any(contract.get(key) != rebuilt[key] for key in
+                       ("bracket_endpoint_delta_ns", "bracket_gap_ns", "interpolation_fraction"))):
+            raise ValueError("ALIGNMENT_TRUTH_PACKET_MISMATCH")
     return contract
 
 

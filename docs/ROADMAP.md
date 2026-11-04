@@ -4,7 +4,20 @@
 
 Progress comes from `.omp/roadmap/roadmap.json`; English display text comes from `docs/roadmap.en.json`. Workspace binding and receipts are excluded.
 
-Revision: 59. A completed task does not certify that later gates have passed.
+Revision: 109. A completed task does not certify that later gates have passed.
+
+## Supplemental checker gates
+
+These gates supplement, but do not change, the native DAG dependencies listed per task below. Each preparation must be `done` before its target reaches any guarded status; missing preparation state fails closed.
+
+| Prerequisite | Target selector | Guarded target statuses |
+| --- | --- | --- |
+| `prep-evidence-semantics` | prefix `g2-` | `done` |
+| `prep-evidence-review` | prefix `g2-` | `done` |
+| `prep-flight-oracle` | exact `g1-flight` | `in_progress`, `done` |
+| `prep-depth-path-audit` | exact `g1-calibration` | `done` |
+
+Geometry contradictions separately block affected-profile use; this is not a generic task dependency or a supplemental completion gate. See [repair plan](SIM_REPAIR_PLAN.md).
 
 ## Preparation
 
@@ -75,7 +88,7 @@ Status: **done**. Dependencies: `prep-roadmap`.
 
 ### `g1-oracle` — Contact/clearance oracle and logger before flight
 
-Status: **pending**. Dependencies: `g1-environment`.
+Status: **done**. Dependencies: `g1-environment`.
 
 - Known-free/known-contact fixtures demonstrate that the observer is live and that the geometry/propeller envelope and landing-contact allowlist are correct.
 - Record phase-aware clearance, a contact ledger, and raw logs; the planner must not read the oracle.
@@ -83,11 +96,13 @@ Status: **pending**. Dependencies: `g1-environment`.
 
 ### `g1-supervisor` — Minimal supervisor and single-owner Offboard bridge
 
-Status: **pending**. Dependencies: `g1-environment`, `g0-safety`.
+Status: **blocked**. Dependencies: `g1-environment`, `g0-safety`.
 
 - The supervisor/bridge is independent of the planner/inference, with explicit command TTL/epoch/progress.
 - Priming/acknowledgment/mode/arming ownership, unused PX4 fields, and handoff have contracts appropriate to the firmware.
 - Stationary fault injection demonstrates that stale commands/owner conflicts do not authorize movement; do not treat this as a flight braking test.
+
+Blocker (verbatim native diagnostic): Round-three code/offline scope exercised, not runtime acceptance. Missing an eligible independently held-out operational health/error profile, justified full-3D stopping/tracking and workload/RTF bounds, actual valid frozen Home/reference plus landing/fence evidence, and healthy matched-stage baseline with correctly caused stale-command/owner faults, actual live readback/fallback/ownership/ACK/handoff observation.
 
 ### `g1-flight` — Empty-world mission: takeoff, square, hold, land, disarm
 
@@ -263,3 +278,59 @@ Status: **done**. Dependencies: `prep-replay-integrity`.
 - Capture a bounded stationary Disarmed sequence longer than the declared simulation-time evidence TTL under the integrity recorder; retain raw messages and wall/sim diagnostics with explicit limits and failure reasons.
 - Query during the real trace to demonstrate old frames expiring while fresh frames remain, then stale-all STOP; keep raw recordings immutable and distinguish temporal replay queries from sensor captures.
 - Do not teleport the vehicle, certify no-return semantics, claim positive real-data movement or waive G1/G2 dependencies; kinematic liveness remains a separately scoped decision.
+
+## Unarmed evidence preparation
+
+### `prep-evidence-semantics` — Repair evidence semantics and measure truth-relative TTL error
+
+Status: **done**. Dependencies: `prep-replay-integrity`, `prep-model-profile`, `prep-ttl-replay`.
+
+- Finite near-depth hazards retain complete capture-pose pixel cones clipped at optical Z 0.3 m; negative infinity remains global fail-closed. Corrected rest fixtures derive from the complete physical profile without erasing retained hazards.
+- Pinned-decoder continuous truth measures absolute and all-pairs capture/query relative pose errors within TTL, with full quaternion angle, true ray range, body lever arm, clock-bracket coverage and uncalibrated non-admitting labels.
+- Independent retained-frame identity checks exercise a mid-trace camera gap longer than TTL, recovery and an early-only obstacle expiry variant. Actual replay compares historical and model-derived diagnostic envelopes without changing original ROI or grading thresholds.
+- Retain frozen sweep failures, baseline recordings, effective inputs and source hashes. An explicit supplemental project checker prevents completed G2 tasks while this preparation task is not done; no native dependency edge is claimed and no G1 task is blocked.
+
+## Simulation repair preparation
+
+### `prep-evidence-review` — Repair uncertainty provenance and independent y-plane evidence
+
+Status: **blocked**. Dependencies: `prep-evidence-semantics`, `g1-oracle`.
+
+- Require explicit near-evidence uncertainty and provenance across synthetic, historical and diagnostic consumers; no implicit operational zero or fabricated calibration.
+- Pass offline nonoccluding fixture preflight on the declared pose grid with unchanged primary ROIs, 3-pixel erosion and support/error limits; retain the old fixture as a failing negative.
+- After separate acquisition approval, retain fresh pinned unarmed recording with passing original primary geometry and independent dy residual/truth comparison under frozen justified budgets. Historical failed evidence stays unchanged.
+- Supplemental G2 completion gate only; does not block unrelated G1 work or replace calibration.
+
+Blocker (verbatim native diagnostic): Round-three F5 retained CLI exited 0 without deadline expiry or surviving owned group after bounded grace; this is computation, not acceptance. Frozen support06 derivation retains 433 captures/1840 queries and 21546 covered pairs, but 3 queries precede any retained capture. Frozen source-disjoint r39 evaluation retains 136/588 identities with 6668 truth-uncovered pairs and 724 uncovered observations. Both are previously seen, not untouched heldout. Missing continuous truth, independent instantaneous twist, external conditional timing/calibration/intersample scope, justified health/uncertainty/tracking/dynamics and operational applicability remain blockers. See docs/SIM_REPAIR_RESULTS.md and docs/replay/sim-repair-round3-01/protocol-v3-preparation.json. No new task, acquisition, runtime/flight/calibration acceptance or threshold relaxation.
+
+### `prep-flight-oracle` — Add moving-interval, isolation and phase-aware oracle evidence
+
+Status: **blocked**. Dependencies: `g1-oracle`, `g1-environment`.
+
+- Conservative interval coverage uses explicit justified translation/angular bounds and complete geometry; missing coverage is UNKNOWN and unsafe observations remain latched.
+- Evaluator-owned phase transitions require independent status/support and frozen schedule; planner intent cannot grant contact exemptions.
+- Bounded retained endpoint discovery detects unexpected and disappearing readers without claiming DDS security; acceptance truth follows an evaluator-only path before planner participation.
+- Exercise offline boundary/negative cases and separately approved unarmed fault proofs before g1-flight preflight; static historical receipts remain static.
+
+Blocker (verbatim native diagnostic): N5 moving-output/consumer/test cutover is implemented and exercised through actual offline clear CLI exit0 and thin-crossing CLI exit2, plus724 integrated regressions. Moving outputs use clearance_conditional_on_declared_motion_bounds with calibration/flight admission false and no legacy certificate alias; historical/static evidence unchanged. N6 checker and generated table share one structured four-policy declaration. These do not supply independently justified continuous motion constraints, actual evaluator-only transport/isolation, pinned wire-phase/arming/support normalization, or bounded live discovery/reader-fault evidence. No real moving/unarmed fault acquisition or runtime execution was authorized/performed. Supplemental g1-flight preflight remains unmet; static historical receipts stay static. See docs/SIM_ORACLE_REPAIRS.md and docs/SIM_REPAIR_RESULTS.md.
+
+### `prep-depth-path-audit` — Locate depth-path losses with matched stage identities
+
+Status: **blocked**. Dependencies: `prep-replay-integrity`, `g1-environment`.
+
+- Match actual source, bridge, callback, enqueue and storage identities within common fully observed windows; account for duplicates, reordering, probe loss and bounded drain.
+- Unknown or unavailable stage instrumentation remains unresolved; secondary BEST_EFFORT subscriptions do not certify publication counts.
+- Distinguish controlled source skip, transport loss and recorder/storage backpressure; report simulation gaps separately from receive-wall gaps, never as end-to-end latency bounds.
+- Retain separately approved unarmed acquisition and frozen workload/QoS provenance as a supplemental g1-calibration completion input; no deadline relaxation.
+
+Blocker (verbatim native diagnostic): E7 matched-stage analyzer and exact callback/enqueue/storage accounting implemented and offline boundary tests passed. Actual pinned finite writer roundtripped two generated messages with matching ordered identities. Historical support06 audit remains partial: 452 images/581 CameraInfo, no authoritative source/bridge taps and no historical per-stage certificate. Source/bridge instrumentation and separately approved unarmed common-window acquisition are missing; no loss-location or end-to-end latency bound is claimed. See docs/SIM_DEPTH_PATH_REPAIRS.md.
+
+### `prep-geometry-crosscheck` — Crosscheck resolved mesh loading and conservative rotor geometry
+
+Status: **blocked**. Dependencies: `g1-oracle`, `prep-model-profile`.
+
+- Compare unchanged pinned asymmetric mesh transforms with independent Gazebo geometry or calibrated multi-view observations, retaining wrong-axis/scale negatives and explicit visible-surface limits.
+- Quantify analytic rotor containment and liveness without shrinking current outer bounds or 0.5 m navigation clearance; any new primitive requires complete consumer migration and containment proof.
+- Record source/view/tolerance provenance and separate offline analysis from separately approved renderer execution; a containment contradiction blocks affected geometry.
+
+Blocker (verbatim native diagnostic): Offline unchanged-profile R7 accounting ran over all 42 parts: outer AABB radial 0.45363579247019004 m versus conditional level analytic 0.39284210489752325 m. No physical profile, consumer or 0.5 m clearance was reduced. R10 independent Gazebo mesh-loading/multiview observation and wrong-axis/scale runtime comparison require a separately approved evaluator fixture; those observations remain unrun. No smaller-envelope or resolved-loader certificate. See docs/SIM_REPAIR_RESULTS.md.

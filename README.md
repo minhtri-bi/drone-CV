@@ -4,13 +4,19 @@ Computer-vision obstacle avoidance for drones, **simulation first**, using PX4 S
 
 ## Status
 
-The repository has a **working offline G0 implementation**: metric depth/validity, capture-time projection, frame/quaternion transforms, a conservative 72×3 histogram, braking and command freshness. **The G1 environment passed an unarmed smoke run** with ROS camera/clock/TF and PX4 DDS on a pinned derived image. Pytest and a CI workflow are available; the oracle, supervisor, flight runtime and SITL evaluator are not implemented.
+The repository has a **working offline G0 implementation**: metric depth/validity, capture-time projection, frame/quaternion transforms, a conservative 72×3 histogram, braking and command freshness. **The G1 environment passed an unarmed smoke run** with ROS camera/clock/TF and PX4 DDS on a pinned derived image. The independent static oracle/logger is implemented and exercised. Supervisor code remains offline-only; no flight, calibration or navigation gate has passed.
 
 The [unarmed sensor replay](docs/SENSOR_REPLAY_RESULTS.md) also passed stationary integration: 152 real Gazebo frames paired at capture time, independent target checks and six injected fault variants. Its movement query remains STOP; there is no real-data navigation result.
 
 The [integrity repair](docs/SENSOR_REPLAY_INTEGRITY.md) adds a fresh 136-frame replay with snapshot-time/reset-bound alignment, receive-wall health evidence and a real camera-stream loss refusal. Historical unbound bags remain diagnostic-only under the new profile.
 
 The [model-profile and rolling-TTL preparation](docs/PREPARATION_RESULTS.md) also ran: pinned collision/rotor bounds, 96 explicit synthetic coverage cases, and a 90 s Disarmed recording spanning 19.328 s sim. Old evidence expires while fresh frames remain. These diagnostics do not authorize movement or complete G1/G2.
+
+The [static oracle](docs/G1_ORACLE_RESULTS.md) resolves complete visual/collision/rotor geometry and records lossless evaluator-only truth in the sensor bag. Frozen body/rotor intersections and truth loss exercise unsafe-latch and incomplete-evidence classification. These are sampled geometric observations, not armed flight or continuous swept-volume proof.
+
+The [evidence-semantics results](docs/EVIDENCE_SEMANTICS_RESULTS.md) add localized finite near-hazard cones, 315,712 truth-relative capture/query pairs over a 10 s TTL and independent dropout/expiry identities. Original geometry grading failures from the added occluding side target remain reported, not suppressed. The [supervisor results](docs/G1_SUPERVISOR_RESULTS.md) exercise actual pinned-message serialization under guards forbidding ROS initialization/nodes/control publishers; its runtime gate remains incomplete.
+
+The approved [simulation repair plan](docs/SIM_REPAIR_PLAN.md) has [code/offline results](docs/SIM_REPAIR_RESULTS.md), including per-tick loss-response budgets, finite per-source RTF contracts, held-out analysis, restricted pinned fallback policy, Home-bound fences, precision-aware readback and capture-to-query uncertainty. Real traces still do not establish stationary admission. Protocol-v3 preparation selects no operational health/RTF profile and creates no new heldout recording. Fresh dy/runtime/isolation/mesh-loading evidence remains missing; no flight or G2 gate is promoted.
 
 Core target: reach the goal in ≥45/50 frozen navigation worlds, with zero unsafe events and navigation clearance ≥0.5 m under the phase contract.
 This target has not been achieved; it is not a benchmark result.
@@ -32,7 +38,7 @@ The plan records its source, checksum and relationship to the revised documents.
 
 ## Roadmap in OMP
 
-The [canonical state](.omp/roadmap/roadmap.json) contains 31 tasks with dependencies and acceptance criteria.
+The [canonical state](.omp/roadmap/roadmap.json) contains 36 tasks with dependencies and acceptance criteria.
 Use `/roadmap status` or `/roadmap view` in OMP; the offline canvas is generated automatically. Do not edit its HTML.
 Current status and acceptance criteria live in JSON; the [English portable view](docs/ROADMAP.md) uses the same state with a hash-bound [display translation](docs/roadmap.en.json). Do not edit generated Markdown manually.
 This roadmap covers the simulation scope; it is neither an estimate of effort percentages nor flight certification.
@@ -88,7 +94,7 @@ After Docker/image and bridge approval, the [derived image](docker/g1/Dockerfile
 `scripts/g1_probe.py --ros` and `scripts/g1_ros_observer.py` are read-only observers inside the container running Agent/PX4/Gazebo/bridge/TF; they exit with code 2 when observations are missing. See the [executed recipe and its limits](docs/HARNESS.md#derived-smoke-recipe-and-observed-results).
 
 Run-owned containers/processes were stopped and removed; Docker Desktop and the images were retained. No host packages, drivers, WSL configuration or permissions were changed.
-The G1 flight gate remains pending: oracle/logger and supervisor are required before bootstrap flight, and calibration remains pending. The separate unarmed replay validates capture-time interpolation and stationary geometry; neither experiment certifies `+Inf` as free space or successful obstacle avoidance.
+The G1 flight gate remains pending: the static oracle/logger is complete, but supervisor runtime verification is still required before bootstrap flight. Calibration remains pending. Unarmed replay validates capture-time interpolation and stationary geometry; no experiment certifies `+Inf` as free space or successful obstacle avoidance.
 
 ## Principles
 

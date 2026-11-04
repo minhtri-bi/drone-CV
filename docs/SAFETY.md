@@ -1,6 +1,6 @@
 # Revised safety and acceptance contracts
 
-**This is a design correction, not a runtime patch:** the repo has no flight code yet. All flight verification remains pending in the native roadmap. Merging documentation must not be used to mark G0–G4 as passed.
+**These are safety and acceptance contracts, not flight evidence.** The repository has an offline core, unarmed static oracle/recording path and supervisor code exercised only offline. All flight verification remains pending in the native roadmap. Merging code or documentation must not be used to mark unexercised gates as passed.
 
 This document supplements the contracts in [PLAN](PLAN.md), [HARNESS](HARNESS.md), and the [scenarios](SCENARIOS.md). Deadlines/bounds that require measurement are stored with the effective config during implementation; missing bounds mean no authorization for autonomous motion.
 
@@ -114,4 +114,4 @@ One `NO_RETURN` ray does not prove that an entire 5° bin or volumetric corridor
 
 ## Gap closure status
 
-S01–S08 are closed at the contract level. The G0 core has verified units/frames, synthetic swept-volume coverage, clock/freshness, and constant-deceleration bounds through code/tests/a demo; this does not prove that real sensors or PX4 conform to the model. The unarmed G1 environment lock/smoke is complete, as recorded in [environment evidence](environments/g1-bridge-observation.json). Flight proofs, actual numerical deadlines/bounds, stopping calibration, and SITL oracle geometry remain pending in their corresponding tasks. The separate offline freespace spike does not complete those gates.
+S01–S08 are closed at the contract level. The G0 core has verified units/frames, synthetic swept-volume coverage, clock/freshness, and constant-deceleration bounds through code/tests/a demo; this does not prove that real sensors or PX4 conform to the model. The unarmed G1 environment and [static oracle](G1_ORACLE_RESULTS.md) paths have their own bounded evidence. Supervisor runtime, flight proofs, actual numerical deadlines/bounds and stopping calibration remain pending. The separate offline freespace and stationary truth diagnostics do not supply motion authority.

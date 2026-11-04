@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "frame": "base_link FLU",
+  "source_sha256": {
+    "model.sdf": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "parts": [
+    {
+      "id": "body",
+      "role": "body",
+      "lo": [
+        -0.1,
+        -0.1,
+        -0.1
+      ],
+      "hi": [
+        0.1,
+        0.1,
+        0.1
+      ],
+      "source": "model.sdf"
+    }
+  ]
+}

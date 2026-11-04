@@ -12,15 +12,17 @@ From the repository root:
 
 ```sh
 python -m pytest -q
-python spike/freespace/experiments.py --trials 0 --output artifacts/freespace-demo
+python spike/freespace/experiments.py --profile docs/replay/evidence-semantics-01/profile.json --trials 0 --output artifacts/freespace-demo
 ```
 
 Default pytest discovery includes the core and spike tests. The second command runs the takeoff/blind-zone experiment and writes `results.json`. `--trials 0` explicitly skips the optional Monte Carlo sweeps; zero-trial output is not safety evidence.
 
+The complete pinned physical profile supplies the synthetic body rest height. The former 0.15 m start is historical and below the current support geometry; it is not a physical takeoff fixture.
+
 For the full synthetic sweeps, choose a different output directory:
 
 ```sh
-python spike/freespace/experiments.py --trials 400 --output artifacts/freespace-sweeps
+python spike/freespace/experiments.py --profile docs/replay/evidence-semantics-01/profile.json --trials 400 --output artifacts/freespace-sweeps
 ```
 
 Optional figures use Matplotlib 3.9.0, which is not required by the tests or CI:
@@ -50,8 +52,11 @@ The experiment and plot scripts write inside the selected directory and can over
 | `recording_integrity.py`, `recording_policy.json` | Acquisition-only stream progress limits and snapshot-time/reset-bound alignment. |
 | `bag_diagnostics.py` | Receive-trace verification, timing, image gaps and estimator variance diagnostics; no flight admission. |
 | `bag_writer.py` | Separate-process storage with finite queue, shutdown and explicit backpressure/failure. |
-| `model_profile.py`, `model_liveness.py` | Pinned collision/rotor proxy and explicit model-consistent synthetic coverage comparison. |
+| `model_profile.py`, `model_liveness.py` | Historical collision proxy plus complete-oracle-profile synthetic comparison using observed truth-relative diagnostics, not calibrated error bounds. |
 | `replay_ttl.py`, `ttl_fixture.json` | Longer unarmed acquisition and rolling retained-frame identities. |
+| `replay_semantics.py`, `truth_error.py` | Pinned-decoder absolute/all-pairs TTL pose errors, full rotation, ray range and optical lever arm. |
+| `evidence_variants.py` | Independent frame-identity event oracle, explicit image-gap derivative and early-only obstacle expiry. |
+| `plane_diagnostics.py` | Direct plane/truth residual crosscheck with unchanged original grading ROI and thresholds. |
 
 ## Real stationary Gazebo replay
 
@@ -81,7 +86,7 @@ The gate returns `ALLOWED` only when the sample set is nonempty, every sample is
 
 ### Three integration fixes
 
-1. **Retained near hazards survive dropout.** Any `TOO_CLOSE` in the retained epoch/TTL window blocks motion. A following all-NaN image cannot erase it. The conservative block expires with its evidence; expiry alone does not grant motion, and the normal fresh-coverage query must still pass.
+1. **Retained near hazards survive dropout.** Finite positive `TOO_CLOSE` pixels retain conservative full pixel cones from optical Z zero to the trusted near bound, transformed by the capture pose and inflated for declared uncertainty. A cone intersecting the query blocks it; a following all-NaN image cannot erase the hazard. `-Inf` remains a global STOP because its sensor semantics are unverified. Epoch/TTL expiry removes only that observation; it never supplies fresh free-space coverage.
 2. **An empty sample grid cannot grant motion.** A coarse spacing can leave no points inside the capsule. Such a query now returns `NO_ENVELOPE_SAMPLES`, not vacuous `ALLOWED`.
 3. **Trusted range must fit the camera clip range.** `EvidenceStore` rejects a profile whose near/far trusted interval extends outside the associated camera's clip interval. A short-range no-return cannot certify space out to the default longer range.
 

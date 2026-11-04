@@ -300,5 +300,59 @@
       "Query during the real trace to demonstrate old frames expiring while fresh frames remain, then stale-all STOP; keep raw recordings immutable and distinguish temporal replay queries from sensor captures.",
       "Do not teleport the vehicle, certify no-return semantics, claim positive real-data movement or waive G1/G2 dependencies; kinematic liveness remains a separately scoped decision."
     ]
+  },
+  "prep-evidence-semantics": {
+    "source_sha256": "678492d6dec6034311b024888bcc3e8e00edda88632cc1feae98a1a2745de1e2",
+    "phase": "Unarmed evidence preparation",
+    "title": "Repair evidence semantics and measure truth-relative TTL error",
+    "acceptance": [
+      "Finite near-depth hazards retain complete capture-pose pixel cones clipped at optical Z 0.3 m; negative infinity remains global fail-closed. Corrected rest fixtures derive from the complete physical profile without erasing retained hazards.",
+      "Pinned-decoder continuous truth measures absolute and all-pairs capture/query relative pose errors within TTL, with full quaternion angle, true ray range, body lever arm, clock-bracket coverage and uncalibrated non-admitting labels.",
+      "Independent retained-frame identity checks exercise a mid-trace camera gap longer than TTL, recovery and an early-only obstacle expiry variant. Actual replay compares historical and model-derived diagnostic envelopes without changing original ROI or grading thresholds.",
+      "Retain frozen sweep failures, baseline recordings, effective inputs and source hashes. An explicit supplemental project checker prevents completed G2 tasks while this preparation task is not done; no native dependency edge is claimed and no G1 task is blocked."
+    ]
+  },
+  "prep-evidence-review": {
+    "phase": "Simulation repair preparation",
+    "title": "Repair uncertainty provenance and independent y-plane evidence",
+    "acceptance": [
+      "Require explicit near-evidence uncertainty and provenance across synthetic, historical and diagnostic consumers; no implicit operational zero or fabricated calibration.",
+      "Pass offline nonoccluding fixture preflight on the declared pose grid with unchanged primary ROIs, 3-pixel erosion and support/error limits; retain the old fixture as a failing negative.",
+      "After separate acquisition approval, retain fresh pinned unarmed recording with passing original primary geometry and independent dy residual/truth comparison under frozen justified budgets. Historical failed evidence stays unchanged.",
+      "Supplemental G2 completion gate only; does not block unrelated G1 work or replace calibration."
+    ],
+    "source_sha256": "123436d6458784aa395afe80ea245b79ba0127fa06124694da71557905423f51"
+  },
+  "prep-flight-oracle": {
+    "phase": "Simulation repair preparation",
+    "title": "Add moving-interval, isolation and phase-aware oracle evidence",
+    "acceptance": [
+      "Conservative interval coverage uses explicit justified translation/angular bounds and complete geometry; missing coverage is UNKNOWN and unsafe observations remain latched.",
+      "Evaluator-owned phase transitions require independent status/support and frozen schedule; planner intent cannot grant contact exemptions.",
+      "Bounded retained endpoint discovery detects unexpected and disappearing readers without claiming DDS security; acceptance truth follows an evaluator-only path before planner participation.",
+      "Exercise offline boundary/negative cases and separately approved unarmed fault proofs before g1-flight preflight; static historical receipts remain static."
+    ],
+    "source_sha256": "7997e79ea5373bda7350614edceacb828fb6fbc58f3ec878ba260760980ec9a5"
+  },
+  "prep-depth-path-audit": {
+    "phase": "Simulation repair preparation",
+    "title": "Locate depth-path losses with matched stage identities",
+    "acceptance": [
+      "Match actual source, bridge, callback, enqueue and storage identities within common fully observed windows; account for duplicates, reordering, probe loss and bounded drain.",
+      "Unknown or unavailable stage instrumentation remains unresolved; secondary BEST_EFFORT subscriptions do not certify publication counts.",
+      "Distinguish controlled source skip, transport loss and recorder/storage backpressure; report simulation gaps separately from receive-wall gaps, never as end-to-end latency bounds.",
+      "Retain separately approved unarmed acquisition and frozen workload/QoS provenance as a supplemental g1-calibration completion input; no deadline relaxation."
+    ],
+    "source_sha256": "037556f37f0d77a686c1f8d6a19da6437bdcad163fe2a15b9f6886deda28b3bb"
+  },
+  "prep-geometry-crosscheck": {
+    "phase": "Simulation repair preparation",
+    "title": "Crosscheck resolved mesh loading and conservative rotor geometry",
+    "acceptance": [
+      "Compare unchanged pinned asymmetric mesh transforms with independent Gazebo geometry or calibrated multi-view observations, retaining wrong-axis/scale negatives and explicit visible-surface limits.",
+      "Quantify analytic rotor containment and liveness without shrinking current outer bounds or 0.5 m navigation clearance; any new primitive requires complete consumer migration and containment proof.",
+      "Record source/view/tolerance provenance and separate offline analysis from separately approved renderer execution; a containment contradiction blocks affected geometry."
+    ],
+    "source_sha256": "29e6a15cc106ef9ecc8651c0691be243f5b2d26ed914a1ba5aed78d9ec13cb9a"
   }
 }

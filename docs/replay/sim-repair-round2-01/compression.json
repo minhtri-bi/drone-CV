@@ -1,0 +1,16 @@
+{
+  "planes.json.gz": {
+    "uncompressed_sha256": "04f69883f90a870a866ac6e9173ef09119819bcb9faf6d5fbbfb9b87628a3a7d",
+    "compressed_sha256": "5624555c62c5d7fca5d7ca056cf67b4cd007d437483baff9f10a47a0065cf79f",
+    "uncompressed_bytes": 8293889,
+    "compressed_bytes": 668391,
+    "decompressed_readback_equal": true
+  },
+  "empirical-consistency.json.gz": {
+    "uncompressed_sha256": "f0ca0ed8b2c5b9325b71afccefd278e9fad298270efb3d79d5995e15f04fc21e",
+    "compressed_sha256": "a227935b2909f4f2dcfdd0024d20c90ee8aa39779df61a39365a4018083f81b2",
+    "uncompressed_bytes": 16723321,
+    "compressed_bytes": 1278367,
+    "decompressed_readback_equal": true
+  }
+}

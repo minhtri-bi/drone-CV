@@ -7,7 +7,7 @@ from pathlib import Path
 
 from bag_diagnostics import diagnostics
 from capture_pose import camera_from_info, decode_depth, interpolate_pose
-from evidence import EvidenceStore, Frame, SensorProfile, decide, swept_envelope
+from evidence import EvidenceSource, EvidenceStore, Frame, SensorProfile, decide, swept_envelope
 from recording_integrity import require_alignment_epoch, validate_alignment
 from replay_bag import collect, load_recording
 
@@ -46,7 +46,9 @@ def run(recording: Path) -> dict:
     query_times = [first+ttl/2, first+ttl+1., last]
     if query_times[-2] >= last:
         raise ValueError("NOT_ENOUGH_POST_WARMUP_HISTORY")
-    store = EvidenceStore(observations[0][3], SensorProfile(no_return_certified=False))
+    store = EvidenceStore(observations[0][3], SensorProfile(
+        0., 0., EvidenceSource.HISTORICAL_ANALYSIS,
+        "Historical TTL comparison; zero is an explicit uncalibrated analysis assumption", False))
     cursor, trace, latest_pose = 0, [], None
     epoch = f"ttl-epoch-{epoch_id}"
     for query_time in query_times:

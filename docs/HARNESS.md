@@ -220,4 +220,19 @@ Minimum report: numerator/denominator, Wilson CI, outcome counts, missing/invali
 
 `python -m pytest -q` runs behavioral regression tests; `python scripts/g0_demo.py --output artifacts/<new-name>` runs the real API and exports SVG/NPZ/summary. The demo uses only synthetic data; see README for sampling support, the independent local-clear certificate, and braking limitations.
 
-`g1-environment` passed an unarmed smoke check on the pinned derived image. The next ready items are the oracle/logger and minimal supervisor; bootstrap flight/calibration remains pending, and permission to arm must not be inferred from the roadmap. The test container was cleaned up, while Docker Desktop/images were retained; do not install packages on the host or change drivers/WSL.
+`g1-environment` passed an unarmed smoke check on the pinned derived image. The [G1 static oracle results](G1_ORACLE_RESULTS.md) now record complete mesh/rotor bounds, same-bag truth, known-intersection and observer-loss proofs. Supervisor, bootstrap flight and calibration remain separate gates; permission to arm must not be inferred from the roadmap. Owned test containers were cleaned up, while Docker Desktop/images were retained; do not install packages on the host or change drivers/WSL.
+
+The agreed [G1 oracle implementation contract](G1_ORACLE_PLAN.md) specifies conservative geometric contact without changing the pinned model, complete mesh/rotor bounds, evaluator-only continuous truth in the same bag, and missing-coverage/unsafe-latch behavior. The native evidence-semantics task has its three preparation prerequisites. Because the native API cannot edit existing dependency edges, the operator approved a supplemental `check_project.py` guard against completing G2 before that task is done. This guard is not a native DAG edge or runtime motion authority; it never blocks G1.
+
+### Supervisor code-only boundary
+
+`src/drone_cv/supervisor.py` is a ROS-independent transition function. `src/drone_cv/px4_bridge.py` owns pinned message encoding and the optional ROS adapter. `scripts/g1_supervisor.py offline-smoke` constructs and serializes installed PX4 messages without initializing rclpy, creating nodes/publishers, acquiring a process lock or sending commands. Its synthetic bounds are protocol fixtures, not measured braking or clearance limits.
+
+The runtime path is consequential and remains unexercised. An explicit CLI publisher authorization is required in addition to matching image/firmware/message pins, a bootstrap manifest, finite configured bounds and the exclusive-owner checks. A config file, native roadmap task or successful offline smoke cannot provide that authorization. Do not run the `run` subcommand under the current code-only approval.
+
+Commands and safety permits retain source identity, epoch, original TTL and receive-time progress. Permits also retain the original observation `capture_stamp`; a newly received permit cannot refresh stale capture evidence. Publisher timestamps encode the protocol clock but never extend a proposal or permit lifetime. Safety and planner inputs are separate, and evaluator truth is not subscribed by the bridge.
+
+Priming emits only `OffboardControlMode`, not a `TrajectorySetpoint`: PX4 can otherwise consume a priming setpoint while still in another mode. A trajectory becomes eligible only after fresh status confirms Offboard. Mode/arm/handoff requests are explicit one-shot requests with strictly subsequent, addressed ACK/status evidence. Priming/mode admission must not silently arm. Handoff, failsafe, ownership conflict, clock/reset changes and stale inputs revoke authority without automatic re-entry.
+
+Suppressing output is not a demonstrated hover or safe abort. Actual stationary ownership/stale-command fault injection, PX4 mode/arm/handoff behavior, transport timing and eventual vehicle stopping remain required before completing `g1-supervisor`. Flight and braking calibration remain unmet.
+

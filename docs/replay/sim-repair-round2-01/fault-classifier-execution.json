@@ -1,0 +1,17 @@
+{
+  "scope": "SYNTHETIC_OFFLINE_CLASSIFIER_SMOKE_ONLY_NOT_RUNTIME_TRIALS",
+  "exit_code": 1,
+  "command": [
+    "python",
+    "scripts/classify_fault_trial.py",
+    "--manifest",
+    "C:\\Users\\TRI\\drone-CV\\artifacts\\sim-repair-round2-fault-cli-01\\manifest.json",
+    "--output",
+    "C:\\Users\\TRI\\drone-CV\\artifacts\\sim-repair-round2-fault-cli-01\\classification.json"
+  ],
+  "manifest_sha256": "4b8845664bebd4cb8a8908946664d04f82b25c75e061e8c6cef08f2316edfc79",
+  "stdout": "",
+  "stderr": "",
+  "actual_runtime_trials": 0,
+  "description": "Analytical explicit synthetic records exercise CLI decision paths. No actual baseline, injected vehicle fault, blinding, tracking or independence evidence is claimed."
+}

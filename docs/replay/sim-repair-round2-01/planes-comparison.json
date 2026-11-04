@@ -1,0 +1,13 @@
+{
+  "scope": "OFFLINE_DIAGNOSTIC_ONLY_NOT_PRIMARY_OR_DY_ACCEPTANCE",
+  "new_report_sha256": "04f69883f90a870a866ac6e9173ef09119819bcb9faf6d5fbbfb9b87628a3a7d",
+  "prior_unobserved_report_sha256": "04f69883f90a870a866ac6e9173ef09119819bcb9faf6d5fbbfb9b87628a3a7d",
+  "identical_to_prior_report": true,
+  "process_exit_observed": true,
+  "exit_code": 0,
+  "covered_frames": 433,
+  "original_primary_pass_frames": 0,
+  "dy_missing_budget_frames": 433,
+  "prior_bundle_unchanged": true,
+  "g2_acceptance": false
+}

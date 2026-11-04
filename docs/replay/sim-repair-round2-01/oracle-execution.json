@@ -1,0 +1,42 @@
+[
+  {
+    "case": "clear",
+    "exit": 0,
+    "command": [
+      "python",
+      "scripts/g1_oracle.py",
+      "evaluate",
+      "--profile",
+      "C:\\Users\\TRI\\drone-CV\\docs\\replay\\sim-repair-offline-01\\oracle-input-profile.json",
+      "--fixture",
+      "C:\\Users\\TRI\\drone-CV\\docs\\replay\\sim-repair-offline-01\\oracle-input-fixture.json",
+      "--observations",
+      "C:\\Users\\TRI\\drone-CV\\docs\\replay\\sim-repair-offline-01\\oracle-input-observations.json",
+      "--output",
+      "C:\\Users\\TRI\\drone-CV\\artifacts\\sim-repair-round2-oracle-clear-01"
+    ],
+    "stdout": "{\"safety_outcome\": \"NO_VIOLATION_OBSERVED\", \"execution_outcome\": \"COMPLETED\", \"sample_count\": 2, \"scope\": \"OFFLINE_DECLARED_MOVING_CONTRACT\"}\n",
+    "stderr": "",
+    "source_report_sha256": "8911aa8324631dac91f298baed60da58282a6488a94f934c4d44ea6ff1cd38fb"
+  },
+  {
+    "case": "thin",
+    "exit": 2,
+    "command": [
+      "python",
+      "scripts/g1_oracle.py",
+      "evaluate",
+      "--profile",
+      "C:\\Users\\TRI\\drone-CV\\docs\\replay\\sim-repair-offline-01\\oracle-input-profile.json",
+      "--fixture",
+      "C:\\Users\\TRI\\drone-CV\\docs\\replay\\sim-repair-offline-01\\oracle-input-thin-fixture.json",
+      "--observations",
+      "C:\\Users\\TRI\\drone-CV\\docs\\replay\\sim-repair-offline-01\\oracle-input-thin-observations.json",
+      "--output",
+      "C:\\Users\\TRI\\drone-CV\\artifacts\\sim-repair-round2-oracle-thin-01"
+    ],
+    "stdout": "{\"safety_outcome\": \"UNKNOWN\", \"execution_outcome\": \"INCOMPLETE\", \"sample_count\": 2, \"scope\": \"OFFLINE_DECLARED_MOVING_CONTRACT\"}\n",
+    "stderr": "",
+    "source_report_sha256": "525cd27735885f25fb10f0ff62f8b144adde00f8140511f64ef2e1b3f3b9dfbd"
+  }
+]

@@ -1,0 +1,81 @@
+{
+  "phase": "rest",
+  "surfaces": [
+    {
+      "id": "wire",
+      "lo": [
+        -0.01,
+        -10,
+        -10
+      ],
+      "hi": [
+        0.01,
+        10,
+        10
+      ]
+    }
+  ],
+  "support_allowlist": [],
+  "clearance_by_phase": {
+    "rest": 0.0,
+    "takeoff": 0.5,
+    "navigation": 0.5,
+    "landing": 0.0
+  },
+  "max_truth_gap_ns": 1000000000,
+  "moving_contract": {
+    "schema": 1,
+    "truth_source": "truth/1",
+    "telemetry_source": "px4/1",
+    "support_source": "contact/1",
+    "max_source_age_ns": 0,
+    "max_wall_gap_ns": 1000000000,
+    "max_observations": 100,
+    "motion": {
+      "translation_speed_m_s": 4.0,
+      "angular_speed_rad_s": 3.141592653589793,
+      "provenance": "analytic test constraints, not calibrated"
+    },
+    "schedule": [
+      {
+        "phase": "rest",
+        "start_sim_ns": 0,
+        "end_sim_ns": 2000000000
+      },
+      {
+        "phase": "takeoff",
+        "start_sim_ns": 2000000000,
+        "end_sim_ns": 3000000000
+      },
+      {
+        "phase": "navigation",
+        "start_sim_ns": 3000000000,
+        "end_sim_ns": 4000000000
+      },
+      {
+        "phase": "landing",
+        "start_sim_ns": 4000000000,
+        "end_sim_ns": 5000000000
+      },
+      {
+        "phase": "rest",
+        "start_sim_ns": 5000000000,
+        "end_sim_ns": 6000000000
+      }
+    ],
+    "discovery": {
+      "source": "graph/1",
+      "max_gap_ns": 1000000000,
+      "max_snapshots": 100,
+      "max_endpoints": 10,
+      "allowed_readers": [
+        {
+          "gid": "01",
+          "node": "oracle",
+          "namespace": "/eval",
+          "topic": "/truth"
+        }
+      ]
+    }
+  }
+}

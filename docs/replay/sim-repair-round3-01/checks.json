@@ -1,0 +1,66 @@
+{
+  "scope": "code and offline only; no operational gate acceptance",
+  "full_suite": {
+    "command": "python -m pytest -q",
+    "exit_code": 0,
+    "passed": 829,
+    "duration_s": 86.81,
+    "tool_output": "artifact://194"
+  },
+  "expanded_relative_startup_boundary": {
+    "command": "python -m pytest -q tests/test_supervision_contract.py",
+    "exit_code": 0,
+    "passed": 16,
+    "duration_s": 1.14,
+    "note": "Additional complete relative prerequisite and tampered payload assertions after full-suite run; production code unchanged"
+  },
+  "initial_focused_run": {
+    "passed": 217,
+    "failed": 2,
+    "duration_s": 8.92,
+    "tool_output": "artifact://190",
+    "causes": [
+      "A new relative-age fixture first hit the existing monotone capture sequence rejection; moved capture after prior source progress and tightened relative age to isolate expiry.",
+      "A new synthetic prerequisite box plus frozen reserve extended below its declared support contact; tightened its upper NED face instead of relaxing reserve or physical policy."
+    ]
+  },
+  "supervisor_cli": {
+    "exit_code": 0,
+    "wrapper_exit_code": 1,
+    "retry_performed": false,
+    "immediate_group_check_empty": false,
+    "owned_group_cleanup_sent": true,
+    "later_docker_top_observation": "Only owned /bin/sleep infinity remained; surviving member identity was not recorded, so no specific process attribution is established."
+  },
+  "relative_cli": {
+    "exit_code": 0,
+    "deadline_expired": false,
+    "owned_group_empty_after_bounded_grace": true
+  },
+  "native_revision_after_recording": 109,
+  "native_counts": {
+    "done": 14,
+    "blocked": 5,
+    "pending": 17
+  },
+  "runtime_verified": false,
+  "stationary_admission_demonstrated": false,
+  "flight_admission": false,
+  "calibration_established": false,
+  "safety_limits_relaxed": false,
+  "final_changed_scope_regressions": {
+    "command": "python -m pytest -q tests/test_px4_policy.py tests/test_px4_failsafe.py tests/test_px4_runtime_guard.py tests/test_perception_permit.py tests/test_relative_profile.py tests/test_supervision_contract.py tests/test_supervisor.py",
+    "exit_code": 0,
+    "passed": 219,
+    "duration_s": 6.87,
+    "note": "Includes complete relative startup prerequisite and tampered-payload refusal. Production source matches the guarded pinned smoke."
+  },
+  "redundant_scope_probe": {
+    "passed": 218,
+    "failed": 1,
+    "tool_output": "artifact://204",
+    "cause": "A temporary duplicate startup guard/test expected a later authorization error, but Config already rejects response-scope/target mismatch. Removed the redundant guard and probe rather than repinning its wording or weakening the existing invariant."
+  },
+  "owned_container_final_state": "exited",
+  "owned_container_stop_observed": true
+}

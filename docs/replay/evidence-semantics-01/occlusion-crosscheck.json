@@ -1,0 +1,22 @@
+{
+  "source": "Independent segment/axis-plane calculation using first observed true optical origin",
+  "optical_origin_world_m": [
+    0.13233000132981373,
+    -1.9502688376943956e-18,
+    0.24777981436867663
+  ],
+  "offaxis_target_center_m": [
+    4.5,
+    1.4,
+    0.55
+  ],
+  "side_front_plane_crossing_m": [
+    2.9401178576177904,
+    0.9,
+    0.44206421941738455
+  ],
+  "segment_fraction": 0.6428571428571429,
+  "inside_frozen_side_box_xz": true,
+  "baseline_geometry_replay_exit": 2,
+  "thresholds_or_roi_changed": false
+}
