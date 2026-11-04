@@ -26,6 +26,62 @@ from drone_cv.supervisor import (
 )
 from drone_cv.timing import Clock, FreshnessPolicy, Stamp
 from drone_cv.supervision_contract import ClockContract, LossResponse, RateWindow, SourceBudget
+from drone_cv.px4_observation import (
+    decode_battery, decode_fallback_flags, decode_home, decode_local_position,
+)
+
+
+def _context_messages(types):
+    local = types.VehicleLocalPosition()
+    local.timestamp, local.timestamp_sample, local.ref_timestamp = 1050000, 1000000, 123
+    local.ref_lat, local.ref_lon, local.ref_alt = 47., 8., 500.
+    local.xy_valid = local.z_valid = local.v_xy_valid = local.v_z_valid = True
+    local.xy_global = local.z_global = local.heading_good_for_control = True
+    home = types.HomePosition()
+    home.timestamp, home.update_count = 1000000, 1
+    home.lat, home.lon, home.alt = 47., 8., 500.
+    home.valid_lpos = home.valid_hpos = home.valid_alt = True
+    flags = types.FailsafeFlags()
+    flags.timestamp, flags.mode_req_local_position, flags.mode_req_local_alt = 1000000, 16, 16
+    flags.offboard_control_signal_lost, flags.manual_control_signal_lost = True, True
+    battery = types.BatteryStatus()
+    battery.timestamp, battery.id, battery.remaining, battery.connected = 1000000, 1, .8, True
+    return ((local, decode_local_position), (home, decode_home),
+            (flags, decode_fallback_flags), (battery, decode_battery))
+
+
+def _context_smoke(cfg, decoded):
+    from drone_cv.px4_policy import LandingCorridor, PolicyGeometry, validate_motion_policy
+    from drone_cv.px4_runtime_guard import runtime_context_error
+    # Complete synthetic policy is never applied or accepted as a runtime profile.
+    policy = {"COM_OF_LOSS_T": .33333, "COM_OBL_RC_ACT": 5, "COM_FAIL_ACT_T": 0.,
+        "COM_RC_LOSS_T": .5, "COM_RCL_EXCEPT": 0, "NAV_RCL_ACT": 1, "COM_RC_IN_MODE": 4,
+        "NAV_DLL_ACT": 1, "COM_DL_LOSS_T": 10, "COM_DLL_EXCEPT": 0, "COM_LOW_BAT_ACT": 2,
+        "BAT_LOW_THR": .15, "BAT_CRIT_THR": .07, "BAT_EMERGEN_THR": .05, "GF_ACTION": 2,
+        "GF_SOURCE": 0, "GF_MAX_HOR_DIST": 50., "GF_MAX_VER_DIST": 50., "MPC_XY_VEL_MAX": 1.,
+        "MPC_Z_VEL_MAX_UP": .5, "MPC_Z_VEL_MAX_DN": .5, "MPC_POS_MODE": 4,
+        "MPC_ACC_HOR": 3., "MPC_ACC_HOR_MAX": 5., "MPC_ACC_UP_MAX": 4.,
+        "MPC_ACC_DOWN_MAX": 3., "MPC_JERK_MAX": 8., "MPC_JERK_AUTO": 4., "UXRCE_DDS_SYNCT": 0}
+    cfg = replace(cfg, envelope=replace(cfg.envelope, maximum_speed_mps=1.2))
+    validate_motion_policy(policy, maximum_speed_mps=1.2, minimum_deceleration_mps2=.25)
+    latest = {key: decoded[name] for key, name in (
+        ("local", "VehicleLocalPosition"), ("home", "HomePosition"), ("flags", "FailsafeFlags"),
+        ("battery", "BatteryStatus"), ("odometry", "VehicleOdometry"), ("status", "VehicleStatus"))}
+    context = PolicyGeometry(latest["home"].bind(latest["local"]), 50., 50.,
+        LandingCorridor((-11., -11., -11.), (11., 11., 6.), 6., 6.25, cfg.envelope.bounds_provenance,
+                        "Synthetic full landing volume; not surveyed", "Synthetic eroded phase clearances"),
+        5., .1, "Synthetic local/global frame reserve; not measured")
+    now = Clock("offline_epoch", 1., 1.)
+    baseline = runtime_context_error(latest, now, cfg, context, policy, State())
+    hold = runtime_context_error({**latest, "flags": replace(latest["flags"],
+        hold_unavailable=("local_position_invalid",))}, now, cfg, context, policy, State())
+    changed = runtime_context_error({**latest, "home": replace(latest["home"], update_count=2)},
+                                    now, cfg, context, policy, State())
+    if baseline is not None or hold != "HOLD_UNAVAILABLE:local_position_invalid" or not (
+            changed and changed.startswith("PX4_GEOMETRY:")):
+        raise ValueError("pinned offline context guard did not enforce frozen policy")
+    return {"scope": "synthetic declarations only; not live policy/fallback validation",
+            "baseline_reason": baseline, "hold_failure_reason": hold, "home_change_reason": changed}
 
 
 def offline_smoke() -> dict:
@@ -44,7 +100,8 @@ def offline_smoke() -> dict:
             for name, ttl, period, jitter in (
                 ("ODOMETRY", .5, .02, .05), ("STATUS", 3., .5, .1),
                 ("COMMAND", .5, .02, .05), ("PERMIT", .5, .02, .05),
-                ("PERCEPTION", .5, .02, .05))),
+                ("PERCEPTION", .5, .02, .05), ("LOCAL_POSITION", .5, .02, .05),
+                ("FALLBACK_FLAGS", .5, .2, .1), ("BATTERY", 2., 1., .1))),
         loss_response=LossResponse("offline_epoch", FIRMWARE_PIN, .05, .02, .01, .02, 5,
                                    "Synthetic crash-after-tick fixture", "synthetic_offline"),
         clock_stall_wall_s=.5, max_clock_step_s=.5,
@@ -83,14 +140,17 @@ def offline_smoke() -> dict:
     ack = types.VehicleCommandAck()
     ack.timestamp, ack.command, ack.result = 1000000, 176, 0
     ack.target_system, ack.target_component = 42, 191
-    input_records = {}
-    for msg, decoder in ((odom, decode_odometry), (status, decode_status), (ack, decode_ack)):
+    input_records, decoded_inputs = {}, {}
+    for msg, decoder in ((odom, decode_odometry), (status, decode_status), (ack, decode_ack),
+                         *_context_messages(types)):
         wire = serialize(msg)
         decoded = decoder(serialization.deserialize_message(wire, type(msg)), "offline_epoch", 1.)
         if decoded.stamp.sim_s != 1.:
             raise ValueError("decoder did not preserve pinned acquisition/source timestamp")
         input_records[type(msg).__name__] = {
             "cdr_bytes": len(wire), "cdr_sha256": sha256(wire).hexdigest()}
+        decoded_inputs[type(msg).__name__] = decoded
+    context_smoke = _context_smoke(cfg, decoded_inputs)
     state, records, active_state = State(), [], None
     trajectory_count, heartbeat_count = 0, 0
     steps = ((data(1., action="prime"), Stage.PRIMING),
@@ -149,12 +209,17 @@ def offline_smoke() -> dict:
             "declared_image_pin": IMAGE_PIN,
             "pin_note": "Generated field contract checked; installed source provenance must be verified separately.",
             "sources": list(PINNED_SOURCES), "decoded_input_messages": input_records,
+            "synthetic_readonly_context": context_smoke,
             "transitions": records,
             "fault": revoked.reason, "bounds": "Synthetic protocol fixture, no flight calibration."}
 
 
 def read_config(path):
     values = json.loads(Path(path).read_text(encoding="utf-8"))
+    raw_bound = values["envelope"].get("capture_query_bound")
+    if raw_bound is not None:
+        from drone_cv.relative_profile import CaptureQueryBound
+        values["envelope"]["capture_query_bound"] = CaptureQueryBound.from_dict(raw_bound)
     values["envelope"] = Envelope(**values["envelope"])
     values["request_freshness"] = FreshnessPolicy(**values["request_freshness"])
     values["clock_contract"] = ClockContract(**values["clock_contract"])
@@ -169,6 +234,12 @@ def run(config_path, startup_path, confirmation):
     # An authored file cannot silently supply the opt-in action at point of risk.
     if "confirmation" in startup:
         raise ValueError("startup file must not contain confirmation; pass the explicit CLI authorization")
+    from drone_cv.px4_policy import HomeSnapshot, LandingCorridor, LocalReference, PolicyGeometry
+    geometry = startup["policy_geometry"]
+    raw_home = geometry["home"]
+    home = HomeSnapshot(**{**raw_home, "local_reference": LocalReference(**raw_home["local_reference"])})
+    startup = {**startup, "policy_geometry": PolicyGeometry(
+        **{**geometry, "home": home, "landing": LandingCorridor(**geometry["landing"])})}
     authorization = RuntimeAuthorization(confirmation=confirmation, **startup)
     authorization.validate(cfg)
     rclpy = import_module("rclpy")

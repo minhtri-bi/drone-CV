@@ -13,6 +13,7 @@ from drone_cv.timing import Clock, FreshnessPolicy, Stamp, freshness_error
 from drone_cv.supervision_contract import (
     ClockContract, LossResponse, RateWindow, REQUIRED_SOURCES, SourceBudget,
 )
+from drone_cv.relative_profile import CaptureQueryBound
 
 
 def _positive(value: float, name: str) -> None:
@@ -47,6 +48,7 @@ class Envelope:
     tracking_error_m: float
     position_error_m: float
     target: str
+    capture_query_bound: CaptureQueryBound | None = None
 
     def __post_init__(self):
         for name in ("minimum_ned", "maximum_ned"):
@@ -72,6 +74,8 @@ class Envelope:
             raise ValueError("unsupported motion target; hardware is not authorized")
         if self.yaw_error_rad >= pi / 2:
             raise ValueError("yaw error must be below pi/2")
+        if self.capture_query_bound is not None and not isinstance(self.capture_query_bound, CaptureQueryBound):
+            raise ValueError("typed capture/query uncertainty required")
 
 
 @dataclass(frozen=True)
@@ -222,6 +226,11 @@ class Permit:
     frame: str
     evidence_kind: str
     bounds_provenance: str
+    capture_position_ned: tuple[float, float, float] | None = None
+    evidence_rho_m: float | None = None
+    relative_bound_sha256: str | None = None
+    capture_source_sha256: str | None = None
+    query_source_sha256: str | None = None
 
     def __post_init__(self):
         _identity(self.source)
@@ -246,6 +255,29 @@ class Permit:
         if type(self.reset_counter) is not int or not 0 <= self.reset_counter <= 255:
             raise ValueError("certificate reset counter must be uint8")
         _identity(self.bounds_provenance)
+        if self.evidence_kind == "perception_supported":
+            if self.capture_position_ned is None:
+                raise ValueError("perception requires original capture position")
+            position = _vector(self.capture_position_ned, "capture position")
+            object.__setattr__(self, "capture_position_ned", position)
+            if self.evidence_rho_m is None:
+                raise ValueError("perception requires a complete supported-point radius")
+            _positive(self.evidence_rho_m, "supported-point radius")
+            # Producer must include all supported rays, complete geometry and
+            # optical/body lever arms; this independent lower bound covers the
+            # complete certified reference-center box, not only its center.
+            minimum_radius = hypot(*(max(abs(lo-p), abs(hi-p)) for p, lo, hi in
+                zip(position, self.minimum_ned, self.maximum_ned)))
+            if self.evidence_rho_m < minimum_radius:
+                raise ValueError("supported radius does not enclose the whole certified box")
+            for value in (self.relative_bound_sha256, self.capture_source_sha256, self.query_source_sha256):
+                if (not isinstance(value, str) or len(value) != 64
+                        or any(c not in "0123456789abcdef" for c in value)):
+                    raise ValueError("perception requires bound and canonical stream identities")
+        elif any(value is not None for value in (
+                self.capture_position_ned, self.evidence_rho_m, self.relative_bound_sha256,
+                self.capture_source_sha256, self.query_source_sha256)):
+            raise ValueError("bootstrap must not masquerade as a relative perception certificate")
 
 
 @dataclass(frozen=True)
@@ -343,6 +375,16 @@ def revoke(state: State, reason: str) -> tuple[State, Output]:
     return replace(state, stage=Stage.REVOKED, reason=reason), Output()
 
 
+def stopping_distance(cfg: Config, velocity_ned: tuple[float, float, float],
+                      issued_speed_bound_mps: float = 0., *, absolute: bool = True) -> float:
+    """Whole-direction conditional crash model; not measured stopping evidence."""
+    env = cfg.envelope
+    uncertain = hypot(*(abs(v)+error for v, error in zip(velocity_ned, env.velocity_error_mps)))
+    speed = max(env.maximum_speed_mps, uncertain, issued_speed_bound_mps)
+    return (speed*cfg.response_delay_s + speed**2/(2*env.deceleration_mps2)
+            + env.extra_margin_m + env.tracking_error_m + (env.position_error_m if absolute else 0.))
+
+
 def _motion_error(data: Inputs, cfg: Config, state: State) -> str | None:
     command, permit, actual = data.command, data.permit, data.odometry
     if command is None or permit is None:
@@ -369,24 +411,33 @@ def _motion_error(data: Inputs, cfg: Config, state: State) -> str | None:
     if data.lease is None or (data.lease.kind == "mission"
                              and permit.evidence_kind != "perception_supported"):
         return "PERMIT_EVIDENCE_KIND"
-    # A ball encloses every direction change, not just two nominal centerlines.
-    # Assumption: speed stays <= this bound during response, then decreases at
-    # least deceleration_mps2; tracking_error_m bounds residual model error.
-    # These explicit exploratory bounds are NOT certified by estimator variance.
-    uncertain_speed = hypot(*(abs(v) + error for v, error in
-                              zip(actual.velocity_ned, env.velocity_error_mps)))
-    # Include the entire declared tracking-speed envelope, all possibly effective
-    # earlier outputs and measured uncertainty. A new zero request cannot shrink it.
-    stopping = max(env.maximum_speed_mps, speed, uncertain_speed, state.issued_speed_bound_mps)
-    distance = (stopping * cfg.response_delay_s + stopping**2 / (2*env.deceleration_mps2)
-                + env.extra_margin_m + env.position_error_m + env.tracking_error_m)
-    if not isfinite(distance):
+    distance = stopping_distance(cfg, actual.velocity_ned, state.issued_speed_bound_mps, absolute=False)
+    region_error = env.position_error_m
+    if permit.evidence_kind == "perception_supported":
+        bound = env.capture_query_bound
+        if bound is None:
+            return "RELATIVE_UNCERTAINTY_MISSING"
+        if (bound.clock_epoch != actual.stamp.epoch or bound.reset_counter != actual.reset_counter
+                or bound.body_point != "base_link_origin" or bound.clock_source != "gazebo_sim"
+                or bound.basis != "capture_body_flu"
+                or permit.relative_bound_sha256 != bound.sha256
+                or permit.capture_source_sha256 != bound.capture_source_sha256
+                or permit.query_source_sha256 != bound.query_source_sha256):
+            return "RELATIVE_UNCERTAINTY_BINDING"
+        if data.now.sim_s-permit.capture_stamp.sim_s > bound.max_age_s:
+            return "RELATIVE_UNCERTAINTY_AGE"
+        if permit.evidence_rho_m is None or permit.evidence_rho_m > bound.rho_m:
+            return "RELATIVE_UNCERTAINTY_RADIUS"
+        region_error = bound.displacement_m
+    if not isfinite(distance+region_error):
         return "STOPPING_ROOM"
+    # Relative displacement belongs to perception evidence. Independent absolute
+    # frame error still protects the geofence; neither is counted twice.
     for p, low, high in zip(actual.position_ned, permit.minimum_ned, permit.maximum_ned):
-        if p - distance < low or p + distance > high:
+        if p-distance-region_error < low or p+distance+region_error > high:
             return "STOPPING_ROOM"
     for p, low, high in zip(actual.position_ned, env.minimum_ned, env.maximum_ned):
-        if p - distance < low or p + distance > high:
+        if p-distance-env.position_error_m < low or p+distance+env.position_error_m > high:
             return "PREDICTED_ENVELOPE"
     return None
 

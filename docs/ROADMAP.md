@@ -4,7 +4,7 @@
 
 Progress comes from `.omp/roadmap/roadmap.json`; English display text comes from `docs/roadmap.en.json`. Workspace binding and receipts are excluded.
 
-Revision: 101. A completed task does not certify that later gates have passed.
+Revision: 109. A completed task does not certify that later gates have passed.
 
 ## Supplemental checker gates
 
@@ -102,7 +102,7 @@ Status: **blocked**. Dependencies: `g1-environment`, `g0-safety`.
 - Priming/acknowledgment/mode/arming ownership, unused PX4 fields, and handoff have contracts appropriate to the firmware.
 - Stationary fault injection demonstrates that stale commands/owner conflicts do not authorize movement; do not treat this as a flight braking test.
 
-Blocker (verbatim native diagnostic): Approved N1/N2/N3 code/offline cutover passed 724 integrated regressions and actual guarded pinned-message/writer/retained-bag paths; no ROS init, nodes, publishers or arming. Per-tick crash horizon now binds tick gap/upper RTF, COM_OF_LOSS_T, COM_FAIL_ACT_T, transition and transport/clock/tracking onset; the full stopping ball includes earlier possibly effective outputs. N2 frozen retrospective 1216/1212 split fails: 166 heldout position-axis exceedances, unchanged health failures, missing schema2 truth/CDR identities, zero instantaneous velocity coverage, no untouched/blinded/tracking/applicability evidence. Final one-second node-clock windows also fall below diagnostic RTF floor0.196; no floor/health/TTL was retuned to admit. No real healthy matched baseline or causal fault injection, exact justified trial bounds/workload/policy, live readback/ownership/handoff/fallback or independent process-death proof exists. Operational publisher/arming approval remains absent. See docs/SIM_REPAIR_RESULTS.md and docs/replay/sim-repair-round2-01/.
+Blocker (verbatim native diagnostic): Round-three code/offline scope exercised, not runtime acceptance. Missing an eligible independently held-out operational health/error profile, justified full-3D stopping/tracking and workload/RTF bounds, actual valid frozen Home/reference plus landing/fence evidence, and healthy matched-stage baseline with correctly caused stale-command/owner faults, actual live readback/fallback/ownership/ACK/handoff observation.
 
 ### `g1-flight` — Empty-world mission: takeoff, square, hold, land, disarm
 
@@ -301,7 +301,7 @@ Status: **blocked**. Dependencies: `prep-evidence-semantics`, `g1-oracle`.
 - After separate acquisition approval, retain fresh pinned unarmed recording with passing original primary geometry and independent dy residual/truth comparison under frozen justified budgets. Historical failed evidence stays unchanged.
 - Supplemental G2 completion gate only; does not block unrelated G1 work or replace calibration.
 
-Blocker (verbatim native diagnostic): N7 actual pinned offline replay now has witnessed exit0 within600s, owned child reaped, and exact uncompressed report SHA25604f69883f90a870a866ac6e9173ef09119819bcb9faf6d5fbbfb9b87628a3a7d matching the prior artifact. New exclusive bundle/readback and lossless compression hashes are retained; old original_process_exit_observed=false evidence remains unchanged. All433 original-primary frames still fail and every dy diagnostic lacks a justified numerical budget. N2 empirical analysis retains real heldout/health failures, not calibration. N6 supplemental policies/table now share one declaration;724 integrated regressions pass. No fresh matching nonoccluding rendered/unarmed primary+dy acquisition or independently justified residual/rotation/depth/extrinsic/conditioning budgets exists; no new acquisition was authorized. G2 supplemental gate remains blocked, unrelated G1 is not newly gated. See docs/SIM_REPAIR_RESULTS.md and docs/replay/sim-repair-round2-01/.
+Blocker (verbatim native diagnostic): Round-three F5 retained CLI exited 0 without deadline expiry or surviving owned group after bounded grace; this is computation, not acceptance. Frozen support06 derivation retains 433 captures/1840 queries and 21546 covered pairs, but 3 queries precede any retained capture. Frozen source-disjoint r39 evaluation retains 136/588 identities with 6668 truth-uncovered pairs and 724 uncovered observations. Both are previously seen, not untouched heldout. Missing continuous truth, independent instantaneous twist, external conditional timing/calibration/intersample scope, justified health/uncertainty/tracking/dynamics and operational applicability remain blockers. See docs/SIM_REPAIR_RESULTS.md and docs/replay/sim-repair-round3-01/protocol-v3-preparation.json. No new task, acquisition, runtime/flight/calibration acceptance or threshold relaxation.
 
 ### `prep-flight-oracle` — Add moving-interval, isolation and phase-aware oracle evidence
 

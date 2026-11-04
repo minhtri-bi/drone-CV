@@ -15,10 +15,17 @@ import re
 import time
 
 from drone_cv.px4_quaternion import normalize_px4_quaternion
-from drone_cv.px4_failsafe import TerminalObservation, read_parameters, validate_policy
+from drone_cv.px4_failsafe import (
+    TerminalObservation, attested_parameter_policy, read_parameters, validate_policy,
+)
+from drone_cv.px4_observation import (
+    decode_battery, decode_fallback_flags, decode_home, decode_local_position, observation_failure,
+)
+from drone_cv.px4_policy import PolicyGeometry, validate_geometry_policy, validate_motion_policy
+from drone_cv.px4_runtime_guard import runtime_context_error
 from drone_cv.supervisor import (
     Ack, Command, Config, Inputs, Lease, Odometry, OperatorRequest, Output, Permit,
-    Stage, State, Status, revoke, transition,
+    Stage, State, Status, revoke, stopping_distance, transition,
 )
 from drone_cv.timing import Clock, Stamp
 from drone_cv.supervision_contract import rate_window
@@ -31,7 +38,8 @@ MESSAGES_ROOT = f"https://raw.githubusercontent.com/PX4/px4_msgs/{MESSAGES_PIN}/
 PINNED_SOURCES = (
     *(f"{MESSAGES_ROOT}/{name}.msg" for name in (
         "OffboardControlMode", "TrajectorySetpoint", "VehicleCommand",
-        "VehicleCommandAck", "VehicleStatus", "VehicleOdometry")),
+        "VehicleCommandAck", "VehicleStatus", "VehicleOdometry", "HomePosition",
+        "VehicleLocalPosition", "FailsafeFlags", "BatteryStatus")),
     f"{FIRMWARE_ROOT}/src/modules/commander/Commander.cpp",
     f"{FIRMWARE_ROOT}/src/modules/commander/px4_custom_mode.h",
     f"{FIRMWARE_ROOT}/src/modules/commander/HealthAndArmingChecks/checks/offboardCheck.cpp",
@@ -49,7 +57,13 @@ CONTROL_TOPICS = (
 OUTPUT_TYPES = {"offboard_control_mode": "OffboardControlMode",
                 "trajectory_setpoint": "TrajectorySetpoint", "vehicle_command": "VehicleCommand"}
 INPUT_TYPES = {"vehicle_odometry": "VehicleOdometry", "vehicle_status_v4": "VehicleStatus",
-               "vehicle_command_ack_v1": "VehicleCommandAck"}
+               "vehicle_command_ack_v1": "VehicleCommandAck", "home_position_v2": "HomePosition",
+               "vehicle_local_position_v1": "VehicleLocalPosition", "failsafe_flags": "FailsafeFlags",
+               "battery_status_v1": "BatteryStatus"}
+INPUT_KINDS = {"vehicle_odometry": "odometry", "vehicle_status_v4": "status",
+               "vehicle_command_ack_v1": "ack", "home_position_v2": "home",
+               "vehicle_local_position_v1": "local", "failsafe_flags": "flags",
+               "battery_status_v1": "battery"}
 
 
 def message_types():
@@ -59,7 +73,8 @@ def message_types():
                 "VehicleCommandAck": ("MESSAGE_VERSION", 1),
                 "TrajectorySetpoint": ("MESSAGE_VERSION", 0),
                 "VehicleCommand": ("VEHICLE_CMD_DO_SET_MODE", 176),
-                "VehicleOdometry": ("POSE_FRAME_NED", 1)}
+                "VehicleOdometry": ("POSE_FRAME_NED", 1), "HomePosition": ("MESSAGE_VERSION", 2),
+                "VehicleLocalPosition": ("MESSAGE_VERSION", 1), "BatteryStatus": ("MESSAGE_VERSION", 1)}
     for name, (constant, value) in expected.items():
         if getattr(getattr(types, name), constant) != value:
             raise ValueError(f"generated PX4 contract mismatch: {name}.{constant}")
@@ -201,6 +216,9 @@ class RuntimeAuthorization:
     empirical_profile: dict
     empirical_evaluation: dict
     workload: str
+    policy_geometry: PolicyGeometry
+    relative_profile: dict | None = None
+    relative_evaluation: dict | None = None
 
     def validate(self, cfg: Config):
         if self.target != "exploratory_simulation" or cfg.envelope.target != self.target:
@@ -211,6 +229,31 @@ class RuntimeAuthorization:
         if self.epoch != cfg.clock_contract.epoch:
             raise ValueError("startup and frozen timing contract epoch mismatch")
         cfg.loss_response.bind_policy(self.parameter_policy, self.firmware)
+        self._validate_empirical(cfg)
+        self._validate_motion_contract(cfg)
+        if (not isfinite(self.terminal_observation_wall_s)
+                or self.terminal_observation_wall_s <= 0):
+            raise ValueError("bounded terminal observation deadline required")
+        if self.owner != cfg.owner or not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", self.owner):
+            raise ValueError("startup owner must match a valid unique ROS node name")
+        if not re.fullmatch(r"(?:/[A-Za-z_][A-Za-z0-9_]*)+", self.namespace):
+            raise ValueError("an explicit absolute vehicle namespace is required")
+        if not self.epoch or len(self.epoch) > 128:
+            raise ValueError("explicit clock epoch is required")
+        if (self.firmware, self.messages, self.image) != (FIRMWARE_PIN, MESSAGES_PIN, IMAGE_PIN):
+            raise ValueError("startup manifest must attest the exact pinned environment")
+        if self.confirmation != f"ALLOW_CONTROL_PUBLISHERS:{self.namespace}:{self.owner}":
+            raise ValueError("explicit operator publisher-construction authorization required")
+        for value in (self.discovery_wall_s, self.discovery_stable_s, self.tick_wall_s):
+            if not isfinite(value) or value <= 0:
+                raise ValueError("runtime deadlines must be finite and positive")
+        if (self.discovery_stable_s >= self.discovery_wall_s
+                or self.tick_wall_s >= cfg.max_tick_gap_wall_s):
+            raise ValueError("invalid discovery/tick deadline ordering")
+        if not Path(self.lock_directory).is_dir():
+            raise ValueError("operator-provided lock directory must already exist")
+
+    def _validate_empirical(self, cfg):
         from drone_cv.empirical_profile import digest, empirical_trial_refusals
         env = cfg.envelope
         refusals = empirical_trial_refusals(
@@ -233,27 +276,38 @@ class RuntimeAuthorization:
         }
         if self.empirical_profile["protocol"]["applicability"] != applicability:
             raise ValueError("EMPIRICAL_APPLICABILITY_MISMATCH")
-        if (not isfinite(self.terminal_observation_wall_s)
-                or self.terminal_observation_wall_s <= 0):
-            raise ValueError("bounded terminal observation deadline required")
-        if self.owner != cfg.owner or not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", self.owner):
-            raise ValueError("startup owner must match a valid unique ROS node name")
-        if not re.fullmatch(r"(?:/[A-Za-z_][A-Za-z0-9_]*)+", self.namespace):
-            raise ValueError("an explicit absolute vehicle namespace is required")
-        if not self.epoch or len(self.epoch) > 128:
-            raise ValueError("explicit clock epoch is required")
-        if (self.firmware, self.messages, self.image) != (FIRMWARE_PIN, MESSAGES_PIN, IMAGE_PIN):
-            raise ValueError("startup manifest must attest the exact pinned environment")
-        if self.confirmation != f"ALLOW_CONTROL_PUBLISHERS:{self.namespace}:{self.owner}":
-            raise ValueError("explicit operator publisher-construction authorization required")
-        for value in (self.discovery_wall_s, self.discovery_stable_s, self.tick_wall_s):
-            if not isfinite(value) or value <= 0:
-                raise ValueError("runtime deadlines must be finite and positive")
-        if (self.discovery_stable_s >= self.discovery_wall_s
-                or self.tick_wall_s >= cfg.max_tick_gap_wall_s):
-            raise ValueError("invalid discovery/tick deadline ordering")
-        if not Path(self.lock_directory).is_dir():
-            raise ValueError("operator-provided lock directory must already exist")
+
+    def _validate_motion_contract(self, cfg):
+        env = cfg.envelope
+        validate_motion_policy(self.parameter_policy, maximum_speed_mps=env.maximum_speed_mps,
+                               minimum_deceleration_mps2=env.deceleration_mps2)
+        if not isinstance(self.policy_geometry, PolicyGeometry):
+            raise ValueError("typed actual/frozen policy geometry is required")
+        validate_geometry_policy(self.parameter_policy, self.policy_geometry,
+            current_home=self.policy_geometry.home, minimum_ned=env.minimum_ned,
+            maximum_ned=env.maximum_ned,
+            required_motion_reserve_m=stopping_distance(cfg, (0., 0., 0.)),
+            body_provenance=env.bounds_provenance)
+        if self.policy_geometry.home.epoch != self.epoch:
+            raise ValueError("frozen Home and trial clock epoch mismatch")
+        bound = env.capture_query_bound
+        if bound is not None:
+            from drone_cv.relative_profile import verify_capture_query_bound
+            if not isinstance(self.relative_profile, dict) or not isinstance(self.relative_evaluation, dict):
+                raise ValueError("RELATIVE_PROFILE_INELIGIBLE:MISSING_RELATIVE_EVIDENCE")
+            reasons = verify_capture_query_bound(bound, self.relative_profile, self.relative_evaluation,
+                permit_age_s=cfg.source("PERCEPTION").sim_ttl_s, max_rho_m=bound.rho_m,
+                capture_clock_epoch=self.epoch, query_clock_epoch=self.epoch,
+                capture_reset_counter=bound.reset_counter, query_reset_counter=bound.reset_counter,
+                model_sha256=env.bounds_provenance, body_point="base_link_origin",
+                clock_source=cfg.clock_contract.source, provenance_sha256=bound.provenance_sha256,
+                capture_source_sha256=bound.capture_source_sha256,
+                query_source_sha256=bound.query_source_sha256)
+            if reasons:
+                raise ValueError("RELATIVE_PROFILE_INELIGIBLE:" + ",".join(reasons))
+        elif self.relative_profile is not None or self.relative_evaluation is not None:
+            raise ValueError("orphan relative analysis without a frozen capture/query bound")
+
 
 
 class ProcessLock:
@@ -363,8 +417,7 @@ class RosBridge:
             self.clock_samples = ()
             self.node.create_subscription(ClockMessage, "/clock", self._clock, qos)
             for key, name in INPUT_TYPES.items():
-                kind = {"vehicle_odometry": "odometry", "vehicle_status_v4": "status",
-                        "vehicle_command_ack_v1": "ack"}[key]
+                kind = INPUT_KINDS[key]
                 self.node.create_subscription(getattr(self.types, name),
                     f"{authorization.namespace}/fmu/out/{key}",
                     lambda msg, kind=kind: self._receive_px4(kind, msg), qos)
@@ -378,7 +431,8 @@ class RosBridge:
                                   self.node.get_clock().now().nanoseconds/1e9, time.monotonic())
                 valid = (self._graph() and self.clock_value is not None
                          and cfg.clock_contract.error(
-                             rate_window(self.clock_samples, cfg.clock_contract), check_now) is None)
+                             rate_window(self.clock_samples, cfg.clock_contract), check_now) is None
+                         and self._context_error(check_now) is None)
                 stable = (stable if stable is not None else time.monotonic()) if valid else None
                 if stable is not None and time.monotonic()-stable >= authorization.discovery_stable_s:
                     break
@@ -389,14 +443,16 @@ class RosBridge:
             self.parameter_readback = read_parameters(
                 authorization.parameter_policy, authorization.policy_rationale,
                 authorization.readback_wall_s, authorization.firmware)
-            cfg.loss_response.bind_policy(self.parameter_readback["observed"], authorization.firmware)
+            cfg.loss_response.bind_policy(attested_parameter_policy(self.parameter_readback),
+                                          authorization.firmware)
             # Readback may take time: recheck original clock evidence and graph.
             check_now = Clock(authorization.epoch,
                               self.node.get_clock().now().nanoseconds/1e9, time.monotonic())
             if (not self._graph() or self.state.stage == Stage.REVOKED
                     or cfg.clock_contract.error(
-                        rate_window(self.clock_samples, cfg.clock_contract), check_now)):
-                raise RuntimeError("ownership/timing changed during parameter readback")
+                        rate_window(self.clock_samples, cfg.clock_contract), check_now)
+                    or self._context_error(check_now)):
+                raise RuntimeError("ownership/timing/policy context changed during parameter readback")
             for key, name in OUTPUT_TYPES.items():
                 self.publishers[key] = self.node.create_publisher(getattr(self.types, name),
                     f"{authorization.namespace}/fmu/in/{key}", qos)
@@ -427,6 +483,10 @@ class RosBridge:
         return graph_exclusive(self.node, auth.namespace, auth.owner,
                                self.cfg.planner, self.cfg.safety, getattr(self, "gids", None))
 
+    def _context_error(self, now):
+        return runtime_context_error(self.latest, now, self.cfg,
+            self.authorization.policy_geometry, self.authorization.parameter_policy, self.state)
+
     def _clock(self, msg):
         value = msg.clock.sec + msg.clock.nanosec/1e9
         if self.clock_value is not None and value < self.clock_value:
@@ -455,7 +515,9 @@ class RosBridge:
 
     def _receive_px4(self, kind, msg):
         try:
-            decoder = {"odometry": decode_odometry, "status": decode_status, "ack": decode_ack}[kind]
+            decoder = {"odometry": decode_odometry, "status": decode_status, "ack": decode_ack,
+                       "home": decode_home, "local": decode_local_position,
+                       "flags": decode_fallback_flags, "battery": decode_battery}[kind]
             value = decoder(msg, self.authorization.epoch, time.monotonic())
             if kind in ("status", "ack"):
                 attribute = kind + "_trace"
@@ -465,11 +527,23 @@ class RosBridge:
                 self.terminal_observation = terminal.observe(value)
             previous = self.latest.get(kind)
             if previous is not None:
-                if (value.stamp.sequence <= previous.stamp.sequence
-                        or value.stamp.sim_s <= previous.stamp.sim_s):
+                static_repeat = kind == "home" and value.identity == previous.identity
+                if ((value.stamp.sequence <= previous.stamp.sequence
+                     or value.stamp.sim_s <= previous.stamp.sim_s) and not static_repeat):
                     raise ValueError("nonadvancing source timestamp")
                 if kind == "odometry" and value.reset_counter != previous.reset_counter:
                     raise ValueError("estimator reset")
+                if kind == "home" and value.identity != previous.identity:
+                    raise ValueError("frozen Home changed")
+                if kind == "local" and value.frame_identity != previous.frame_identity:
+                    raise ValueError("frozen local reference or reset changed")
+                if kind == "battery" and value.identity != previous.identity:
+                    raise ValueError("battery source identity changed")
+            if kind in ("local", "flags", "battery"):
+                failure = observation_failure(value, offboard_required=self.state.stage in (
+                    Stage.OFFBOARD_DISARMED, Stage.ARM_WAIT, Stage.ACTIVE))
+                if failure:
+                    raise ValueError(failure)
             if kind == "status":
                 # Never let a later healthy packet erase observed loss of authority.
                 if (value.system_id, value.component_id) != (self.cfg.target_system, self.cfg.target_component):
@@ -503,7 +577,7 @@ class RosBridge:
                         and value.stamp.received_wall_s > pending.wall_s):
                     raise ValueError(f"PX4 command rejected: {value.result}")
             self.latest[kind] = value
-        except (ValueError, TypeError, OverflowError) as error:
+        except (ValueError, TypeError, AttributeError, OverflowError) as error:
             self.state, _ = revoke(self.state, f"INVALID_{kind.upper()}:{error}")
 
     def _receive_json(self, kind, payload):
@@ -534,6 +608,11 @@ class RosBridge:
                 self._stop_publishers()
                 return
             now = Clock(self.authorization.epoch, self.node.get_clock().now().nanoseconds/1e9, wall)
+            context_error = self._context_error(now)
+            if context_error:
+                self.state, _ = revoke(self.state, context_error)
+                self._stop_publishers()
+                return
             data = Inputs(now, self.latest.get("odometry"), self.latest.get("status"),
                 self.latest.get("command"), self.latest.get("permit"), self.latest.get("lease"),
                 self._graph(), self.latest.get("request"), self.latest.get("ack"),

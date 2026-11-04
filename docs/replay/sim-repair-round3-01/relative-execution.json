@@ -1,0 +1,26 @@
+{
+  "scope": "OFFLINE_ONLY",
+  "argv": [
+    "/usr/bin/python3",
+    "scripts/sim_relative_consistency.py",
+    "evaluate",
+    "--protocol",
+    "/workspace/artifacts/sim-repair-round3-work/relative-protocol.json",
+    "--output",
+    "/workspace/artifacts/sim-repair-round3-work/relative-consistency.json"
+  ],
+  "exit_code": 0,
+  "deadline_wall_s": 240,
+  "deadline_expired": false,
+  "elapsed_wall_s": 26.68097609700004,
+  "child_reaped": true,
+  "owned_process_group_grace_wall_s": 2,
+  "owned_process_group_empty_after_grace": true,
+  "owned_group_cleanup_sent": false,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "2e844ab3074f56df02e69b0e0b2df78d88ce56bddc91334ed7610f24826dd0d0",
+  "ros_initialized": false,
+  "nodes_created": 0,
+  "control_publishers_created": 0,
+  "new_acquisition": false
+}

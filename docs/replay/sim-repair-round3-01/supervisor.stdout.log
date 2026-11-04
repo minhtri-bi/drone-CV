@@ -1,0 +1,289 @@
+{
+  "scope": "OFFLINE_ONLY",
+  "pinned_message_smoke": {
+    "scope": "OFFLINE_ONLY",
+    "runtime_verified": false,
+    "gate_verified": false,
+    "publishers_created": 0,
+    "rclpy_initialized": false,
+    "armed_commands_sent": 0,
+    "nodes_created": 0,
+    "ownership_locks_acquired": 0,
+    "arm_messages_encoded": 1,
+    "declared_firmware_pin": "61907962c9220437ec01a98fa26bfbf5cbb254b5",
+    "declared_messages_pin": "8fb8277cf95c4ba87094146bc8922e76c4ac0799",
+    "declared_image_pin": "sha256:061a39905d2d84d40859bb46b67048241b6dacf2ed3983889da7f5fd3e718285",
+    "pin_note": "Generated field contract checked; installed source provenance must be verified separately.",
+    "sources": [
+      "https://raw.githubusercontent.com/PX4/px4_msgs/8fb8277cf95c4ba87094146bc8922e76c4ac0799/msg/OffboardControlMode.msg",
+      "https://raw.githubusercontent.com/PX4/px4_msgs/8fb8277cf95c4ba87094146bc8922e76c4ac0799/msg/TrajectorySetpoint.msg",
+      "https://raw.githubusercontent.com/PX4/px4_msgs/8fb8277cf95c4ba87094146bc8922e76c4ac0799/msg/VehicleCommand.msg",
+      "https://raw.githubusercontent.com/PX4/px4_msgs/8fb8277cf95c4ba87094146bc8922e76c4ac0799/msg/VehicleCommandAck.msg",
+      "https://raw.githubusercontent.com/PX4/px4_msgs/8fb8277cf95c4ba87094146bc8922e76c4ac0799/msg/VehicleStatus.msg",
+      "https://raw.githubusercontent.com/PX4/px4_msgs/8fb8277cf95c4ba87094146bc8922e76c4ac0799/msg/VehicleOdometry.msg",
+      "https://raw.githubusercontent.com/PX4/px4_msgs/8fb8277cf95c4ba87094146bc8922e76c4ac0799/msg/HomePosition.msg",
+      "https://raw.githubusercontent.com/PX4/px4_msgs/8fb8277cf95c4ba87094146bc8922e76c4ac0799/msg/VehicleLocalPosition.msg",
+      "https://raw.githubusercontent.com/PX4/px4_msgs/8fb8277cf95c4ba87094146bc8922e76c4ac0799/msg/FailsafeFlags.msg",
+      "https://raw.githubusercontent.com/PX4/px4_msgs/8fb8277cf95c4ba87094146bc8922e76c4ac0799/msg/BatteryStatus.msg",
+      "https://raw.githubusercontent.com/PX4/PX4-Autopilot/61907962c9220437ec01a98fa26bfbf5cbb254b5/src/modules/commander/Commander.cpp",
+      "https://raw.githubusercontent.com/PX4/PX4-Autopilot/61907962c9220437ec01a98fa26bfbf5cbb254b5/src/modules/commander/px4_custom_mode.h",
+      "https://raw.githubusercontent.com/PX4/PX4-Autopilot/61907962c9220437ec01a98fa26bfbf5cbb254b5/src/modules/commander/HealthAndArmingChecks/checks/offboardCheck.cpp",
+      "https://raw.githubusercontent.com/PX4/PX4-Autopilot/61907962c9220437ec01a98fa26bfbf5cbb254b5/src/modules/uxrce_dds_client/dds_topics.yaml",
+      "https://raw.githubusercontent.com/PX4/PX4-Autopilot/61907962c9220437ec01a98fa26bfbf5cbb254b5/src/modules/uxrce_dds_client/dds_topics.h.em",
+      "https://raw.githubusercontent.com/PX4/PX4-Autopilot/61907962c9220437ec01a98fa26bfbf5cbb254b5/src/modules/uxrce_dds_client/utilities.hpp"
+    ],
+    "decoded_input_messages": {
+      "VehicleOdometry": {
+        "cdr_bytes": 120,
+        "cdr_sha256": "65ad51ac08e233d0c20c5ad2b3d81e5ab451b3bdde1d4219d9454ba3d4f75aba"
+      },
+      "VehicleStatus": {
+        "cdr_bytes": 88,
+        "cdr_sha256": "cc0812f2c149c79cebf1ae9a6e6ab3311df7c7fc20c6f4dae70a1e1b32b7cc20"
+      },
+      "VehicleCommandAck": {
+        "cdr_bytes": 32,
+        "cdr_sha256": "b7b66d809c6c581adcc265b49a96662ec87ae8d1ea9d45537ddd3cdaabf36e36"
+      },
+      "VehicleLocalPosition": {
+        "cdr_bytes": 220,
+        "cdr_sha256": "9b518281d6d3d2faa3d00d4d28bdfca4250aba868cf892e36dcdffa09b29b6f1"
+      },
+      "HomePosition": {
+        "cdr_bytes": 68,
+        "cdr_sha256": "bfd160d30c2bc2e9b39790571ad0cf96ed46d334dce05608de8da276451245dd"
+      },
+      "FailsafeFlags": {
+        "cdr_bytes": 100,
+        "cdr_sha256": "18c13629c14abf169c44e36cb7ddf155d0ad24a0b5ef2c6e9f666e05a3184f5e"
+      },
+      "BatteryStatus": {
+        "cdr_bytes": 180,
+        "cdr_sha256": "f50c29285e117368d1beeae589838893377d3f3f13dd380ce18f32d71c74440f"
+      }
+    },
+    "synthetic_readonly_context": {
+      "scope": "synthetic declarations only; not live policy/fallback validation",
+      "baseline_reason": null,
+      "hold_failure_reason": "HOLD_UNAVAILABLE:local_position_invalid",
+      "home_change_reason": "PX4_GEOMETRY:actual Home/local reference/epoch/reset differs from frozen geometry"
+    },
+    "transitions": [
+      {
+        "stage": "priming",
+        "messages": {
+          "offboard_control_mode": {
+            "type": "OffboardControlMode",
+            "cdr_bytes": 20,
+            "cdr_sha256": "03c5a34f05a1ecc83ea5b61ddff947abd53687315c14795e415b7191cf6f63d1"
+          }
+        }
+      },
+      {
+        "stage": "mode_wait",
+        "messages": {
+          "offboard_control_mode": {
+            "type": "OffboardControlMode",
+            "cdr_bytes": 20,
+            "cdr_sha256": "fda1d3fd6b9ec2aaccc968bf02ebe7acfe029994a0a1356cfc60997b30e8666d"
+          },
+          "vehicle_command": {
+            "type": "VehicleCommand",
+            "cdr_bytes": 60,
+            "cdr_sha256": "5ddeb736cf55fb75a05805e3a5b46e5fb96dc03df6498427e7fe0b1c29b1c8b0"
+          }
+        }
+      },
+      {
+        "stage": "offboard_disarmed",
+        "messages": {
+          "offboard_control_mode": {
+            "type": "OffboardControlMode",
+            "cdr_bytes": 20,
+            "cdr_sha256": "5c934be3b1af889698c5651ce0cd83e3b21997ffa4219ef581009213e911ae86"
+          },
+          "trajectory_setpoint": {
+            "type": "TrajectorySetpoint",
+            "cdr_bytes": 68,
+            "cdr_sha256": "4ae37e8a8afdfd7bc1a474bacfbc647ccfdb0d1bf6fd0fda92c778e6ca064472"
+          }
+        }
+      },
+      {
+        "stage": "arm_wait",
+        "messages": {
+          "offboard_control_mode": {
+            "type": "OffboardControlMode",
+            "cdr_bytes": 20,
+            "cdr_sha256": "f47bf1c0594e634a9b29da5aef8cf15a9c69c0517bb01aac477649f78347ede8"
+          },
+          "trajectory_setpoint": {
+            "type": "TrajectorySetpoint",
+            "cdr_bytes": 68,
+            "cdr_sha256": "b4cfda0dd4d6c2d5c964320a18cf419cd537cb112c131f7a5fda8c6f38e3d22d"
+          },
+          "vehicle_command": {
+            "type": "VehicleCommand",
+            "cdr_bytes": 60,
+            "cdr_sha256": "118be3e3a0fb4e1a70677b58fe7f079d307eb7b67b69e226236db90fe8ad868e"
+          }
+        }
+      },
+      {
+        "stage": "active",
+        "messages": {
+          "offboard_control_mode": {
+            "type": "OffboardControlMode",
+            "cdr_bytes": 20,
+            "cdr_sha256": "365b2fce68bf8b4bd281f583001553e21001c455ed84aaee4e8124cb9d97931e"
+          },
+          "trajectory_setpoint": {
+            "type": "TrajectorySetpoint",
+            "cdr_bytes": 68,
+            "cdr_sha256": "56c289623f0b531ad0c9502b79229fa7c4733b79f34cf0e6791e4be07ff02c25"
+          }
+        }
+      },
+      {
+        "stage": "handoff_wait",
+        "messages": {
+          "vehicle_command": {
+            "type": "VehicleCommand",
+            "cdr_bytes": 60,
+            "cdr_sha256": "36281c9f4bdd99c17a604dd360066e1fb83b958b69535c9c8eefa77ef74a64a2"
+          }
+        }
+      },
+      {
+        "stage": "released",
+        "messages": {}
+      }
+    ],
+    "fault": "MISSING_ODOMETRY",
+    "bounds": "Synthetic protocol fixture, no flight calibration."
+  },
+  "retained_replays": [
+    {
+      "recording": "r39",
+      "manifest_sha256": "b8c4b316f4b1c39b6f24f835253e7ce15c72d97d948194c51291fd69ce65ae98",
+      "evaluated_odometry": 630,
+      "outcomes": {
+        "RTF_OBSERVATION_MISSING": 20,
+        "RTF_OUTSIDE_SUPPORTED_RANGE": 177,
+        "ODOMETRY_UNCERTAINTY": 433
+      },
+      "conditional_geometry_outcomes": {
+        "CONTAINED": 630
+      },
+      "stationary_admission_demonstrated": false,
+      "observed_position_variance_max": 0.03260526433587074,
+      "observed_velocity_variance_max": 0.006320078857243061,
+      "health_limits_unchanged": true,
+      "clock_contract": {
+        "minimum_rtf": 0.196,
+        "maximum_rtf": 1.0,
+        "window_wall_s": 1.0,
+        "observed_minimum_rtf": 0.17462875456963206,
+        "observed_maximum_rtf": 0.2279920061442797,
+        "runtime_supported_range_established": false
+      },
+      "source_wall_deadlines_s": {
+        "ODOMETRY": 0.1520408163265306,
+        "STATUS": 2.6714285714285713,
+        "COMMAND": 0.1520408163265306,
+        "PERMIT": 0.1520408163265306,
+        "PERCEPTION": 0.42653061224489797,
+        "LOCAL_POSITION": 0.1520408163265306,
+        "FALLBACK_FLAGS": 1.1204081632653062,
+        "BATTERY": 5.20204081632653
+      },
+      "maximum_raw_squared_norm_error": 1.8410179669636761e-07,
+      "window": "all stored odometry matched to original receive identities; missing causal status reported",
+      "scope": "independent conditional ticks, not continuous runtime/clock/watchdog or dynamics validation",
+      "bounds": {
+        "velocity_error_axis_mps": 0.01,
+        "tracking_error_m": 0.01,
+        "position_error_m": 0.01,
+        "deceleration_mps2": 0.1,
+        "response_delay_s": 0.4,
+        "extra_margin_m": 0.1
+      },
+      "physical_bounds_verified": false,
+      "synthetic_clear_region": [
+        -10.0,
+        10.0
+      ]
+    },
+    {
+      "recording": "support06",
+      "manifest_sha256": "306b529d10016f3b073a2cc85f227b8b2562b1dc0d35efad2effae6cd7adf9cb",
+      "evaluated_odometry": 1893,
+      "outcomes": {
+        "MISSING_CAUSAL_STATUS": 20,
+        "RTF_OUTSIDE_SUPPORTED_RANGE": 1870,
+        "ODOMETRY_UNCERTAINTY": 2,
+        "RTF_OBSERVATION_STALE": 1
+      },
+      "conditional_geometry_outcomes": {
+        "CONTAINED": 1873
+      },
+      "stationary_admission_demonstrated": false,
+      "observed_position_variance_max": 0.030841292813420296,
+      "observed_velocity_variance_max": 0.00535054225474596,
+      "health_limits_unchanged": true,
+      "clock_contract": {
+        "minimum_rtf": 0.196,
+        "maximum_rtf": 1.0,
+        "window_wall_s": 1.0,
+        "observed_minimum_rtf": 0.053682691941849776,
+        "observed_maximum_rtf": 0.19922298255449686,
+        "runtime_supported_range_established": false
+      },
+      "source_wall_deadlines_s": {
+        "ODOMETRY": 0.1520408163265306,
+        "STATUS": 2.6714285714285713,
+        "COMMAND": 0.1520408163265306,
+        "PERMIT": 0.1520408163265306,
+        "PERCEPTION": 0.42653061224489797,
+        "LOCAL_POSITION": 0.1520408163265306,
+        "FALLBACK_FLAGS": 1.1204081632653062,
+        "BATTERY": 5.20204081632653
+      },
+      "maximum_raw_squared_norm_error": 1.842088146464249e-07,
+      "window": "all stored odometry matched to original receive identities; missing causal status reported",
+      "scope": "independent conditional ticks, not continuous runtime/clock/watchdog or dynamics validation",
+      "bounds": {
+        "velocity_error_axis_mps": 0.01,
+        "tracking_error_m": 0.01,
+        "position_error_m": 0.01,
+        "deceleration_mps2": 0.1,
+        "response_delay_s": 0.4,
+        "extra_margin_m": 0.1
+      },
+      "physical_bounds_verified": false,
+      "synthetic_clear_region": [
+        -10.0,
+        10.0
+      ]
+    }
+  ],
+  "actual_bounded_writer": {
+    "complete": true,
+    "topic_counts": {
+      "/offline/vehicle_status_v4": 2
+    },
+    "maximum_storage_write_wall_s": 0.0002848910000068372,
+    "stored_identity_sha256": {
+      "/offline/vehicle_status_v4": "10c5f84f3dbf62d00188ef504e4b6236992d874af305b1b3605fdc255dde5e6e"
+    },
+    "storage_closed": true,
+    "enqueued_counts": {
+      "/offline/vehicle_status_v4": 2
+    },
+    "enqueued_identity_sha256": {
+      "/offline/vehicle_status_v4": "10c5f84f3dbf62d00188ef504e4b6236992d874af305b1b3605fdc255dde5e6e"
+    },
+    "depth_audit_schema": 1
+  }
+}
+

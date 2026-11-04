@@ -1,0 +1,4 @@
+[INFO] [1793817842.324210859] [rosbag2_storage]: Opened database '/workspace/r39/bag/bag_0.db3' for READ_ONLY.
+[INFO] [1793817845.742815802] [rosbag2_storage]: Opened database '/workspace/support06/bag/bag_0.db3' for READ_ONLY.
+[INFO] [1793817849.345557855] [rosbag2_storage]: Opened database '/workspace/artifacts/sim-repair-round3-work/supervisor.writer/bag/bag_0.db3' for READ_WRITE.
+[INFO] [1793817849.451917145] [rosbag2_storage]: Opened database '/workspace/artifacts/sim-repair-round3-work/supervisor.writer/bag/bag_0.db3' for READ_ONLY.

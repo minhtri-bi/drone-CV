@@ -33,7 +33,8 @@ def diagnostic_config() -> Config:
               for name, ttl, period, jitter in (
                   ("ODOMETRY", .5, .02, .05), ("STATUS", 3., .504, .1),
                   ("COMMAND", .5, .02, .05), ("PERMIT", .5, .02, .05),
-                  ("PERCEPTION", .5, .064, .1))),
+                  ("PERCEPTION", .5, .064, .1), ("LOCAL_POSITION", .5, .02, .05),
+                  ("FALLBACK_FLAGS", .5, .2, .1), ("BATTERY", 2., 1., .1))),
         LossResponse("conditional_retained_epoch", FIRMWARE_PIN, .05, .02, .01, .02, 5,
                      "Synthetic diagnostic response; no actual fallback readback/execution",
                      "synthetic_offline"),
@@ -173,7 +174,7 @@ def main() -> None:
     from rclpy.node import Node
     def forbidden(*args, **kwargs):
         raise RuntimeError("OFFLINE_GUARD: runtime initialization/control construction forbidden")
-    rclpy.init = rclpy.create_node = Node.create_publisher = forbidden
+    rclpy.init = rclpy.create_node = Node.__init__ = Node.create_publisher = forbidden
     from g1_supervisor import offline_smoke
     report = {"scope": "OFFLINE_ONLY", "pinned_message_smoke": offline_smoke(),
               "retained_replays": [replay(path) for path in args.recording],

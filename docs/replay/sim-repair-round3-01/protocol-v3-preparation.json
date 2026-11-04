@@ -1,0 +1,111 @@
+{
+  "schema": 3,
+  "kind": "bounded_preparation_not_operational_protocol",
+  "base_commit": "9ca1c806d670822b04afadbd5fa8af98694e0806",
+  "review_source": {
+    "name": "drone-CV-review-round2-9ca1c80.md",
+    "sha256": "56c64da40db218880f77355466ba9ea554281e6f8c8ec9c6043868f258c22831"
+  },
+  "native_tasks": [
+    "g1-supervisor",
+    "prep-evidence-review",
+    "prep-flight-oracle",
+    "prep-depth-path-audit",
+    "prep-geometry-crosscheck"
+  ],
+  "authority": {
+    "simulator_started": false,
+    "new_acquisition": false,
+    "ros_initialization": false,
+    "control_publishers": false,
+    "parameter_or_home_writes": false,
+    "arming_or_mode_changes": false,
+    "installations": false
+  },
+  "pinned": {
+    "firmware": "61907962c9220437ec01a98fa26bfbf5cbb254b5",
+    "messages": "8fb8277cf95c4ba87094146bc8922e76c4ac0799",
+    "image": "sha256:061a39905d2d84d40859bb46b67048241b6dacf2ed3983889da7f5fd3e718285"
+  },
+  "response": {
+    "per_admitted_tick": "After a supervisor death immediately after tick k, the entire speed-bounded stale-command path, fallback transition and braking volume must remain within the supported certificate and independent geofence.",
+    "simulation_horizon_s": "max_tick_gap_wall_s * RTF_max + upper_float32(COM_OF_LOSS_T) + upper_float32(COM_FAIL_ACT_T) + declared_mode_transition_s + declared_transport_clock_s",
+    "hold_delay_semantics": "Pinned framework excludes Action::Hold from COM_FAIL_ACT_T deferral; retaining a nonnegative delay term is conservative, not a measured transition guarantee.",
+    "allowed_frozen_change": "Reducing COM_OF_LOSS_T with an explicit rationale tightens stale-setpoint exposure; never a relaxed threshold.",
+    "restricted_policy": {
+      "offboard_loss": "Hold=5",
+      "geofence": "Hold=2",
+      "rc_loss": "Hold=1",
+      "data_link_loss": "Hold=1",
+      "manual_input": "COM_RC_IN_MODE=4",
+      "exception_masks": "zero",
+      "COM_FAIL_ACT_T": 0.0,
+      "critical_battery": "Land=2 with complete independently bound eroded corridor"
+    },
+    "speed": "hypot(upper(MPC_XY_VEL_MAX), max(upper(MPC_Z_VEL_MAX_UP), upper(MPC_Z_VEL_MAX_DN))) <= declared 3D speed bound",
+    "braking": "Commanded acceleration/jerk limits are upper limits, never calibrated lower braking capability. Reject declarations exceeding relevant caps; actual stopping/tracking evidence remains required."
+  },
+  "roles": {
+    "absolute_position": "Separate empirical base_link origin radius for bootstrap/geofence only; not a capture-query transform bound.",
+    "relative_geometry": "translation + 2*sin(rotation/2)*rho over complete support points, optical/body lever arms and footprint. Exact TTL/source/model/provenance/epoch/reset binding is mandatory.",
+    "health": "Per-axis estimator-health ceilings with a separately frozen operational role and rationale; no variance-to-error conversion and no chosen multiplier from heldout outcomes.",
+    "relative_frozen_sha256": "94f6752d8ccbecce2c8c5a66a071f94cea7d42660644c7fefec1ca28e8b4217c",
+    "relative_membership": "Whole support06 derivation (433 capture / 1840 query identities); whole r39 retrospective source-disjoint evaluation (136 / 588). Same-source temporal diagnostics are explicitly not independent."
+  },
+  "clock": {
+    "supported_rtf_min": {
+      "selection_status": "not selected for runtime",
+      "reason": "0.196 long-window and lower short-window observations do not validate a supported workload floor. 0.12 is not automatically accepted."
+    },
+    "wall_service_rule": "simulation-cadenced source: nominal_period_sim_s / supported_RTF_min + bounded_jitter_wall_s; wall-cadenced source: its own period + jitter. Preserve original simulation TTL.",
+    "below_floor": "RTF_OUTSIDE_SUPPORTED_RANGE is a valid revoke, never a PASS for an unrelated fault injection.",
+    "example_only": {
+      "maximum_observed_gap_sim_s": 0.396,
+      "hypothetical_rtf_min": 0.12,
+      "minimum_wall_s_before_jitter": 3.3
+    },
+    "sources": [
+      "Gazebo clock",
+      "odometry",
+      "status",
+      "local reference",
+      "fallback flags",
+      "battery",
+      "command",
+      "permit",
+      "capture"
+    ],
+    "human_and_tick_deadlines": "Do not scale operator lease, command TTL, tick/session/request/handoff wall deadlines."
+  },
+  "geometry": {
+    "home": "Frozen actual Home/local reference, epoch and xy/z/vxy/vz reset counters. Observed Home/origin/heading-reset changes latch; never silently rebind.",
+    "fence": "Complete inner geofence plus stopping/uncertainty/physical/frame reserve lies strictly inside actual Home-centered outer horizontal radius and above-Home ceiling.",
+    "navigation_clearance_m": 0.5,
+    "height_condition": "NAV base_link altitude >= actual full-body support extent + 0.5 m + justified motion/uncertainty/tracking reserve. Rest/support contact is not NAV acceptance.",
+    "landing": "Independent complete phase-eroded corridor covers every admitted center through designated support contact; never exempt body/rotor contacts."
+  },
+  "fault_validity": {
+    "baseline": "Untampered matched baseline reaches and remains at exact target stage, actual PX4 mode/arming and output eligibility without revoke.",
+    "fault": "Same eligible frozen profile/workload/geometry; actual injection; first revoke matches expected causal reason and suppresses output immediately.",
+    "masking": "A revoked baseline, earlier ODOMETRY_UNCERTAINTY/RTF/unsupported-fallback failure or missing observation makes INVALID_TEST, never PASS."
+  },
+  "required_before_operational_freeze": [
+    "Justified independent health role and ceilings, separate from geometry uncertainty",
+    "Untouched source-disjoint heldout membership acquired under separately approved unarmed scope",
+    "Continuous independent truth and matching instantaneous twist, not denser-position finite differences",
+    "External conditional timing/calibration/intersample transform scope and complete rho coverage",
+    "Independent stopping/tracking dynamics under frozen full 3D speed and acceleration/jerk policy",
+    "Supported workload/RTF window/range and per-source cadence/jitter justification",
+    "Actual valid frozen Home/origin/reset context and full eroded landing/fence physical evidence",
+    "Phase-aware NAV free volume and evaluator isolation/unsafe latching",
+    "Independent actual healthy matched baseline and correctly caused injected revocations",
+    "Point-of-risk approval for any ROS/control/parameter/Home/mode/arming/acquisition operation"
+  ],
+  "operational_protocol_ready": false,
+  "runtime_profile_selected": false,
+  "runtime_admission": false,
+  "flight_admission": false,
+  "calibration_established": false,
+  "prior_evidence": "All prior protocols, bundles, raw bags and failed windows retained unchanged; no historical trace relabelled untouched.",
+  "preparation_sha256": "b3bbbeeb17668338659a473d9911948483f90bb619f8fe55d8dd43c99bbaa5b7"
+}

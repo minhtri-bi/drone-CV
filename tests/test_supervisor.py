@@ -24,7 +24,8 @@ def config():
             for name, ttl, period, jitter in (
                 ("ODOMETRY", .5, .02, .05), ("STATUS", 3., .5, .1),
                 ("COMMAND", .5, .02, .05), ("PERMIT", .5, .02, .05),
-                ("PERCEPTION", .5, .02, .05))),
+                ("PERCEPTION", .5, .02, .05), ("LOCAL_POSITION", .5, .02, .05),
+                ("FALLBACK_FLAGS", .5, .2, .1), ("BATTERY", 2., 1., .1))),
         loss_response=LossResponse("epoch", "a"*40, .05, .02, .01, .02, 5,
                                    "Synthetic nonoverlapping loss budget", "synthetic_offline"),
         clock_stall_wall_s=.5, max_clock_step_s=.5,

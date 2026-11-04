@@ -1,0 +1,16 @@
+{
+  "relative-protocol.json.gz": {
+    "uncompressed_sha256": "c372c5de8536963011c6969d8141d114ff59a439fa0f1d73d341f592526d4433",
+    "compressed_sha256": "fb89d4401857b56183b5da8a203241a401dab4532e835421c6eba5ab53483dce",
+    "uncompressed_bytes": 779530,
+    "compressed_bytes": 115473,
+    "decompressed_readback_equal": true
+  },
+  "relative-consistency.json.gz": {
+    "uncompressed_sha256": "a42b9430f7fc6c21b1a31ade1bcfa1bda8b2cf45e1af173af1d21fcf1a37b0a6",
+    "compressed_sha256": "555feb7bfc075fd123b46c74071784074f8ce4603fc642c41e937a19d8fff6cf",
+    "uncompressed_bytes": 21788401,
+    "compressed_bytes": 827732,
+    "decompressed_readback_equal": true
+  }
+}

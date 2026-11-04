@@ -5,8 +5,8 @@
   "root": "C:\\Users\\TRI\\drone-CV",
   "title": "Drone-CV: simulation-first obstacle avoidance",
   "goal": "Sửa contract an toàn trước; chuẩn bị OMP; triển khai G0–G4 với oracle độc lập, đạt ít nhất 45/50 world tĩnh ở G3, không unsafe event trong acceptance suite, không tuyên bố bay thật.",
-  "revision": 101,
-  "updatedAt": "2026-11-04T17:28:25.831Z",
+  "revision": 109,
+  "updatedAt": "2026-11-04T18:52:23.736Z",
   "tasks": [
     {
       "id": "prep-safety",
@@ -227,11 +227,11 @@
       "milestone": false,
       "verification": "smoke",
       "status": "blocked",
-      "blocker": "Approved N1/N2/N3 code/offline cutover passed 724 integrated regressions and actual guarded pinned-message/writer/retained-bag paths; no ROS init, nodes, publishers or arming. Per-tick crash horizon now binds tick gap/upper RTF, COM_OF_LOSS_T, COM_FAIL_ACT_T, transition and transport/clock/tracking onset; the full stopping ball includes earlier possibly effective outputs. N2 frozen retrospective 1216/1212 split fails: 166 heldout position-axis exceedances, unchanged health failures, missing schema2 truth/CDR identities, zero instantaneous velocity coverage, no untouched/blinded/tracking/applicability evidence. Final one-second node-clock windows also fall below diagnostic RTF floor0.196; no floor/health/TTL was retuned to admit. No real healthy matched baseline or causal fault injection, exact justified trial bounds/workload/policy, live readback/ownership/handoff/fallback or independent process-death proof exists. Operational publisher/arming approval remains absent. See docs/SIM_REPAIR_RESULTS.md and docs/replay/sim-repair-round2-01/.",
-      "runToken": "786a8a7d-323f-4129-8f7d-5e9e5ee4db42",
-      "startedAt": "2026-11-04T16:53:09.145Z",
+      "blocker": "Round-three code/offline scope exercised, not runtime acceptance. Missing an eligible independently held-out operational health/error profile, justified full-3D stopping/tracking and workload/RTF bounds, actual valid frozen Home/reference plus landing/fence evidence, and healthy matched-stage baseline with correctly caused stale-command/owner faults, actual live readback/fallback/ownership/ACK/handoff observation.",
+      "runToken": "622bc61f-edc6-461e-9992-1d5fb2fcd6ad",
+      "startedAt": "2026-11-04T18:14:57.442Z",
       "evidenceIds": [],
-      "note": "User approved section6 round-two N1/N2/N3 and fault-validity CODE/OFFLINE implementation. Existing runtime acquisition/readback/ownership/fallback blockers and no-publisher/no-arming scope remain; no completion claim."
+      "note": "User approved round-three F2/F3/F8 policy/3D/Home/precision code and F5 uncertainty binding plus v3 offline preparation. Prerequisites g1-environment/g0-safety are complete. No simulator, acquisition, publishers, ROS init, parameter writes or arming; actual baseline/fallback gates stay unmet."
     },
     {
       "id": "g1-flight",
@@ -728,11 +728,11 @@
       "milestone": false,
       "verification": "smoke",
       "status": "blocked",
-      "blocker": "N7 actual pinned offline replay now has witnessed exit0 within600s, owned child reaped, and exact uncompressed report SHA25604f69883f90a870a866ac6e9173ef09119819bcb9faf6d5fbbfb9b87628a3a7d matching the prior artifact. New exclusive bundle/readback and lossless compression hashes are retained; old original_process_exit_observed=false evidence remains unchanged. All433 original-primary frames still fail and every dy diagnostic lacks a justified numerical budget. N2 empirical analysis retains real heldout/health failures, not calibration. N6 supplemental policies/table now share one declaration;724 integrated regressions pass. No fresh matching nonoccluding rendered/unarmed primary+dy acquisition or independently justified residual/rotation/depth/extrinsic/conditioning budgets exists; no new acquisition was authorized. G2 supplemental gate remains blocked, unrelated G1 is not newly gated. See docs/SIM_REPAIR_RESULTS.md and docs/replay/sim-repair-round2-01/.",
-      "runToken": "081a0c5e-c969-4152-9ad6-68140fc8d8b2",
-      "startedAt": "2026-11-04T16:58:39.229Z",
+      "blocker": "Round-three F5 retained CLI exited 0 without deadline expiry or surviving owned group after bounded grace; this is computation, not acceptance. Frozen support06 derivation retains 433 captures/1840 queries and 21546 covered pairs, but 3 queries precede any retained capture. Frozen source-disjoint r39 evaluation retains 136/588 identities with 6668 truth-uncovered pairs and 724 uncovered observations. Both are previously seen, not untouched heldout. Missing continuous truth, independent instantaneous twist, external conditional timing/calibration/intersample scope, justified health/uncertainty/tracking/dynamics and operational applicability remain blockers. See docs/SIM_REPAIR_RESULTS.md and docs/replay/sim-repair-round3-01/protocol-v3-preparation.json. No new task, acquisition, runtime/flight/calibration acceptance or threshold relaxation.",
+      "runToken": "e3729674-1503-46af-abe8-4d5173861a84",
+      "startedAt": "2026-11-04T18:22:52.454Z",
       "evidenceIds": [],
-      "note": "User approved N7 witnessed exit replay of existing pinned offline inputs only and N6 guard consolidation. No fresh dy fixture acquisition or uncertainty-budget acceptance; runtime gate remains unmet."
+      "note": "Approved F5 complete capture-query relative analysis/binding and protocol-v3 code/offline preparation. Existing semantics/oracle prerequisites are complete; no new heldout recording, dy acquisition, justified runtime bounds or acquisition acceptance is claimed."
     },
     {
       "id": "prep-flight-oracle",
@@ -1284,6 +1284,58 @@
       "at": "2026-11-04T17:25:05.941Z",
       "outcome": "unknown",
       "sha256": "f1eafb0ee3fbaee84c1004acb94bd6066c50096ce8b9012a8c77060ee83d8d10"
+    },
+    {
+      "id": "r_2c48ab21-8e7c-40ae-a47a-7a8ce8defc3d",
+      "taskId": "g1-supervisor",
+      "runToken": "622bc61f-edc6-461e-9992-1d5fb2fcd6ad",
+      "kind": "check",
+      "label": "Round-three integrated code/offline boundary regressions; no ROS initialization, simulator, control publishers or runtime acceptance",
+      "toolName": "bash",
+      "toolCallId": "call_6bb6cf39f938479ca45fe44db50063ff|fc_058dc683addc67b1016aeb7bdd85e487d0ada8e82d1e77161b",
+      "sessionId": "01a1a4d6-71ab-778b-a103-9ef0e487530a",
+      "at": "2026-11-04T18:39:41.271Z",
+      "outcome": "failure",
+      "sha256": "f101870e510e7d2869383e599b445b40bd57d95b1a25d9c43275f69d856347d5"
+    },
+    {
+      "id": "r_8d57915c-ca8b-43cb-b9b0-2cf971c6c8df",
+      "taskId": "g1-supervisor",
+      "runToken": "622bc61f-edc6-461e-9992-1d5fb2fcd6ad",
+      "kind": "check",
+      "label": "Final integrated offline regressions after isolating new TTL and floor-contact fixtures; no safety limit relaxation or runtime acceptance",
+      "toolName": "bash",
+      "toolCallId": "call_513bdb05531b44c4af706e7addaf9cf0|fc_058dc683addc67b1016aeb7c4826c087d0b51cef5bd6fc23d7",
+      "sessionId": "01a1a4d6-71ab-778b-a103-9ef0e487530a",
+      "at": "2026-11-04T18:42:13.261Z",
+      "outcome": "unknown",
+      "sha256": "d8c1cf6aa503a85999a5948aadf4658223497d6584147ad98ad81b963309d9ed"
+    },
+    {
+      "id": "r_77b8a179-22a2-4b30-bbcf-29365db17327",
+      "taskId": "prep-evidence-review",
+      "runToken": "e3729674-1503-46af-abe8-4d5173861a84",
+      "kind": "smoke",
+      "label": "Pinned offline generated-message/context smoke, retained replay and pre-frozen capture-query relative CLI; owned subprocess deadlines, no ROS initialization/node/control or new acquisition",
+      "toolName": "eval",
+      "toolCallId": "call_ab5a099529ac43f6bbc83e5f515db774|fc_058dc683addc67b1016aeb7cddab0087d0a651ef54b8cda1b7",
+      "sessionId": "01a1a4d6-71ab-778b-a103-9ef0e487530a",
+      "at": "2026-11-04T18:44:09.961Z",
+      "outcome": "success",
+      "sha256": "252089b921f9428f43da00b55cf52f3e900ebd75fd97b33c638871cf583b141e"
+    },
+    {
+      "id": "r_3e24ed32-ddfb-4023-864a-617883bfcdd8",
+      "taskId": "prep-evidence-review",
+      "runToken": "e3729674-1503-46af-abe8-4d5173861a84",
+      "kind": "smoke",
+      "label": "Pre-frozen F5 relative consistency on retained sources only; previous supervisor CLI exit 0 retained with immediate child-group cleanup anomaly, not silently retried",
+      "toolName": "eval",
+      "toolCallId": "call_a1150baf2180406ba8e8d65e6b4edfeb|fc_058dc683addc67b1016aeb7d47bdf887d0ba70d967f0192ca3",
+      "sessionId": "01a1a4d6-71ab-778b-a103-9ef0e487530a",
+      "at": "2026-11-04T18:46:10.280Z",
+      "outcome": "success",
+      "sha256": "96c0b4cd4b65b2e7d415f02ec103a4d6576e0d7c3e4d64b0dbd79cd693a9aed2"
     }
   ]
 }

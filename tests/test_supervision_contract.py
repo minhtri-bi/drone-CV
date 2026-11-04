@@ -9,6 +9,23 @@ from drone_cv.supervision_contract import LossResponse, RateWindow, SourceBudget
 from drone_cv.supervisor import Stage, State, transition
 from drone_cv.timing import Clock, Stamp
 from test_supervisor import active, bare_adapter, config, inputs
+from test_px4_policy import geometry, policy as declared_policy
+
+
+def conditional_runtime_inputs(cfg):
+    """Generous synthetic room for pure prerequisites, never a runtime profile."""
+    from drone_cv.px4_bridge import FIRMWARE_PIN
+    policy = {**declared_policy(), "COM_OF_LOSS_T": .05,
+              "GF_MAX_HOR_DIST": 50., "GF_MAX_VER_DIST": 50.}
+    cfg = replace(cfg, envelope=replace(cfg.envelope, target="exploratory_simulation",
+                  minimum_ned=(-5., -5., -15.), maximum_ned=(5., 5., -6.), maximum_speed_mps=1.2),
+                  loss_response=replace(cfg.loss_response, firmware=FIRMWARE_PIN,
+                                        failsafe_delay_s=0., scope="exploratory_conditional"))
+    context = geometry()
+    context = replace(context, horizontal_radius_m=50., height_above_home_m=50., motion_reserve_m=5.,
+        landing=replace(context.landing, minimum_ned=(-15., -15., -25.), maximum_ned=(15., 15., 0.),
+                        body_provenance=cfg.envelope.bounds_provenance))
+    return cfg, policy, context
 
 
 def test_loss_timeout_transition_and_upper_rtf_each_consume_stopping_room():
@@ -167,14 +184,8 @@ def test_clock_callback_retains_actual_rate_and_sticky_reset(monkeypatch):
 
 
 def test_empirical_missing_evidence_stops_runtime_before_ros_import(tmp_path, monkeypatch):
-    from drone_cv import px4_bridge, px4_failsafe
-    cfg = replace(config(),
-        envelope=replace(config().envelope, target="exploratory_simulation"),
-        loss_response=replace(config().loss_response, scope="exploratory_conditional",
-                              firmware=px4_bridge.FIRMWARE_PIN))
-    policy = {name: 1 for name in px4_failsafe.REQUIRED_PARAMETERS}
-    policy = {**policy, "UXRCE_DDS_SYNCT": 0, "COM_OF_LOSS_T": .05,
-              "COM_FAIL_ACT_T": .02, "COM_OBL_RC_ACT": 5}
+    from drone_cv import px4_bridge
+    cfg, policy, context = conditional_runtime_inputs(config())
     authorization = px4_bridge.RuntimeAuthorization(
         owner=cfg.owner, namespace="/vehicle", epoch="epoch",
         firmware=px4_bridge.FIRMWARE_PIN, messages=px4_bridge.MESSAGES_PIN,
@@ -184,7 +195,7 @@ def test_empirical_missing_evidence_stops_runtime_before_ros_import(tmp_path, mo
         tick_wall_s=.05, target="exploratory_simulation", parameter_policy=policy,
         policy_rationale="Synthetic negative policy; never applied", readback_wall_s=1.,
         terminal_observation_wall_s=1., instance=0, empirical_profile={}, empirical_evaluation={},
-        workload="Synthetic boundary fixture, not a supported workload")
+        workload="Synthetic boundary fixture, not a supported workload", policy_geometry=context)
     def forbidden(*args, **kwargs):
         raise AssertionError("No ROS import or resource construction before complete admission")
     monkeypatch.setattr(px4_bridge, "import_module", forbidden)
@@ -195,13 +206,10 @@ def test_empirical_missing_evidence_stops_runtime_before_ros_import(tmp_path, mo
 
 
 def test_conditional_profile_prerequisite_binds_workload_without_granting_authority(tmp_path):
-    from drone_cv import px4_bridge, px4_failsafe
+    from drone_cv import px4_bridge
     from drone_cv.empirical_profile import Applicability, derive_profile, digest, evaluate_profile
     from test_empirical_profile import protocol, sample
-    cfg = config()
-    policy = {name: 1 for name in px4_failsafe.REQUIRED_PARAMETERS}
-    policy = {**policy, "UXRCE_DDS_SYNCT": 0, "COM_OF_LOSS_T": .05,
-              "COM_FAIL_ACT_T": .02, "COM_OBL_RC_ACT": 5}
+    cfg, policy, context = conditional_runtime_inputs(config())
     app = Applicability(px4_bridge.IMAGE_PIN, px4_bridge.FIRMWARE_PIN, px4_bridge.MESSAGES_PIN,
         digest(policy), "gazebo_sim", cfg.clock_contract.minimum_rtf,
         cfg.clock_contract.maximum_rtf, cfg.clock_contract.window_wall_s,
@@ -220,7 +228,7 @@ def test_conditional_profile_prerequisite_binds_workload_without_granting_author
         cfg.owner, "/vehicle", "epoch", px4_bridge.FIRMWARE_PIN, px4_bridge.MESSAGES_PIN,
         px4_bridge.IMAGE_PIN, "ALLOW_CONTROL_PUBLISHERS:/vehicle:test_owner", str(tmp_path),
         2., .2, .05, "exploratory_simulation", policy, "Synthetic no-operation boundary",
-        1., 1., 0, profile.to_dict(), evaluation, app.workload)
+        1., 1., 0, profile.to_dict(), evaluation, app.workload, context)
     authorization.validate(cfg)  # Pure prerequisite check; no ROS construction.
     assert evaluation["runtime_admission"] is False
     assert evaluation["deterministic_bound_certified"] is False
@@ -230,3 +238,25 @@ def test_conditional_profile_prerequisite_binds_workload_without_granting_author
         authorization.validate(replace(cfg, clock_contract=replace(cfg.clock_contract, minimum_rtf=.15)))
     with pytest.raises(ValueError, match="EMPIRICAL_PROFILE_INELIGIBLE"):
         authorization.validate(replace(cfg, envelope=replace(cfg.envelope, velocity_error_mps=(.01,)*3)))
+    from drone_cv.relative_profile import CaptureQueryBound, evaluate_relative_profile, relative_profile_payload
+    from test_relative_profile import J, MODEL, setup_profile
+    relative_protocol, rows = setup_profile()
+    relative_protocol = replace(relative_protocol, holdout_kind="untouched_source_disjoint",
+                                blinding_evidence_sha256="a"*64, conditional_model_scope_sha256=J)
+    relative_payload = relative_profile_payload(relative_protocol, rows)
+    relative_evaluation = evaluate_relative_profile(relative_payload)
+    bound = CaptureQueryBound(.5, .05, .05, 2., relative_protocol.source_sha256,
+        relative_evaluation["evaluation_sha256"], relative_protocol.provenance_sha256, MODEL,
+        "base_link_origin", "gazebo_sim", "epoch", 0, conditional_model_scope_sha256=J)
+    relative_cfg = replace(cfg, envelope=replace(cfg.envelope, bounds_provenance=MODEL,
+                                                capture_query_bound=bound))
+    relative_authorization = replace(authorization, relative_profile=relative_payload,
+        relative_evaluation=relative_evaluation, policy_geometry=replace(context,
+            landing=replace(context.landing, body_provenance=MODEL)))
+    relative_authorization.validate(relative_cfg)
+    assert not relative_evaluation["runtime_admission"]
+    with pytest.raises(ValueError, match="MISSING_RELATIVE_EVIDENCE"):
+        replace(relative_authorization, relative_profile=None).validate(relative_cfg)
+    with pytest.raises(ValueError, match="RELATIVE_EVALUATION_CONTENT_OR_HASH_MISMATCH"):
+        replace(relative_authorization, relative_evaluation={
+            **relative_evaluation, "runtime_admission": True}).validate(relative_cfg)

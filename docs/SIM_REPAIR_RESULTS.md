@@ -1,6 +1,6 @@
 # Simulation review repairs: code and offline results
 
-Sections R1–R10 below retain first-round evidence at `46e1771`. The [second-round section](#second-round-n1n7-code-and-offline-results) records the current N1–N7 cutover; it does not upgrade historical results.
+Sections R1–R10 retain first-round evidence at `46e1771`. The [second-round section](#second-round-n1n7-code-and-offline-results) records N1–N7 at `9ca1c80`. The [third-round section](#third-round-f1-f9-restricted-policy-and-relative-uncertainty) records the subsequent approved F1–F9 code/offline cutover; it does not upgrade historical results.
 
 ## Scope and roadmap
 
@@ -185,4 +185,71 @@ An intervening integrity check encountered a transient unlisted duplicate check 
 
 
 `g1-supervisor`, `prep-evidence-review`, `prep-flight-oracle`, `prep-depth-path-audit` and `prep-geometry-crosscheck` retain their unmet operational/acquisition criteria. In particular, no eligible untouched profile, justified tracking/stopping/RTF workload range, actual healthy baseline/causal faults, live parameter/fallback/ownership observation, new dy acquisition, evaluator isolation/phase/support proof, authoritative source/bridge taps or independent mesh-loader observation was supplied. No flight, calibration, G2 or hardware gate passes. PR #12 remains draft.
+
+## Third round F1-F9: restricted policy and relative uncertainty
+
+### Scope and current roadmap
+
+The user approved the bounded code/offline work after the review of `9ca1c80`. [Frozen protocol-v3 preparation](replay/sim-repair-round3-01/protocol-v3-preparation.json) records that review's SHA-256, exact environment pins, stable task mapping, per-tick invariant and missing operational inputs. It is explicitly **not an operational protocol or selected runtime profile**.
+
+Native revision **109** retains **36 tasks: 14 done, 5 blocked, 17 pending**. `g1-supervisor` and `prep-evidence-review` were started for this approved slice, exercised and returned to blocked through the native API. No task, dependency edge, acceptance threshold or completed gate was invented. The other three preparation blockers and all flight/calibration/G2 criteria remain.
+
+No simulator, ROS initialization/node/control publisher, new sensor acquisition, live parameter/Home write, mode/arming operation, installation or hardware operation occurred. Synthetic mode/arm messages are serialized by the existing offline smoke only, never sent. The actual pinned decoder container used network none, four CPUs, 6 GiB, dropped capabilities and no host mounts; [the selected inspection fields](replay/sim-repair-round3-01/offline-environment.json) retain its real image/isolation identity. The owned container was stopped after analysis.
+
+### F2/F3/F8: policy, physical limits and actual reference context
+
+The [pinned policy contract](PX4_POLICY_CONTRACT.md) now defines all 29 required parameters with exact float/integer/enum/mask domains. The supported exploratory policy requests Hold for Offboard loss, geofence and RC/GCS loss; disables exception masks, explicitly selects headless manual-input handling, and freezes `COM_FAIL_ACT_T=0.0`. Battery has no Hold enum: critical-battery **Land** remains enabled and requires a complete independently declared model/phase-eroded landing corridor through support contact. Disabling battery protection is not a workaround.
+
+The adapter subscribes only to already-published pinned `HomePosition`, `VehicleLocalPosition`, `FailsafeFlags` and `BatteryStatus` outputs in addition to odometry/status/ACK. Actual Hold requirements, GCS/battery health and valid local/global reference are required before output-publisher construction and during ticks. Every added dynamic stream has its own original-stamp simulation TTL and RTF-derived finite receive-wall budget. Static Home is frozen context, not an invented 5 Hz progress source. Missing/stale/invalid context refuses; observed Home/origin/reset/heading-reset or battery-identity changes and transient unsupported capabilities latch. Later healthy packets cannot restore authority.
+
+These checks do not promise that broken Hold remains Hold: pinned firmware may escalate to RTL/Land/Descend/Terminate. Unsupported concurrent structural/estimator/fallback failures remain outside the conditional stopping claim. A legitimate PX4 Home update during a later phase needs a separately justified reference contract; it is not silently accepted.
+
+Horizontal and ascent/descent speed caps are checked by their conservative **3D resultant**, including float32 comparison reserve. The declared braking assumption may not exceed relevant commanded acceleration caps; acceleration/jerk settings are not measured minimum braking capability. The complete inner geofence plus motion/frame reserve must fit strictly inside the **actual frozen Home-centered** horizontal cylinder and above-Home ceiling. This is not a symmetric vertical fence or a certified floor. The full landing corridor has independent body/physical/clearance bindings. Empty rationale, disabled/wrong-frame/inner fences and incomplete support coverage reject.
+
+Readback keeps raw four-decimal quiet text separate from the policy attested by actual pinned `param compare -s`. Quiet `.3333` need not mean disagreement with expected `.33333`; changing a text comparison tolerance cannot recover lost bits. Authoritative float agreement uses the pinned float32 predicate, and time/speed bounds conservatively include its accepted interval. Integer readback stays exact. Runtime loss budgets bind the attested policy, never the rounded diagnostic value. This implementation was **not exercised against live PX4 parameters**; no parameter was applied or rounded silently.
+
+### F5: complete capture-query population, not one absolute radius
+
+`Envelope.position_error_m` remains absolute local-NED base-link-origin uncertainty for bootstrap/geofence. A perception-supported `Permit` requires a separate `CaptureQueryBound`, exact original capture position/stamp, complete supported-point radius and canonical capture/query producer identities. The radius must at least enclose the complete certified center box; its producer must independently include all rays, physical footprint and optical/body lever arms. Rotation reserves use:
+
+```text
+translation_m + 2 * sin(rotation_rad / 2) * rho_m
+```
+
+The bound binds TTL/radius, full analysis/evaluation/model/provenance identities, capture-body-FLU basis and the future trial's exact string epoch/reset. The runtime recomputes full evidence consistency before ROS construction; a claimed PASS/calibrated flag is not accepted. Relative reserve erodes the perception region once. Independent absolute uncertainty still protects the geofence; it is not added to that same relative interval twice. Missing/out-of-scope relative evidence never falls back to an absolute profile.
+
+The [frozen full membership](replay/sim-repair-round3-01/relative-protocol.json.gz) precedes this evaluation. TTL is **0.5 s**, not the historical 10 s analysis horizon. `rho=30 m`, translation limit `0.05 m` and rotation limit `0.01 rad` are explicitly hypothetical diagnostic declarations, not fitted or justified operational limits. Their whole-point reserve is `0.3499987500015625 m`; this is not a passing runtime profile.
+
+| Frozen source role | Captures / queries | All in-TTL pairs | Truth-covered pairs | Explicit unresolved coverage |
+| --- | ---: | ---: | ---: | --- |
+| Whole support06 derivation | 433 / 1,840 | 21,546 | 21,546 | Three query identities precede any retained capture |
+| Whole r39 source-disjoint retrospective evaluation | 136 / 588 | 6,668 | 0 | All 6,668 pairs and 724 observations lack continuous truth |
+
+All 1,840 support06 query identities remain; the earlier 1,831 joint velocity-usable subset was not substituted. Same-source temporal diagnostics retain 10,952/10,254 support06 pairs and 3,036/3,442 r39 pairs without crossing split boundaries. They are explicitly **not independent heldout validation**. Both entire sources were already seen historically.
+
+Among covered support06 pairs, maximum translation is `0.025958690746617063 m`, rotation is `0.0008372367887585656 rad`, and the radius-30 m displacement expression reaches `0.04799607886752642 m`. Maximum absolute query-origin radius is separately `0.06801532789133645 m`. Signed/per-axis extrema, age bins, percentiles, worst source identities, every missing observation/pair and all frozen hypothetical-limit violations are retained in the [complete compressed report](replay/sim-repair-round3-01/relative-consistency.json.gz). Existing `truth_error.all_pairs/relative_error/transform_error` independently recompute the usable full-SE(3) extrema.
+
+Zero hypothetical-limit violations on covered derivation pairs do **not** repair absent coverage or the uncovered heldout source. The report retains `sampled_claim_met: false`, `runtime_admission: false`, `calibration_established: false`, `deterministic_bound_certified: false` and `continuous_time_bound_certified: false`. Missing untouched source-disjoint validation and external timing/calibration/intersample scope remain explicit. Future complete independent data under an explicitly declared conditional model can satisfy that prerequisite; the code does not hardcode permanent refusal or manufacture a deterministic certificate.
+
+### F1/F4/F6/F7/F9: frozen preparation, no passing inputs invented
+
+- **F1:** Every admitted tick must leave enough supported room if the supervisor dies immediately afterward: the last command persists through tick gap plus Offboard-loss exposure, fallback transition and braking. The pinned framework does not defer selected Hold under `COM_FAIL_ACT_T`; retaining a nonnegative delay term is conservative. Lowering frozen `COM_OF_LOSS_T` with rationale tightens stale-command exposure, not a relaxed threshold.
+- **F4:** Health ceilings and geometric error bounds remain different roles. No variance-to-error conversion, health multiplier chosen from heldout failures or fabricated calibrated bound was introduced. An independently justified operational health profile is still missing.
+- **F6:** Wall service is `period_sim / supported_RTF_min + bounded_jitter`; wall-cadenced sources keep their own period. `0.396 / 0.12 = 3.3 s` before jitter, not `0.27 s`. Neither `0.12` nor the previously observed `0.196` establishes a supported short-window workload floor. Below-floor revoke is valid, but cannot count as PASS for a different injected fault. Human/session/tick/request/handoff deadlines are not stretched.
+- **F7:** NAV height must fit full physical vertical reach, unchanged **0.5 m** clearance and justified motion/error/tracking reserve. Rest/support contact is not NAV acceptance. No smaller body, relaxed contact allowlist, lower clearance or new `Stage.BRAKING` was introduced.
+- **F9:** There is no new untouched acquisition. Denser position truth still yields interval-average velocity unless an independent instantaneous source or justified additional dynamics model exists. Stopping/tracking/calibration evidence, complete phase/support/evaluator isolation, fresh original-primary/dy acquisition, authoritative source/bridge taps and independent mesh-loading evidence remain missing.
+
+A real fault trial is valid only if its untampered matched baseline reaches and remains at the required stage, actual PX4 mode/arming and output eligibility without revocation. A fault must independently reach that healthy stage and revoke first for its expected cause. Prior odometry-health, unsupported-RTF or fallback failures make the trial **INVALID_TEST**, never a vacuous PASS.
+
+### Exercised verification and execution anomaly retained
+
+- Full offline suite: **829 passed in 86.81 s**. Expanded pure relative-startup assertions then passed; final integrated changed-scope regressions: **219 passed in 6.87 s**. [The check ledger](replay/sim-repair-round3-01/checks.json) distinguishes these runs and initial fixture failures.
+- Actual pinned offline smoke serializes and decodes **seven generated input types**, exercises the synthetic lifecycle plus healthy read-only context, Hold rejection and frozen-Home mismatch, and creates no ROS resources. The two-message bounded writer roundtrip closes storage and retains matching enqueue/storage identities. [Supervisor/replay report](replay/sim-repair-round3-01/supervisor.json).
+- Retained r39/support06 replay preserves all earlier RTF/health/status refusals and unchanged synthetic limits. No actual stationary admission is demonstrated.
+- The supervisor CLI's actual exit is **0**. Its first wrapper exits **1** because an immediate post-exit owned-group check still finds a group; the wrapper sends owned cleanup. A later actual `docker top` contains only `/bin/sleep infinity`. The surviving member was not captured, so no specific cause or process identity is asserted. The CLI was **not retried**, and this anomaly is not hidden as a clean lifecycle result. [Original execution record](replay/sim-repair-round3-01/offline-execution-01.json).
+- The separate frozen relative CLI exits **0** in `26.68097609700004 s`, without its 240 s deadline expiring, with its child reaped and owned group empty within bounded offline cleanup grace. [Actual execution record](replay/sim-repair-round3-01/relative-execution.json). This is successful computation, not a passing profile.
+- Full protocol/report bytes are preserved through gzip with exact decompression readback and both compressed/uncompressed SHA-256 identities in [compression provenance](replay/sim-repair-round3-01/compression.json). [SHA256SUMS](replay/sim-repair-round3-01/SHA256SUMS) covers the complete new bundle. Earlier evidence was not overwritten.
+- `python scripts/check_project.py --export-roadmap` and `python scripts/check_project.py` both passed: unchanged original PDF, 36 acyclic tasks, 65 scenario IDs, local links, native revision 109 and **116 evidence hashes**. `docs/ROADMAP.md` is the generated English view; no native JSON/HTML was hand-edited.
+
+`g1-supervisor`, `prep-evidence-review`, `prep-flight-oracle`, `prep-depth-path-audit` and `prep-geometry-crosscheck` remain blocked on their actual criteria. No runtime trial, flight, calibration, G2 or hardware gate passes. PR #12 remains draft.
 

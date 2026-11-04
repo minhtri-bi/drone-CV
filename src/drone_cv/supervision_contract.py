@@ -8,7 +8,10 @@ from math import isfinite
 
 from drone_cv.timing import Clock, FreshnessPolicy
 
-REQUIRED_SOURCES = frozenset({"ODOMETRY", "STATUS", "COMMAND", "PERMIT", "PERCEPTION"})
+REQUIRED_SOURCES = frozenset({
+    "ODOMETRY", "STATUS", "COMMAND", "PERMIT", "PERCEPTION",
+    "LOCAL_POSITION", "FALLBACK_FLAGS", "BATTERY",
+})
 
 
 def finite(value: float, name: str, *, positive: bool = False) -> None:
@@ -152,9 +155,15 @@ class LossResponse:
         finite(tick_wall_s, "tick wall gap", positive=True)
         if self.epoch != clock.epoch:
             raise ValueError("response/clock epoch mismatch")
-        # Upper RTF bounds simulated travel during wall scheduling delay.
-        result = (tick_wall_s*clock.maximum_rtf + self.offboard_loss_s
-                  + self.failsafe_delay_s + self.mode_transition_s + self.transport_clock_s)
+        # Upper RTF bounds simulated travel during wall scheduling delay. Runtime
+        # readback attests float32 comparison intervals, not exact quiet text.
+        loss, delay = self.offboard_loss_s, self.failsafe_delay_s
+        if self.scope == "exploratory_conditional":
+            from drone_cv.px4_policy import conservative_upper_float_parameter_bound
+            loss = conservative_upper_float_parameter_bound("COM_OF_LOSS_T", loss)
+            delay = conservative_upper_float_parameter_bound("COM_FAIL_ACT_T", delay)
+        result = (tick_wall_s*clock.maximum_rtf + loss
+                  + delay + self.mode_transition_s + self.transport_clock_s)
         if not isfinite(result):
             raise ValueError("loss-response budget overflow")
         return result

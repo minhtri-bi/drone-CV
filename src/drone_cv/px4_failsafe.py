@@ -11,34 +11,19 @@ import subprocess
 import time
 
 from drone_cv.supervisor import Status
+from drone_cv.px4_policy import (
+    PARAMETER_DOMAINS, PINNED_FIRMWARE, REQUIRED_PARAMETERS,
+    parameter_precision, validate_parameter_policy,
+)
 
 PARAMETER_COMMAND = "/opt/px4-gazebo/bin/px4-param"
 VERSION_COMMAND = "/opt/px4-gazebo/bin/px4-ver"
-REQUIRED_PARAMETERS = frozenset({
-    "COM_OF_LOSS_T", "COM_OBL_RC_ACT", "COM_FAIL_ACT_T", "COM_RC_LOSS_T",
-    "COM_RCL_EXCEPT", "NAV_RCL_ACT", "NAV_DLL_ACT", "COM_DL_LOSS_T",
-    "COM_LOW_BAT_ACT", "BAT_LOW_THR", "BAT_CRIT_THR", "BAT_EMERGEN_THR",
-    "GF_ACTION", "GF_MAX_HOR_DIST", "GF_MAX_VER_DIST", "MPC_XY_VEL_MAX",
-    "UXRCE_DDS_SYNCT",
-})
 
 
 def validate_policy(expected: dict, rationale: str, timeout_s: float) -> None:
-    if not isinstance(expected, dict) or set(expected) != REQUIRED_PARAMETERS:
-        raise ValueError("failsafe policy requires the complete pinned parameter inventory")
-    if not isinstance(rationale, str) or not rationale.strip():
-        raise ValueError("frozen trial policy rationale is required")
-    if not isfinite(timeout_s) or timeout_s <= 0:
+    validate_parameter_policy(expected, rationale)
+    if type(timeout_s) not in (int, float) or not isfinite(timeout_s) or timeout_s <= 0:
         raise ValueError("readback deadline must be finite and positive")
-    for name, value in expected.items():
-        if isinstance(value, bool) or not isinstance(value, (int, float)) or not isfinite(value):
-            raise ValueError(f"nonfinite parameter policy: {name}")
-    if expected["UXRCE_DDS_SYNCT"] != 0:
-        raise ValueError("simulation requires Gazebo clock without DDS wall synchronization")
-    if not 0 <= expected["COM_OBL_RC_ACT"] <= 7 or int(expected["COM_OBL_RC_ACT"]) != expected["COM_OBL_RC_ACT"]:
-        raise ValueError("unsupported pinned Offboard-loss enum")
-    if expected["COM_OF_LOSS_T"] <= 0 or expected["MPC_XY_VEL_MAX"] <= 0:
-        raise ValueError("loss timeout and speed cap must be positive")
 
 
 def read_parameters(expected: dict, rationale: str, timeout_s: float, firmware: str) -> dict:
@@ -50,6 +35,9 @@ def read_parameters(expected: dict, rationale: str, timeout_s: float, firmware: 
     against a malicious local operator or proof of the configured flight action.
     """
     validate_policy(expected, rationale, timeout_s)
+    expected = dict(expected)
+    if firmware != PINNED_FIRMWARE:
+        raise ValueError("readback requires the exact pinned firmware identity")
     if not Path(PARAMETER_COMMAND).is_file() or not Path(VERSION_COMMAND).is_file():
         raise ValueError("pinned local PX4 readback commands unavailable")
     deadline = time.monotonic() + timeout_s
@@ -66,25 +54,81 @@ def read_parameters(expected: dict, rationale: str, timeout_s: float, firmware: 
     version = query([VERSION_COMMAND, "git"])
     if firmware not in re.findall(r"\b[0-9a-f]{40}\b", version):
         raise ValueError("live PX4 firmware identity mismatch")
-    observed = {}
+    observed, quiet_text, precision = {}, {}, {}
     for name in sorted(expected):
         raw = query([PARAMETER_COMMAND, "show", "-q", name])
-        if not re.fullmatch(r"[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?", raw):
-            raise ValueError(f"missing or ambiguous live parameter: {name}")
-        value = float(raw)
-        # The pinned quiet path prints four decimals. Additionally use PX4's
-        # read-only comparison: integers exact, floats abs(error) < 1e-7.
-        # Report that precision explicitly; this is not bit-exact float readback.
-        if not isfinite(value) or value != float(f"{expected[name]:.4f}"):
-            raise ValueError(f"live parameter mismatch: {name}")
+        metadata = parameter_precision(name, expected[name])
+        observed[name] = _quiet_value(name, raw, metadata)
+        # Successful comparison attests the frozen expected policy within the
+        # exact binary32 interval; four-decimal quiet text is only diagnostic.
         query([PARAMETER_COMMAND, "compare", "-s", name, str(expected[name])])
-        observed[name] = value
+        quiet_text[name], precision[name] = raw, metadata
     if query([VERSION_COMMAND, "git"]) != version:
         raise ValueError("PX4 identity changed during readback")
     return {"instance": 0, "firmware": firmware, "expected": dict(expected),
-            "observed": observed, "rationale": rationale, "read_wall_s": time.monotonic(),
-            "float_comparison_absolute_limit": 1e-7,
+            "observed": observed, "quiet_observed_text": quiet_text,
+            "attested_policy": dict(expected), "precision": precision,
+            "attestation": "pinned_param_compare_s",
+            "rationale": rationale, "read_wall_s": time.monotonic(),
             "scope": "live_parameter_readback_not_fallback_execution_proof"}
+
+
+def _quiet_value(name: str, raw: str, precision: dict) -> int | float:
+    if not isinstance(raw, str):
+        raise ValueError(f"missing live quiet parameter text: {name}")
+    if PARAMETER_DOMAINS[name].kind == "int32":
+        if not re.fullmatch(r"[+-]?\d+", raw) or int(raw) != precision["lower"]:
+            raise ValueError(f"live integer parameter mismatch: {name}")
+        return int(raw)
+    if not re.fullmatch(r"[+-]?\d+\.\d{4}", raw):
+        raise ValueError(f"missing or ambiguous live float parameter: {name}")
+    # Preserve even a negative sign rounded to "-0.0000". Every float in this
+    # pinned inventory has a nonnegative source domain; comparison to zero
+    # alone would otherwise admit a tiny negative delay.
+    if raw.startswith("-") and PARAMETER_DOMAINS[name].minimum >= 0:
+        raise ValueError(f"negative live float outside pinned domain: {name}")
+    value = float(raw)
+    # Endpoints are actual accepted binary32 values; their formatted range is
+    # a quiet-text consistency check, never a precision upgrade or attestation.
+    if not (float(f'{precision["lower"]:.4f}') <= value
+            <= float(f'{precision["upper"]:.4f}')):
+        raise ValueError(f"live float quiet text contradicts comparison: {name}")
+    return value
+
+
+def attested_parameter_policy(report: dict) -> dict:
+    """Recover the declared policy only from a complete readback attestation.
+
+    This validates structure/precision consistency, not report authenticity.
+    Runtime must use the report returned by its own bounded read_parameters call
+    and prohibit concurrent parameter writers; loading a JSON claim is no proof.
+    """
+    if (not isinstance(report, dict) or report.get("attestation") != "pinned_param_compare_s"
+            or report.get("firmware") != PINNED_FIRMWARE
+            or type(report.get("instance")) is not int or report["instance"] != 0):
+        raise ValueError("missing pinned parameter comparison attestation")
+    policy = report.get("attested_policy")
+    rationale = report.get("rationale")
+    if not isinstance(policy, dict) or not isinstance(rationale, str):
+        raise ValueError("attestation requires a complete typed policy and rationale")
+    validate_parameter_policy(policy, rationale)
+    expected_policy = report.get("expected")
+    if not isinstance(expected_policy, dict):
+        raise ValueError("missing complete expected parameter inventory")
+    validate_parameter_policy(expected_policy, rationale)
+    if report.get("expected") != policy:
+        raise ValueError("attested policy differs from frozen expected policy")
+    for key in ("precision", "observed", "quiet_observed_text"):
+        if not isinstance(report.get(key), dict) or set(report[key]) != REQUIRED_PARAMETERS:
+            raise ValueError("readback attestation requires complete precision inventory")
+    for name, value in policy.items():
+        metadata = parameter_precision(name, value)
+        if report["precision"][name] != metadata:
+            raise ValueError(f"readback precision metadata mismatch: {name}")
+        quiet = _quiet_value(name, report["quiet_observed_text"][name], metadata)
+        if type(report["observed"][name]) is not type(quiet) or report["observed"][name] != quiet:
+            raise ValueError(f"quiet observed value mismatch: {name}")
+    return dict(policy)
 
 
 @dataclass(frozen=True)

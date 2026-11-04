@@ -1,0 +1,2 @@
+[INFO] [1793817947.162674354] [rosbag2_storage]: Opened database '/workspace/artifacts/g1-oracle-work/drone-cv-oracle-support-06-ttl/run/recording/bag/bag_0.db3' for READ_ONLY.
+[INFO] [1793817954.613400531] [rosbag2_storage]: Opened database '/workspace/artifacts/replay-integrity-r39/recording-01/bag/bag_0.db3' for READ_ONLY.

@@ -1,0 +1,33 @@
+{
+  "scope": "OFFLINE_ONLY",
+  "simulator_started": false,
+  "ros_initialized": false,
+  "nodes_created": 0,
+  "control_publishers_created": 0,
+  "arming_or_mode_commands_sent": 0,
+  "new_acquisition": false,
+  "commands": [
+    {
+      "name": "supervisor",
+      "argv": [
+        "/usr/bin/python3",
+        "scripts/sim_supervisor_replay.py",
+        "--recording",
+        "/workspace/r39",
+        "--recording",
+        "/workspace/support06",
+        "--output",
+        "/workspace/artifacts/sim-repair-round3-work/supervisor.json"
+      ],
+      "exit_code": 0,
+      "deadline_wall_s": 240,
+      "deadline_expired": false,
+      "elapsed_wall_s": 8.652318309999998,
+      "child_reaped": true,
+      "owned_process_group_empty_after_exit": false,
+      "owned_group_cleanup_sent": true,
+      "stdout_sha256": "4b2d5811a3c32d5b6bd4eac498d887e74c642490a730173c28ff246e5a447190",
+      "stderr_sha256": "b28082f92ec06e18fae7eca947ce413112d8498c448f03a2c96a435cbfb24567"
+    }
+  ]
+}

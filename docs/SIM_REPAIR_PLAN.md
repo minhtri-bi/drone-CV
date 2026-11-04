@@ -1,6 +1,6 @@
 # Simulation repair plan after PR #12 review
 
-**Current approval boundary:** sections 1–5 record the first-round plan. [Section 6](#6-second-round-plan-n1n7) is approved for the requested N1–N7 code/offline work after commit `46e1771`, including the user's baseline-validity, per-tick crash invariant and RTF-derived deadline additions. It does not authorize operational execution.
+**Current approval boundary:** sections 1–5 retain the first-round plan; section 6 retains the approved N1–N7 code/offline cutover. [Section 7](#7-third-round-policy-and-relative-uncertainty) is approved after review of `9ca1c80`. No section authorizes operational execution, new acquisition or parameter writes.
 
 ## 1. Review status and authority
 
@@ -388,3 +388,54 @@ Write a new exclusive output/bundle. Compare the new artifact hash with the old 
 Approval update: the user accepted the existing-task mapping, no `Stage.BRAKING`, N2 in-sample/held-out separation, atomic N5 code/test migration, single-source N6 gates and N7 witnessed replay. The required additions are now explicit: healthy matched runtime baseline and causal fault verdicts, the per-tick crash invariant with a legitimate tighter-timeout option, and RTF-derived finite per-source wall deadlines. **Code/offline implementation is approved; operational trials and parameter writes are not.**
 
 Verify changed behavior through the actual affected offline CLIs and integrated regression suite, then update current results and native blockers with observed evidence. No code/offline receipt completes the outstanding runtime/acquisition gates. Export the portable roadmap after native state changes. Historical planning verification at revision 90 remains historical.
+
+## 7. Third-round policy and relative uncertainty
+
+### Scope, authority and stable task mapping
+
+The source review `drone-CV-review-round2-9ca1c80.md` is preserved unchanged and hash-bound in the frozen preparation artifact. After the technical assessment, the user instructed “ok lamf did”. This approves the bounded F2/F3/F8 policy and precision fixes, F5 relative-error binding, and protocol-v3 code/offline preparation. It does not approve simulator startup, new heldout acquisition, ROS initialization/node/control-publisher construction during verification, mode/arming, Home/parameter writes, installation or hardware.
+
+At approval, native revision 101 has 36 tasks: 14 done, 5 blocked and 17 pending. No new task or dependency edge is required:
+
+- `g1-supervisor`: F1/F2/F3/F8 policy, response/readback and actual source eligibility. Native prerequisites `g1-environment` and `g0-safety` are done. Code/offline work is actionable; actual healthy matched baseline, causal faults, live parameter/ownership/fallback/process-death evidence and separate operational approval remain unmet.
+- `prep-evidence-review`: F5 absolute/relative uncertainty and v3 provenance/heldout preparation. Native prerequisites `prep-evidence-semantics` and `g1-oracle` are done. Offline analysis does not supply a new untouched recording, instantaneous truth velocity, calibrated bounds or fresh primary/dy evidence.
+- `prep-flight-oracle`: retain F7 phase-aware physical/clearance and landing-support prerequisites. Its completed native prerequisites do not supply live evaluator isolation, phase/support/graph proof or flight readiness.
+
+The existing edges remain supervisor before flight, flight before calibration, and calibration before G2, with the unchanged supplemental gates. `prep-depth-path-audit` and `prep-geometry-crosscheck` retain their acquisition/loader blockers. No `Stage.BRAKING`, smaller physical envelope, lower 0.5 m navigation clearance, truth-fed control consumer or automatic PX4 authority reclaim is introduced.
+
+### F1/F2: narrowly supported exploratory fallback policy
+
+Use exact pinned enums, not generic numeric ranges: Offboard loss requests Hold, geofence requests Hold, RC/GCS loss actions request Hold, and the exploratory failsafe delay is explicitly zero. The zero-delay policy is a deliberate frozen simulation choice, not a claim that the firmware delays an already-selected Hold action. Preserve the nonoverlapping crash horizon and independently justified transition/braking reserves.
+
+The pin has no battery Hold action. Preserve critical-battery Land rather than disabling battery protection, and require an independently declared, model/phase-bound known-clear landing corridor through the support-contact height. Missing corridor/support/frame provenance rejects admission. Land is not implicitly safe because it is vertical. A certified reference-center corridor must already account for the full footprint, applicable phase clearance and actual support allowlist.
+
+Whitelist/readback agreement alone is insufficient. Subscribe to the existing pinned read-only Home, local-position/reference, failsafe-capability and battery streams. Require valid current Hold prerequisites and battery/link health; reject stale/missing/invalid observations before publisher construction and during ticks. Latch observed Home/reference/reset changes and transient unsafe capabilities. Home is frozen static context, not an invented continuously advancing 5 Hz source. If PX4 legitimately changes Home during a later phase, that trial needs a separately justified frozen/bounded reference contract; do not silently refresh it.
+
+The firmware can escalate unavailable Hold to RTL/Land/Descend/Terminate. This implementation must not claim that all failures remain Hold or that an initial healthy flag proves future physical health. Unsupported concurrent estimator/structural/fallback paths remain outside the conditional stopping claim and require actual fault evidence.
+
+### F3: physical configuration and reference bindings
+
+Require independent horizontal and ascent/descent caps whose conservative 3D resultant fits the declared speed bound. Two individually acceptable component caps do not establish a norm bound. Bind configured acceleration/jerk limits to the declared response model, but never treat a maximum commanded acceleration as measured minimum braking.
+
+Bind the outer PX4 geofence to actual valid Home/global and local-reference data, reset/epoch identity, a finite independently justified frame-error reserve and motion-room allowance. Check the complete supervisor box against the Home-centered cylinder, including PX4's actual above-Home vertical semantics. Disabled/inner/wrong-frame fences reject. A text rationale does not replace a numeric frame-error bound.
+
+### F8: comparison attestation is not a rounded measurement
+
+Preserve raw quiet readback separately from the policy attested by the pinned read-only `param compare -s` command. The quiet path loses precision at four decimal places; changing `!=` to `isclose(1e-7)` does not recover that information. Integers remain exact, float32 conversion/comparison uncertainty is explicit, and time/speed checks use conservative upper bounds where necessary. No silent policy rounding, parameter writes or pretend bit-exact readback.
+
+### F5: correct quantity for perception-derived permits
+
+Keep absolute base-origin error for independently anchored bootstrap/geofence checks. A perception-supported permit additionally requires a capture-to-query SE(3) error contract over its actual observation-age domain. Cover all supported points using translation plus `2*sin(rotation/2)*rho` (or a larger justified bound), not a single absolute-position radius. Bind age, radius, source/model/calibration provenance, epoch/reset, body point and coordinate basis. Do not count an error already applied by the producer twice.
+
+Reuse the existing strict capture-time decoder/alignment and relative-transform functions. Freeze actual source identities before evaluating all capture/query pairs within the declared TTL; do not substitute adjacent pairs, fit alignment, cross source/reset epochs or turn schema-two snapshots into continuous truth. Report absolute and relative errors, per-axis/age statistics, missing/rejected/violating identities and source-disjoint versus retrospective temporal scope. The old 10 s TTL result is not a 0.5 s permit certificate.
+
+### Protocol-v3 preparation and verification
+
+Implement complete freeze/evaluate interfaces and freeze a runnable retrospective offline protocol before its outcomes. Retain prior protocols/bundles unchanged. This does not manufacture an untouched runtime protocol: numeric health multipliers, a newly supported RTF range, tracking bounds and a new independent heldout population need justified inputs before their own freeze/acquisition. Do not select a factor or `RTF_min=0.12` to admit already-viewed data. Simulation TTL, human authorization, session/tick/handoff deadlines and invalid-baseline classification remain independent.
+
+Navigation height must accommodate full physical vertical reach, 0.5 m clearance and the stopping radius; rest/takeoff/landing keep their own phase contracts. Denser sampled truth remains interval-average velocity unless an independent instantaneous-velocity source or additional justified dynamics bound exists.
+
+Exercise meaningful policy/precision/Home/3D-speed and relative-pair boundaries, actual pinned generated-message decoding and affected offline CLIs, then run the integrated suite and project integrity/export checks. No offline receipt completes the blocked operational criteria. Commit/push only task-owned paths to the existing draft PR; do not merge or promote flight/calibration/G2 gates.
+
+The completed bounded implementation, exact retained populations, real CLI exits, unsuccessful coverage criteria and unchanged operational blockers are recorded in [third-round results](SIM_REPAIR_RESULTS.md#third-round-f1-f9-restricted-policy-and-relative-uncertainty). The [frozen v3 preparation](replay/sim-repair-round3-01/protocol-v3-preparation.json) explicitly remains non-operational. [Pinned policy](PX4_POLICY_CONTRACT.md) and [capture-query uncertainty](RELATIVE_UNCERTAINTY_CONTRACT.md) define the new interfaces; no future acquisition or runtime permission is implied.
+
