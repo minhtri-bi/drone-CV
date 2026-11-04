@@ -21,10 +21,14 @@ def stamp_ns(stamp):
     return int(stamp.sec)*1_000_000_000+int(stamp.nanosec)
 
 
-def read_bag(path):
+def read_bag(path, *, serialized_hashes: list | None = None):
     import rosbag2_py
     from rclpy.serialization import deserialize_message
     from rosidl_runtime_py.utilities import get_message
+    # Keep tuple3 records compatible; optionally retain hashes of ORIGINAL stored CDR.
+    # Deserializing then serializing may change padding without changing ROS fields.
+    if serialized_hashes:
+        raise ValueError("RAW_HASH_DESTINATION_NOT_EMPTY")
     reader = rosbag2_py.SequentialReader()
     reader.open(rosbag2_py.StorageOptions(uri=str(path), storage_id="sqlite3"),
                 rosbag2_py.ConverterOptions("cdr", "cdr"))
@@ -32,6 +36,8 @@ def read_bag(path):
     records = []
     while reader.has_next():
         topic, payload, recorded_ns = reader.read_next()
+        if serialized_hashes is not None:
+            serialized_hashes.append((topic, recorded_ns, hashlib.sha256(payload).hexdigest()))
         records.append((topic, deserialize_message(payload, types[topic]), recorded_ns))
     return records
 
@@ -247,16 +253,32 @@ def load_recording(recording: Path, *, legacy_analysis: bool = False):
         raise ValueError("RECORDING_INCOMPLETE_OR_ARMED")
     if hashlib.sha256(fixture_bytes).hexdigest() != manifest["fixture_sha256"]:
         raise ValueError("FIXTURE_HASH_MISMATCH")
+    if manifest.get("recording_schema") == 4:
+        actual_files = {path.relative_to(recording).as_posix() for path in (recording / "bag").rglob("*")
+                        if path.is_file()}
+        if not actual_files or set(manifest["bag_files"]) != actual_files:
+            raise ValueError("SCHEMA4_BAG_INVENTORY_MISMATCH")
     for name, identity in manifest["bag_files"].items():
         path = (recording / name).resolve()
         if not path.is_relative_to(recording.resolve()) or path.is_symlink():
             raise ValueError("UNSAFE_BAG_PATH")
+        if manifest.get("recording_schema") == 4 and path.stat().st_size != identity["bytes"]:
+            raise ValueError("SCHEMA4_BAG_SIZE_MISMATCH")
         if hashlib.sha256(path.read_bytes()).hexdigest() != identity["sha256"]:
             raise ValueError("BAG_HASH_MISMATCH")
     fixture = json.loads(fixture_bytes)
+    if manifest.get("recording_schema") == 4:
+        from oracle_recording import validate_binding
+        validate_binding((recording / "oracle_profile.json").read_bytes(), fixture, manifest)
+        if manifest.get("oracle", {}).get("max_gap_ns") != fixture["oracle"]["fixture"]["max_truth_gap_ns"]:
+            raise ValueError("ORACLE_COVERAGE_POLICY_BINDING_MISMATCH")
+        if legacy_analysis:
+            raise ValueError("SCHEMA4_REQUIRES_CONTINUOUS_TRUTH_VALIDATION")
     if not legacy_analysis:
         validate_alignment(manifest, fixture["max_pose_gap_ns"])
-    records = read_bag(recording / "bag")
+    serialized_hashes = [] if manifest.get("recording_schema") == 4 else None
+    records = (read_bag(recording / "bag", serialized_hashes=serialized_hashes)
+               if serialized_hashes is not None else read_bag(recording / "bag"))
     events = None
     if not legacy_analysis:
         policy_bytes = (recording / "recording_policy.json").read_bytes()
@@ -265,7 +287,10 @@ def load_recording(recording: Path, *, legacy_analysis: bool = False):
                 or hashlib.sha256(event_bytes).hexdigest() != manifest["receive_progress_sha256"]):
             raise ValueError("RECEIVE_PROVENANCE_HASH_MISMATCH")
         events = [json.loads(line) for line in event_bytes.splitlines()]
-        validate_receive_log(records, manifest, json.loads(policy_bytes), events)
+        if manifest.get("recording_schema") == 4 and json.loads(policy_bytes).get("schema") != 4:
+            raise ValueError("SCHEMA4_POLICY_BINDING_MISMATCH")
+        validate_receive_log(records, manifest, json.loads(policy_bytes), events,
+                             serialized_hashes=serialized_hashes)
     return records, manifest, fixture, events
 
 

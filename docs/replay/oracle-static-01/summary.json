@@ -1,0 +1,1211 @@
+{
+  "scope": "Unarmed static oracle and pinned decoder only; sampled endpoints are not a continuous flight-clearance certificate",
+  "image_id": "sha256:061a39905d2d84d40859bb46b67048241b6dacf2ed3983889da7f5fd3e718285",
+  "all_attempts_preserved": true,
+  "control_publishers_created": 0,
+  "arming_commands_sent": 0,
+  "profile": {
+    "schema": 1,
+    "frame": "base_link FLU",
+    "parts": [
+      {
+        "id": "collision/base_link/base_link_collision_0",
+        "role": "body",
+        "lo": [
+          -0.17677669529663687,
+          -0.17677669529663687,
+          -0.018000000000000002
+        ],
+        "hi": [
+          0.17677669529663687,
+          0.17677669529663687,
+          0.032
+        ],
+        "source": "resolved SDF primitive",
+        "point_count": 8
+      },
+      {
+        "id": "collision/base_link/base_link_collision_1",
+        "role": "gear",
+        "lo": [
+          -0.0075,
+          -0.14104956512917774,
+          -0.22420586840489065
+        ],
+        "hi": [
+          0.0075,
+          -0.05495043487082227,
+          -0.02179413159510933
+        ],
+        "source": "resolved SDF primitive",
+        "point_count": 8
+      },
+      {
+        "id": "collision/base_link/base_link_collision_2",
+        "role": "gear",
+        "lo": [
+          -0.0075,
+          0.05495043487082227,
+          -0.22420586840489065
+        ],
+        "hi": [
+          0.0075,
+          0.14104956512917774,
+          -0.02179413159510933
+        ],
+        "source": "resolved SDF primitive",
+        "point_count": 8
+      },
+      {
+        "id": "collision/base_link/base_link_collision_3",
+        "role": "gear",
+        "lo": [
+          -0.125,
+          -0.1395,
+          -0.227
+        ],
+        "hi": [
+          0.125,
+          -0.1245,
+          -0.212
+        ],
+        "source": "resolved SDF primitive",
+        "point_count": 8
+      },
+      {
+        "id": "collision/base_link/base_link_collision_4",
+        "role": "gear",
+        "lo": [
+          -0.125,
+          0.1245,
+          -0.227
+        ],
+        "hi": [
+          0.125,
+          0.1395,
+          -0.212
+        ],
+        "source": "resolved SDF primitive",
+        "point_count": 8
+      },
+      {
+        "id": "visual/base_link/base_link_visual/Scene/LandingFoam[1]/LandingFoam[1]#LandingFoam-mesh",
+        "role": "gear",
+        "lo": [
+          -0.1120000000582703,
+          -0.14255100004594318,
+          -0.2275266
+        ],
+        "hi": [
+          0.1126000000584754,
+          0.1420510000461893,
+          -0.2076724
+        ],
+        "source": "x500_base/meshes/NXP-HGD-CF.dae",
+        "point_count": 2496
+      },
+      {
+        "id": "visual/base_link/base_link_visual/Scene/LandingRubber[2]/LandingRubber[1]#LandingRubber-mesh",
+        "role": "gear",
+        "lo": [
+          -0.12684860005456813,
+          -0.13807550005118926,
+          -0.2230838
+        ],
+        "hi": [
+          0.12744870005477324,
+          0.13757550005143537,
+          -0.2121153
+        ],
+        "source": "x500_base/meshes/NXP-HGD-CF.dae",
+        "point_count": 2080
+      },
+      {
+        "id": "visual/base_link/base_link_visual/Scene/CarbonFiber[3]/CarbonFiber[1]#CarbonFiber-mesh",
+        "role": "body",
+        "lo": [
+          -0.1977216999262066,
+          -0.19827169992618607,
+          -0.2225631
+        ],
+        "hi": [
+          0.19796820007393848,
+          0.19777170007381392,
+          0.034269952
+        ],
+        "source": "x500_base/meshes/NXP-HGD-CF.dae",
+        "point_count": 13810
+      },
+      {
+        "id": "visual/base_link/base_link_visual/Scene/Metal[4]/Metal[1]#Metal-mesh",
+        "role": "body",
+        "lo": [
+          -0.19709599992690094,
+          -0.19764599992688042,
+          -0.04461399
+        ],
+        "hi": [
+          0.1973423000732441,
+          0.19714590007311958,
+          0.023000026
+        ],
+        "source": "x500_base/meshes/NXP-HGD-CF.dae",
+        "point_count": 7096
+      },
+      {
+        "id": "visual/base_link/base_link_visual/Scene/RailsRubber[5]/RailsRubber[1]#RailsRubber-mesh",
+        "role": "body",
+        "lo": [
+          -0.05605000001553847,
+          -0.04103147002168968,
+          -0.02572647
+        ],
+        "hi": [
+          0.14895000001553846,
+          0.0410314700597979,
+          -0.0035014499999999997
+        ],
+        "source": "x500_base/meshes/NXP-HGD-CF.dae",
+        "point_count": 4160
+      },
+      {
+        "id": "visual/base_link/base_link_visual/Scene/FMUK66[6]/FMUK66[1]#FMUK66-mesh",
+        "role": "body",
+        "lo": [
+          -0.0430361600098041,
+          -0.026049550017035385,
+          0.034269952
+        ],
+        "hi": [
+          0.050622100007404046,
+          0.025950430018561663,
+          0.05135943
+        ],
+        "source": "x500_base/meshes/NXP-HGD-CF.dae",
+        "point_count": 23460
+      },
+      {
+        "id": "visual/base_link/base_link_visual/Scene/RailsAntennaHolder[7]/RailsAntennaHolder[1]#RailsAntennaHolder-mesh",
+        "role": "body",
+        "lo": [
+          -0.07729995002049388,
+          -0.05123156003119623,
+          -0.03408882
+        ],
+        "hi": [
+          -0.06929998997949467,
+          0.05120359997105992,
+          -0.006614000000000002
+        ],
+        "source": "x500_base/meshes/NXP-HGD-CF.dae",
+        "point_count": 3442
+      },
+      {
+        "id": "visual/base_link/base_link_visual/Scene/LandingPlastic[8]/LandingPlastic[1]#LandingPlastic-mesh",
+        "role": "gear",
+        "lo": [
+          -0.019699990059177303,
+          -0.1467619999930394,
+          -0.22759949999999998
+        ],
+        "hi": [
+          0.020299970059382364,
+          0.1462619999932855,
+          -0.0013639599999999974
+        ],
+        "source": "x500_base/meshes/NXP-HGD-CF.dae",
+        "point_count": 30178
+      },
+      {
+        "id": "visual/base_link/base_link_visual/Scene/FMURubber[9]/FMURubber[1]#FMURubber-mesh",
+        "role": "body",
+        "lo": [
+          -0.03524631001250837,
+          -0.03618657001241957,
+          0.021500016
+        ],
+        "hi": [
+          0.037165400012854684,
+          0.035267110013208994,
+          0.03576996
+        ],
+        "source": "x500_base/meshes/NXP-HGD-CF.dae",
+        "point_count": 2076
+      },
+      {
+        "id": "visual/base_link/5010_motor_base_0/Scene/Stator.001[2]/Stator[1]/Stator[1]#Body1_001-mesh",
+        "role": "body",
+        "lo": [
+          0.15804331057193666,
+          0.1580433095856124,
+          0.02499999558215968
+        ],
+        "hi": [
+          0.18995668799436558,
+          0.18995668744640767,
+          0.043000003609302576
+        ],
+        "source": "x500_base/meshes/5010Base.dae",
+        "point_count": 2924
+      },
+      {
+        "id": "visual/base_link/5010_motor_base_1/Scene/Stator.001[2]/Stator[1]/Stator[1]#Body1_001-mesh",
+        "role": "body",
+        "lo": [
+          -0.18995668942806332,
+          0.1580433095856124,
+          0.02499999558215968
+        ],
+        "hi": [
+          -0.1580433120056344,
+          0.18995668744640767,
+          0.043000003609302576
+        ],
+        "source": "x500_base/meshes/5010Base.dae",
+        "point_count": 2924
+      },
+      {
+        "id": "visual/base_link/5010_motor_base_2/Scene/Stator.001[2]/Stator[1]/Stator[1]#Body1_001-mesh",
+        "role": "body",
+        "lo": [
+          0.15804331057193666,
+          -0.18995669041438756,
+          0.02499999558215968
+        ],
+        "hi": [
+          0.18995668799436558,
+          -0.1580433125535923,
+          0.043000003609302576
+        ],
+        "source": "x500_base/meshes/5010Base.dae",
+        "point_count": 2924
+      },
+      {
+        "id": "visual/base_link/5010_motor_base_3/Scene/Stator.001[2]/Stator[1]/Stator[1]#Body1_001-mesh",
+        "role": "body",
+        "lo": [
+          -0.18995668942806332,
+          -0.18995669041438756,
+          0.02499999558215968
+        ],
+        "hi": [
+          -0.1580433120056344,
+          -0.1580433125535923,
+          0.043000003609302576
+        ],
+        "source": "x500_base/meshes/5010Base.dae",
+        "point_count": 2924
+      },
+      {
+        "id": "visual/base_link/NXP_FMUK66_FRONT",
+        "role": "body",
+        "lo": [
+          0.045103766405436056,
+          -0.005501503839110044,
+          0.04005485155317236
+        ],
+        "hi": [
+          0.048896233594563944,
+          0.007501503839110044,
+          0.045945148446827636
+        ],
+        "source": "resolved SDF primitive",
+        "point_count": 4
+      },
+      {
+        "id": "visual/base_link/NXP_FMUK66_TOP",
+        "role": "body",
+        "lo": [
+          -0.026505175013881187,
+          -0.006502785082544492,
+          0.0515
+        ],
+        "hi": [
+          -0.019494824986118812,
+          0.006502785082544492,
+          0.0515
+        ],
+        "source": "resolved SDF primitive",
+        "point_count": 4
+      },
+      {
+        "id": "visual/base_link/RDDRONE_FMUK66_TOP",
+        "role": "body",
+        "lo": [
+          -0.03171274068835585,
+          -0.0160013486823176,
+          0.0515
+        ],
+        "hi": [
+          -0.028287259311644147,
+          0.0160013486823176,
+          0.0515
+        ],
+        "source": "resolved SDF primitive",
+        "point_count": 4
+      },
+      {
+        "id": "collision/rotor_0/rotor_0_collision",
+        "role": "rotor",
+        "lo": [
+          0.03412844015155231,
+          -0.31387155984844767,
+          0.059576923076923076
+        ],
+        "hi": [
+          0.31387155984844767,
+          -0.03412844015155231,
+          0.06042307692307692
+        ],
+        "source": "resolved SDF primitive",
+        "point_count": 8,
+        "joint_origin_body": [
+          0.174,
+          -0.174,
+          0.06
+        ],
+        "joint_axis_body": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "sweep_radius_m": 0.13987155984844768
+      },
+      {
+        "id": "visual/rotor_0/rotor_0_visual/1345_prop_ccw",
+        "role": "rotor",
+        "lo": [
+          0.027231142280762483,
+          -0.32076885771923747,
+          0.044
+        ],
+        "hi": [
+          0.32076885771923747,
+          -0.027231142280762483,
+          0.06938461481722502
+        ],
+        "source": "x500_base/meshes/1345_prop_ccw.stl",
+        "point_count": 31362,
+        "joint_origin_body": [
+          0.174,
+          -0.174,
+          0.06
+        ],
+        "joint_axis_body": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "sweep_radius_m": 0.1467688577192375
+      },
+      {
+        "id": "visual/rotor_0/rotor_0_visual_motor_bell/Scene/BellSide[2]/Bellside[1]/Bellside[1]#Body1-mesh",
+        "role": "rotor",
+        "lo": [
+          0.14449999188135212,
+          -0.20350000811864785,
+          0.027999990778717496
+        ],
+        "hi": [
+          0.20350000811864785,
+          -0.14449999188135212,
+          0.041000009221282496
+        ],
+        "source": "x500_base/meshes/5010Bell.dae",
+        "point_count": 720,
+        "joint_origin_body": [
+          0.174,
+          -0.174,
+          0.06
+        ],
+        "joint_axis_body": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "sweep_radius_m": 0.029500008118647864
+      },
+      {
+        "id": "visual/rotor_0/rotor_0_visual_motor_bell/Scene/BellHead[3]/BellHead.001[1]/BellHead.001[1]#Body2-mesh",
+        "role": "rotor",
+        "lo": [
+          0.14449999142183031,
+          -0.20350000857816966,
+          0.0409999907787175
+        ],
+        "hi": [
+          0.20350000857816966,
+          -0.14449999142183031,
+          0.0490000030214415
+        ],
+        "source": "x500_base/meshes/5010Bell.dae",
+        "point_count": 3073,
+        "joint_origin_body": [
+          0.174,
+          -0.174,
+          0.06
+        ],
+        "joint_axis_body": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "sweep_radius_m": 0.02950000857816967
+      },
+      {
+        "id": "collision/rotor_1/rotor_1_collision",
+        "role": "rotor",
+        "lo": [
+          -0.31387155984844767,
+          0.03412844015155231,
+          0.059576923076923076
+        ],
+        "hi": [
+          -0.03412844015155231,
+          0.31387155984844767,
+          0.06042307692307692
+        ],
+        "source": "resolved SDF primitive",
+        "point_count": 8,
+        "joint_origin_body": [
+          -0.174,
+          0.174,
+          0.06
+        ],
+        "joint_axis_body": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "sweep_radius_m": 0.13987155984844768
+      },
+      {
+        "id": "visual/rotor_1/rotor_1_visual/1345_prop_ccw",
+        "role": "rotor",
+        "lo": [
+          -0.32076885771923747,
+          0.027231142280762483,
+          0.044
+        ],
+        "hi": [
+          -0.027231142280762483,
+          0.32076885771923747,
+          0.06938461481722502
+        ],
+        "source": "x500_base/meshes/1345_prop_ccw.stl",
+        "point_count": 31362,
+        "joint_origin_body": [
+          -0.174,
+          0.174,
+          0.06
+        ],
+        "joint_axis_body": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "sweep_radius_m": 0.1467688577192375
+      },
+      {
+        "id": "visual/rotor_1/rotor_1_visual_motor_top/Scene/BellSide[2]/Bellside[1]/Bellside[1]#Body1-mesh",
+        "role": "rotor",
+        "lo": [
+          -0.20350000811864785,
+          0.14449999188135212,
+          0.027999990778717496
+        ],
+        "hi": [
+          -0.14449999188135212,
+          0.20350000811864785,
+          0.041000009221282496
+        ],
+        "source": "x500_base/meshes/5010Bell.dae",
+        "point_count": 720,
+        "joint_origin_body": [
+          -0.174,
+          0.174,
+          0.06
+        ],
+        "joint_axis_body": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "sweep_radius_m": 0.029500008118647864
+      },
+      {
+        "id": "visual/rotor_1/rotor_1_visual_motor_top/Scene/BellHead[3]/BellHead.001[1]/BellHead.001[1]#Body2-mesh",
+        "role": "rotor",
+        "lo": [
+          -0.20350000857816966,
+          0.14449999142183031,
+          0.0409999907787175
+        ],
+        "hi": [
+          -0.14449999142183031,
+          0.20350000857816966,
+          0.0490000030214415
+        ],
+        "source": "x500_base/meshes/5010Bell.dae",
+        "point_count": 3073,
+        "joint_origin_body": [
+          -0.174,
+          0.174,
+          0.06
+        ],
+        "joint_axis_body": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "sweep_radius_m": 0.02950000857816967
+      },
+      {
+        "id": "collision/rotor_2/rotor_2_collision",
+        "role": "rotor",
+        "lo": [
+          0.03412844015155231,
+          0.03412844015155231,
+          0.059576923076923076
+        ],
+        "hi": [
+          0.31387155984844767,
+          0.31387155984844767,
+          0.06042307692307692
+        ],
+        "source": "resolved SDF primitive",
+        "point_count": 8,
+        "joint_origin_body": [
+          0.174,
+          0.174,
+          0.06
+        ],
+        "joint_axis_body": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "sweep_radius_m": 0.13987155984844768
+      },
+      {
+        "id": "visual/rotor_2/rotor_2_visual/1345_prop_cw",
+        "role": "rotor",
+        "lo": [
+          0.027231054955395295,
+          0.027231054955395295,
+          0.044
+        ],
+        "hi": [
+          0.3207689450446047,
+          0.3207689450446047,
+          0.06938461481722502
+        ],
+        "source": "x500_base/meshes/1345_prop_cw.stl",
+        "point_count": 31308,
+        "joint_origin_body": [
+          0.174,
+          0.174,
+          0.06
+        ],
+        "joint_axis_body": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "sweep_radius_m": 0.1467689450446047
+      },
+      {
+        "id": "visual/rotor_2/rotor_2_visual_motor_top/Scene/BellSide[2]/Bellside[1]/Bellside[1]#Body1-mesh",
+        "role": "rotor",
+        "lo": [
+          0.14449999188135212,
+          0.14449999188135212,
+          0.027999990778717496
+        ],
+        "hi": [
+          0.20350000811864785,
+          0.20350000811864785,
+          0.041000009221282496
+        ],
+        "source": "x500_base/meshes/5010Bell.dae",
+        "point_count": 720,
+        "joint_origin_body": [
+          0.174,
+          0.174,
+          0.06
+        ],
+        "joint_axis_body": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "sweep_radius_m": 0.029500008118647864
+      },
+      {
+        "id": "visual/rotor_2/rotor_2_visual_motor_top/Scene/BellHead[3]/BellHead.001[1]/BellHead.001[1]#Body2-mesh",
+        "role": "rotor",
+        "lo": [
+          0.14449999142183031,
+          0.14449999142183031,
+          0.0409999907787175
+        ],
+        "hi": [
+          0.20350000857816966,
+          0.20350000857816966,
+          0.0490000030214415
+        ],
+        "source": "x500_base/meshes/5010Bell.dae",
+        "point_count": 3073,
+        "joint_origin_body": [
+          0.174,
+          0.174,
+          0.06
+        ],
+        "joint_axis_body": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "sweep_radius_m": 0.02950000857816967
+      },
+      {
+        "id": "collision/rotor_3/rotor_3_collision",
+        "role": "rotor",
+        "lo": [
+          -0.31387155984844767,
+          -0.31387155984844767,
+          0.059576923076923076
+        ],
+        "hi": [
+          -0.03412844015155231,
+          -0.03412844015155231,
+          0.06042307692307692
+        ],
+        "source": "resolved SDF primitive",
+        "point_count": 8,
+        "joint_origin_body": [
+          -0.174,
+          -0.174,
+          0.06
+        ],
+        "joint_axis_body": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "sweep_radius_m": 0.13987155984844768
+      },
+      {
+        "id": "visual/rotor_3/rotor_3_visual/1345_prop_cw",
+        "role": "rotor",
+        "lo": [
+          -0.32076894504460474,
+          -0.32076894504460474,
+          0.044
+        ],
+        "hi": [
+          -0.027231054955395267,
+          -0.027231054955395267,
+          0.06938461481722502
+        ],
+        "source": "x500_base/meshes/1345_prop_cw.stl",
+        "point_count": 31308,
+        "joint_origin_body": [
+          -0.174,
+          -0.174,
+          0.06
+        ],
+        "joint_axis_body": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "sweep_radius_m": 0.14676894504460472
+      },
+      {
+        "id": "visual/rotor_3/rotor_3_visual_motor_top/Scene/BellSide[2]/Bellside[1]/Bellside[1]#Body1-mesh",
+        "role": "rotor",
+        "lo": [
+          -0.20350000811864785,
+          -0.20350000811864785,
+          0.027999990778717496
+        ],
+        "hi": [
+          -0.14449999188135212,
+          -0.14449999188135212,
+          0.041000009221282496
+        ],
+        "source": "x500_base/meshes/5010Bell.dae",
+        "point_count": 720,
+        "joint_origin_body": [
+          -0.174,
+          -0.174,
+          0.06
+        ],
+        "joint_axis_body": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "sweep_radius_m": 0.029500008118647864
+      },
+      {
+        "id": "visual/rotor_3/rotor_3_visual_motor_top/Scene/BellHead[3]/BellHead.001[1]/BellHead.001[1]#Body2-mesh",
+        "role": "rotor",
+        "lo": [
+          -0.20350000857816966,
+          -0.20350000857816966,
+          0.0409999907787175
+        ],
+        "hi": [
+          -0.14449999142183031,
+          -0.14449999142183031,
+          0.0490000030214415
+        ],
+        "source": "x500_base/meshes/5010Bell.dae",
+        "point_count": 3073,
+        "joint_origin_body": [
+          -0.174,
+          -0.174,
+          0.06
+        ],
+        "joint_axis_body": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "sweep_radius_m": 0.02950000857816967
+      },
+      {
+        "id": "collision/camera_link/OakD-Lite/collision",
+        "role": "body",
+        "lo": [
+          0.11482999999999999,
+          -0.0455,
+          0.002
+        ],
+        "hi": [
+          0.13233,
+          0.0455,
+          0.03
+        ],
+        "source": "resolved SDF primitive",
+        "point_count": 8
+      },
+      {
+        "id": "visual/camera_link/OakD-Lite/visual/Scene/OAK_D_LITE[0]/RGBCamera[1]/RGBCameraMesh[1]/RGBCameraMesh[1]#RGBCameraMesh_001-mesh",
+        "role": "body",
+        "lo": [
+          0.12876215029815788,
+          -0.004249407132767023,
+          0.016380049459738293
+        ],
+        "hi": [
+          0.1308621512753318,
+          0.004250593275934588,
+          0.024880049970360224
+        ],
+        "source": "OakD-Lite/meshes/OakDLite.dae",
+        "point_count": 2085
+      },
+      {
+        "id": "visual/camera_link/OakD-Lite/visual/Scene/OAK_D_LITE[0]/StereoPair[2]/StereoPairMesh[1]/StereoPairMesh[1]#StereoPairMesh_001-mesh",
+        "role": "body",
+        "lo": [
+          0.12658215046607624,
+          -0.040449916836771765,
+          0.017130544808719464
+        ],
+        "hi": [
+          0.12888216099223132,
+          0.04045019354470566,
+          0.024130550344977
+        ],
+        "source": "OakD-Lite/meshes/OakDLite.dae",
+        "point_count": 2602
+      },
+      {
+        "id": "visual/camera_link/OakD-Lite/visual/Scene/OAK_D_LITE[0]/Frame[3]/FrameMesh[1]/FrameMesh[1]#FrameMesh_001-mesh",
+        "role": "body",
+        "lo": [
+          0.11571647448105771,
+          -0.04549991042291715,
+          0.001591546410994819
+        ],
+        "hi": [
+          0.1331664798427527,
+          0.045500090364154394,
+          0.02959154996471883
+        ],
+        "source": "OakD-Lite/meshes/OakDLite.dae",
+        "point_count": 28775
+      },
+      {
+        "id": "visual/camera_link/OakD-Lite/visual/Scene/OAK_D_LITE[0]/Glass[4]/GlassMesh[1]/GlassMesh[1]#GlassMesh_001-mesh",
+        "role": "body",
+        "lo": [
+          0.1323174650636132,
+          -0.04379989730747322,
+          0.0032905454371008336
+        ],
+        "hi": [
+          0.1329174731739122,
+          0.043800103524630596,
+          0.027890549023022973
+        ],
+        "source": "OakD-Lite/meshes/OakDLite.dae",
+        "point_count": 378
+      }
+    ],
+    "source_sha256": {
+      "x500_depth/model.sdf": "84d05a5072b49e87ca164ec9be8bda2e58201baf624d6d10f7117a5e6d6bbb5f",
+      "x500/model.sdf": "cb76a4afd439f253a8c516b1fcd3528f80347619cfa46bebb620557054fbf125",
+      "x500_base/model.sdf": "e807dca3406f7cd5cb3d545898601c3ec17e0e5242e25cf467a69df1812cf436",
+      "OakD-Lite/model.sdf": "f8a78a93c19eb3902ec751fc56bf22b389c7528b38f4d5e3a6c177f3548ee070",
+      "x500_base/meshes/NXP-HGD-CF.dae": "7321861b113866996dfa79b403def5666d4b796810840d2c057c7b51fc315b0a",
+      "x500_base/meshes/5010Base.dae": "798396a1945c7ff55a0840b77869e27affdd35fed0d784fff96b68f50f160ea0",
+      "x500_base/meshes/1345_prop_ccw.stl": "ba197e0961117a3462b555d65edf3433ba8ff5691624100a185242cb5f456244",
+      "x500_base/meshes/5010Bell.dae": "b90a1b2dd63a8ebbe1f3339ed18cef23673e0d8f03314fd9b9533a68b6b66668",
+      "x500_base/meshes/1345_prop_cw.stl": "7aa4b61c1ddc5304c9c1f5602eacf5e2ec5eafb95dd1f2a3368342f256122fc0",
+      "OakD-Lite/meshes/OakDLite.dae": "b7a65f0ab5604764e5a9d6426b9f46f9da2d5a2462cd6cff927fa0e5ae08990b"
+    },
+    "resolved_links": {
+      "base_link": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "rotor_0": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.174
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -0.174
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.06
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "rotor_1": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -0.174
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.174
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.06
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "rotor_2": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.174
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.174
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.06
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "rotor_3": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -0.174
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -0.174
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.06
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "camera_link": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.12
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.03
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0020000000000000018
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ]
+    },
+    "optical_mount_body": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.13233
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.020780000000000003
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "model_from_body": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.24
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "resolver": "pinned sdformat14 semantic_pose().resolve(base_link)",
+    "geometry_scope": "Per-instance conservative AABBs of collision and visual geometry; full rotor sweeps",
+    "z_lo_m": -0.22759949999999998,
+    "z_hi_m": 0.06938461481722502,
+    "flight_admission": false,
+    "physics_contact_sensor_added": false
+  },
+  "offline_known_free": {
+    "analytic_clearance_m": 0.7724005,
+    "observed_clearance_m": 0.7724005,
+    "scope": "OFFLINE_TYPED_FIXTURE"
+  },
+  "runs": [
+    {
+      "case": "support",
+      "archive": "drone-cv-oracle-support-04.tar.gz",
+      "classification_expected": "NO_VIOLATION_OBSERVED",
+      "safety_outcome": "NO_VIOLATION_OBSERVED",
+      "execution_outcome": "COMPLETED",
+      "sample_count": 385,
+      "coverage_complete": true,
+      "reasons": [],
+      "unsafe_parts": [],
+      "all_observed_disarmed": true,
+      "alignment_bracket_endpoint_delta_ns": [
+        -4000000,
+        12000000
+      ],
+      "report_sha256": "bba27e83388fe2f214e324606deadb33936fda7664648723ef57d323232db551"
+    },
+    {
+      "case": "body_intersection",
+      "archive": "drone-cv-oracle-body-intersection-01.tar.gz",
+      "classification_expected": "UNSAFE_OBSERVED",
+      "safety_outcome": "UNSAFE_OBSERVED",
+      "execution_outcome": "COMPLETED",
+      "sample_count": 285,
+      "coverage_complete": true,
+      "reasons": [],
+      "unsafe_parts": [
+        "visual/base_link/base_link_visual/Scene/CarbonFiber[3]/CarbonFiber[1]#CarbonFiber-mesh"
+      ],
+      "all_observed_disarmed": true,
+      "alignment_bracket_endpoint_delta_ns": [
+        -4000000,
+        4000000
+      ],
+      "report_sha256": "42393b273b7ada541385fad4dc93b8be4b4abca994717d4b811b55308cc9fe92"
+    },
+    {
+      "case": "rotor_intersection",
+      "archive": "drone-cv-oracle-rotor-intersection-01.tar.gz",
+      "classification_expected": "UNSAFE_OBSERVED",
+      "safety_outcome": "UNSAFE_OBSERVED",
+      "execution_outcome": "COMPLETED",
+      "sample_count": 281,
+      "coverage_complete": true,
+      "reasons": [],
+      "unsafe_parts": [
+        "visual/rotor_2/rotor_2_visual/1345_prop_cw"
+      ],
+      "all_observed_disarmed": true,
+      "alignment_bracket_endpoint_delta_ns": [
+        -4000000,
+        4000000
+      ],
+      "report_sha256": "8bd1f3384f550fe52cb39f35adab7c9d5dbbf57befde34716d642af5938d7dc2"
+    },
+    {
+      "case": "truth_loss",
+      "archive": "drone-cv-oracle-truth-loss-01.tar.gz",
+      "classification_expected": "UNKNOWN",
+      "safety_outcome": "UNKNOWN",
+      "execution_outcome": "INFRA_ERROR",
+      "sample_count": 73,
+      "coverage_complete": false,
+      "reasons": [
+        "RECORDING_INCOMPLETE_OR_ARMED",
+        "STREAM_SIM_AGE_EXCEEDED:/drone_cv_g1/evaluator/truth_pose_v",
+        "RECORDING_INCOMPLETE",
+        "TRUTH_END_UNCOVERED",
+        "COLLECTION_INCOMPLETE"
+      ],
+      "unsafe_parts": [],
+      "all_observed_disarmed": true,
+      "alignment_bracket_endpoint_delta_ns": [
+        0
+      ],
+      "report_sha256": "27f4e27a9bde0d65c21ecafb7dfc424bfebcf11393573f92486380e6bd19cc54"
+    },
+    {
+      "case": "unsafe_truth_loss",
+      "archive": "drone-cv-oracle-unsafe-truth-loss-01.tar.gz",
+      "classification_expected": "UNSAFE_OBSERVED",
+      "safety_outcome": "UNSAFE_OBSERVED",
+      "execution_outcome": "INFRA_ERROR",
+      "sample_count": 75,
+      "coverage_complete": false,
+      "reasons": [
+        "RECORDING_INCOMPLETE_OR_ARMED",
+        "STREAM_SIM_AGE_EXCEEDED:/drone_cv_g1/evaluator/truth_pose_v",
+        "RECORDING_INCOMPLETE",
+        "TRUTH_END_UNCOVERED",
+        "COLLECTION_INCOMPLETE"
+      ],
+      "unsafe_parts": [
+        "visual/base_link/base_link_visual/Scene/CarbonFiber[3]/CarbonFiber[1]#CarbonFiber-mesh"
+      ],
+      "all_observed_disarmed": true,
+      "alignment_bracket_endpoint_delta_ns": [
+        0
+      ],
+      "report_sha256": "d4f7cc95b4e9fe165fed5734917ea52c3fdae73056959dd904aea4438f5c4d28"
+    }
+  ],
+  "source_files": {
+    "src/drone_cv/oracle.py": "076d7c15350f22318341d5be69ea9852d10e687a71e92070f8a13f8d71273b7a",
+    "src/drone_cv/oracle_mesh.py": "caec63571275d2004650848670e73c914abcc90f67b1538ab9c03e360914f9b9",
+    "src/drone_cv/oracle_profile.py": "c98c5db8ac7e1bce348f324948b8cb415ef728f903c8fa37fdcc02972fa56e90",
+    "src/drone_cv/oracle_truth.py": "cefc29cba2134bca78a4482550b62ea642fe977a8e03aed0986ed6f0fda899e9",
+    "scripts/g1_oracle.py": "c6caa02d60cb3edd3395bbe4620ba34277a9f447111dfb657cada5db2fd4c1c3",
+    "scripts/g1_oracle_run.py": "f017f32c4d4f86f7d10a29ddefdc1d74a147b837b32e5cc7979a41897f33a6a9",
+    "scripts/g1_truth_adapter.py": "5d910665bbf763bcf3470439655e93264f79c636a4b20683cb8b8a16e66251d2",
+    "spike/freespace/oracle_recording.py": "30bc06b5b6fffe90dd862f9add44f8cb2d6d0a426b0019227725439441ea16d9",
+    "spike/freespace/record_sensor_bag.py": "5f08ec5542864b303d6adad07fe070a445aa50c3317a331024fa25a07c358906",
+    "spike/freespace/recording_integrity.py": "0cd51fa2954997c74ca0e0398b43077464f4e27772fa6dbf8ff0a0081d035ddf",
+    "spike/freespace/replay_bag.py": "2c67bc83c5e773835f915935b4063fc0b24d3a592eb3f15313ac5dd8fd2e08b1",
+    "spike/freespace/bag_diagnostics.py": "ec1894cf0e02975233be1e9734c0c3d692d5ddde110ff0cd0f5bb66320b73c69"
+  }
+}
