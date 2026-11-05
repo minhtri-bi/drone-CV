@@ -4,15 +4,15 @@
 
 - Self-study computer-vision obstacle avoidance in PX4 SITL, Gazebo and ROS 2; no real flight or hardware deployment.
 - Work on one visible demo at a time: M0 data, M1 empty-world A-to-B, M2 wall stop, M3 detour, M4 noise/dropout, M5 image depth.
-- Current scope: simplify the project harness before migrating implementation. No v2 milestone has been accepted.
-- Existing code, evidence and the 36-task native roadmap remain v1 references until a separately approved migration.
+- Current milestone: M0. Use README.md's milestone table and Backlog for v2 status until roadmap migration.
+- Existing code, evidence and native roadmap are historical v1 references, not v2 prerequisites.
 - Read README.md for current results. Existing files and observed runs take precedence over proposed layouts or commands.
 
 ## Working rules
 
 - Demo first. Add guards, contracts or abstractions only for an observed failure or the current demo's concrete need.
 - Minimum planned sim controls: fresh-depth watchdog (0.5 s simulation time, then zero velocity), speed clamp and explicit PX4 sim parameters.
-- This harness edit does not remove existing runtime guards or authorize control publishers, parameter writes, arming or flight.
+- This documentation change does not modify runtime code or authorize control publishers, parameter writes, arming or flight.
 - Simulation collisions are measured outcomes, not claims of real-world safety. Report failures and missing data honestly.
 - Keep bounded work inline. No automatic review, TDD, E2E, multi-agent or self-evaluation pipeline.
 - Keep PRs near 400 changed non-test code lines; split coherent work or ask before exceeding that scope.
@@ -42,14 +42,21 @@
 - Ground truth is evaluator-only, except existing explicitly documented simulated localization; never feed evaluation truth to the planner.
 - COM_OBL_RC_ACT=5 requests Hold; estimator/health conditions may escalate it. Do not claim guaranteed Hold.
 
+## M1 implementation direction
+
+- Build a new minimal Offboard node for empty-world takeoff, A-to-B movement and landing; one node owns setpoints.
+- Do not route M1 through v1 supervisor.py, px4_bridge.py, permits, Home/variance/RTF admission or prep-* gates.
+- V1 code is reference material only, whether present locally or in PR #12. Reuse small useful functions, not the v1 control architecture.
+- Keep the planned watchdog, speed clamp, explicit sim parameters and separate evaluator; judge M1 by its actual five-run demo.
+
 ## Verification and roadmap
 
 - Run the smallest existing check supporting the changed behavior. Documentation edits need content/link checks, not simulator startup.
 - `python scripts/check_project.py`: existing v1 document, PDF, evidence and roadmap integrity.
 - `python -m pytest -q`: existing offline behavioral regressions; not flight proof.
-- Use native project_roadmap for tracked status; never hand-edit canonical JSON, receipts or generated HTML.
-- Do not force small harness edits into a new roadmap task, unlock blocked tasks or relabel v1 evidence as M0–M5 acceptance.
-- Keep native status and portable exports unchanged until roadmap migration is explicitly in scope.
+- Until migration, do not use the native v1 roadmap to select, block or report M0–M5 work; README.md is the v2 status source.
+- If the harness reads native state on startup, treat that result as historical only; do not start its focus task for v2 work.
+- Keep v1 native status, receipts and portable exports unchanged. A future approved migration must use the native API, not hand-edited JSON/HTML.
 - Never advertise proposed sim/up.sh, run_trials.py or slash commands as available until implemented and exercised.
 
 ## Language and authority

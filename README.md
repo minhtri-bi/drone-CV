@@ -2,7 +2,30 @@
 
 Computer-vision obstacle avoidance for drones, **simulation first**, using PX4 SITL, Gazebo and ROS 2.
 
-## Status
+## Milestones
+
+**Current milestone: M0.**
+
+This table is the v2 status source until native roadmap migration. Historical G0–G5 tasks and prep-* gates do not select or block v2 work.
+
+| Milestone | Demo and acceptance | Status |
+| --- | --- | --- |
+| M0 | Pinned Gazebo/PX4/ROS bridge runs; depth and odometry rates are observed; a script opens a depth image. | Current; historical unarmed evidence exists, fresh v2 demo not yet run |
+| M1 | A new minimal Offboard node takes off to 1.2 m, flies A-to-B in an empty world and lands; evaluator records goal, time and collisions; 5/5 successful trials. | Pending M0 |
+| M2 | Stop before a wall using forward-corridor depth and stopping distance; 10/10 trials without contact, with minimum clearance recorded. | Pending M1 |
+| M3 | Simple seen-free detours reach the goal across 20 fixed-seed worlds with zero collisions. | Pending M2 |
+| M4 | Add depth noise, dropout and delay with evidence TTL; report success and collision rates against M3. | Pending M3 |
+| M5 | Optional stereo or monocular image depth; compare results against M4. | Optional; pending M4 |
+
+M1 will use a **new minimal Offboard node**, not the v1 supervisor/bridge admission chain. V1 code is reference material, not a dependency on Home, variance, RTF, permits or prep-* gates. This documentation PR implements no flight code and authorizes no simulator operations.
+
+## Backlog
+
+- Archive v1/PR #12 and simplify layout in a separately scoped change; preserve history and source PDFs.
+- Migrate the native roadmap to M0–M5 through supported tooling; until then, use the table above.
+- After M0, implement the M1 node and evaluator, then run five explicitly authorized simulation trials.
+
+## Historical v1 status
 
 The repository has a **working offline G0 implementation**: metric depth/validity, capture-time projection, frame/quaternion transforms, a conservative 72×3 histogram, braking and command freshness. **The G1 environment passed an unarmed smoke run** with ROS camera/clock/TF and PX4 DDS on a pinned derived image. Pytest and a CI workflow are available; the oracle, supervisor, flight runtime and SITL evaluator are not implemented.
 
@@ -12,8 +35,8 @@ The [integrity repair](docs/SENSOR_REPLAY_INTEGRITY.md) adds a fresh 136-frame r
 
 The [model-profile and rolling-TTL preparation](docs/PREPARATION_RESULTS.md) also ran: pinned collision/rotor bounds, 96 explicit synthetic coverage cases, and a 90 s Disarmed recording spanning 19.328 s sim. Old evidence expires while fresh frames remain. These diagnostics do not authorize movement or complete G1/G2.
 
-Core target: reach the goal in ≥45/50 frozen navigation worlds, with zero unsafe events and navigation clearance ≥0.5 m under the phase contract.
-This target has not been achieved; it is not a benchmark result.
+Historical v1 target: reach the goal in ≥45/50 frozen navigation worlds, with zero unsafe events and navigation clearance ≥0.5 m under the phase contract.
+This target was not achieved; it is not a benchmark result or an additional v2 milestone gate.
 
 ## Current harness work
 
@@ -21,7 +44,9 @@ Project instructions now live in [AGENTS.md](AGENTS.md): one demo at a time, inl
 
 This is harness preparation only. The v1 code, evidence, roadmap and PR history remain unchanged; archive/reset, M0–M5 migration and simulator operations are separate work. No v2 milestone has passed.
 
-## Reading order
+## Historical v1 references
+
+For new work, start with [project instructions](AGENTS.md) and the milestone table above. The documents below explain retained v1 code and evidence; they are not a mandatory reading sequence or v2 gate list.
 
 1. [Revised implementation plan](docs/PLAN.md): scope, architecture, contracts and gates G0–G5.
 2. [Safety contracts S01–S08](docs/SAFETY.md): phase-aware contact/clearance, unsafe latch, coverage and corrected dependencies.
@@ -36,12 +61,12 @@ This is harness preparation only. The v1 code, evidence, roadmap and PR history 
 [Original PDF, preserved byte for byte](docs/source/drone-obstacle-avoidance-plan.pdf).
 The plan records its source, checksum and relationship to the revised documents.
 
-## Roadmap in OMP
+## Historical native roadmap
 
-The [canonical state](.omp/roadmap/roadmap.json) contains 31 tasks with dependencies and acceptance criteria.
-Use `/roadmap status` or `/roadmap view` in OMP; the offline canvas is generated automatically. Do not edit its HTML.
-Current status and acceptance criteria live in JSON; the [English portable view](docs/ROADMAP.md) uses the same state with a hash-bound [display translation](docs/roadmap.en.json). Do not edit generated Markdown manually.
-This roadmap covers the simulation scope; it is neither an estimate of effort percentages nor flight certification.
+The retained [native state](.omp/roadmap/roadmap.json) contains 31 v1 tasks. It is not the status source for M0–M5 until migration.
+If `/roadmap status` or a startup hook shows g1-oracle, g1-supervisor or prep-* work, treat it as historical; do not select that work for the v2 milestone.
+The [portable view](docs/ROADMAP.md) and [display translation](docs/roadmap.en.json) remain unchanged for v1 integrity. Do not hand-edit native state or generated views.
+Use the milestone table above for current work; existing v1 completion records neither accept nor block M0–M5.
 
 The [unarmed sensor-recording/replay plan](docs/SENSOR_REPLAY_PLAN.md) is an implemented preparation branch after the environment and G0 demo, not permission to start flight or claim G2 acceptance.
 The approved [review repair plan](docs/SENSOR_REPLAY_REPAIR_PLAN.md) adds integrity, model-profile and rolling-TTL preparation branches without changing existing flight dependencies.
@@ -94,12 +119,12 @@ After Docker/image and bridge approval, the [derived image](docker/g1/Dockerfile
 `scripts/g1_probe.py --ros` and `scripts/g1_ros_observer.py` are read-only observers inside the container running Agent/PX4/Gazebo/bridge/TF; they exit with code 2 when observations are missing. See the [executed recipe and its limits](docs/HARNESS.md#derived-smoke-recipe-and-observed-results).
 
 Run-owned containers/processes were stopped and removed; Docker Desktop and the images were retained. No host packages, drivers, WSL configuration or permissions were changed.
-The G1 flight gate remains pending: oracle/logger and supervisor are required before bootstrap flight, and calibration remains pending. The separate unarmed replay validates capture-time interpolation and stationary geometry; neither experiment certifies `+Inf` as free space or successful obstacle avoidance.
+Under the historical v1 plan, the G1 flight gate remained pending on oracle/logger, supervisor and calibration. These are not prerequisites for the new minimal M1 path. The unarmed replay established stationary geometry only, not successful obstacle avoidance.
 
 ## Principles
 
 - Unknown, stale and out-of-FOV observations are blocked; NaN does not imply free space.
-- Safety is independent of the planner; heartbeat does not replace command freshness.
+- Keep watchdog checks independent of planner decisions; one M1 node may own both checks and setpoint publishing. Heartbeat does not replace command freshness.
 - The evaluator uses independent ground truth; the planner must not read the oracle.
 - No LLM in the control loop and no real flights within the core scope.
 - Commit/push/merge require user authority and actual gates; never bypass checks or reviews.
