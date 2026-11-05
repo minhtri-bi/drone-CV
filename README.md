@@ -4,26 +4,57 @@ Computer-vision obstacle avoidance for drones, **simulation first**, using PX4 S
 
 ## Milestones
 
-**Current milestone: M0.**
+**Current milestone: M0 — completed; M1 execution awaits approval.**
 
 This table is the v2 status source until native roadmap migration. Historical G0–G5 tasks and prep-* gates do not select or block v2 work.
 
 | Milestone | Demo and acceptance | Status |
 | --- | --- | --- |
-| M0 | Pinned Gazebo/PX4/ROS bridge runs; depth and odometry rates are observed; a script opens a depth image. | Current; historical unarmed evidence exists, fresh v2 demo not yet run |
-| M1 | A new minimal Offboard node takes off to 1.2 m, flies A-to-B in an empty world and lands; evaluator records goal, time and collisions; 5/5 successful trials. | Pending M0 |
+| M0 | Pinned Gazebo/PX4/ROS bridge runs; depth and odometry rates are observed; a script opens a depth image. | Complete: 2026-11-05 unarmed smoke; depth 4.526 Hz, odometry 19.473 Hz (wall-time receive rates); 640×480 depth opened |
+| M1 | A new minimal Offboard node takes off to 1.2 m, flies A-to-B in an empty world and lands; evaluator records goal, time and collisions; 5/5 successful trials. | Pending; M0 complete, M1 execution not authorized |
 | M2 | Stop before a wall using forward-corridor depth and stopping distance; 10/10 trials without contact, with minimum clearance recorded. | Pending M1 |
 | M3 | Simple seen-free detours reach the goal across 20 fixed-seed worlds with zero collisions. | Pending M2 |
 | M4 | Add depth noise, dropout and delay with evidence TTL; report success and collision rates against M3. | Pending M3 |
 | M5 | Optional stereo or monocular image depth; compare results against M4. | Optional; pending M4 |
 
-M1 will use a **new minimal Offboard node**, not the v1 supervisor/bridge admission chain. V1 code is reference material, not a dependency on Home, variance, RTF, permits or prep-* gates. This documentation PR implements no flight code and authorizes no simulator operations.
+### M0 run: 2026-11-05
+
+Used the existing `docker/g1` image `sha256:061a39905d2d84d40859bb46b67048241b6dacf2ed3983889da7f5fd3e718285`, without builds, pulls or installs. The run-owned container was `drone-cv-m0-20261105-01`, with network disabled, 4 CPUs, 6 GiB RAM and software rendering.
+
+Two concurrent `ros2 topic hz --wall-time --window 10000` observers ran for 25 wall seconds. Their final printed cumulative estimates were:
+
+| Topic | Receive rate | CLI window | Observed receive-interval min/max |
+| --- | --- | --- | --- |
+| `/drone_cv_g1/camera/depth/image_raw` | 4.526 Hz | 100 messages | 0.107 / 0.768 s |
+| `/drone_cv_g1/fmu/out/vehicle_odometry` | 19.473 Hz | 434 messages | 0.003 / 0.269 s |
+
+These are wall-time subscriber measurements, not simulation-time rates or calibration. Discovery and the CLI's periodic printing mean the final windows do not cover every instant of the 25-second observer lifetime.
+
+The new [single-frame viewer](scripts/m0_depth_view.py) subscribes inside the existing ROS container, prints valid positive finite optical-Z statistics, copies a PNG preview to Windows and opens it in the default image viewer. NumPy/Pillow/ROS were already available in the image; host mode uses only Python's standard library and Docker.
+
+```sh
+python scripts/m0_depth_view.py --container drone-cv-m0-20261105-01 --output artifacts/m0-20261105-01/depth-final.png
+```
+
+Observed final-script output:
+
+```text
+size=640x480 encoding=32FC1 min_m=0.44744744896888733 max_m=16.487102508544922 invalid=157574 total=307200
+```
+
+The PNG was visibly opened in Windows Photos. Invalid pixels (nonfinite or nonpositive) are magenta; positive finite depths are grayscale scaled for display, not a metric PNG. Two invocations, before and after a type-narrowing correction, returned identical statistics. Local previews and raw rate output remain under `artifacts/m0-20261105-01/`, outside tracked source.
+
+PX4 reported **Disarmed** before and after observation. Final publisher counts for `vehicle_command`, `offboard_control_mode` and `trajectory_setpoint` under `/drone_cv_g1/fmu/in/` were all zero. No arm commands, control publishers or manual parameter-write commands were issued. The unchanged image's PX4 startup itself applied its baked-in defaults, including `UXRCE_DDS_SYNCT=0` and DDS domain 83; this is not a claim that boot performs zero internal parameter assignments.
+
+The owned container and its processes were stopped and removed after observation. The image ID was unchanged. No M1 flight was attempted.
+
+M1 will use a **new minimal Offboard node**, not the v1 supervisor/bridge admission chain. V1 code is reference material, not a dependency on Home, variance, RTF, permits or prep-* gates. This M0 slice adds only read-only observation; it authorizes no flight/control implementation or execution.
 
 ## Backlog
 
 - Archive v1/PR #12 and simplify layout in a separately scoped change; preserve history and source PDFs.
 - Migrate the native roadmap to M0–M5 through supported tooling; until then, use the table above.
-- After M0, implement the M1 node and evaluator, then run five explicitly authorized simulation trials.
+- After separate M1 approval, implement the node and evaluator, then run five explicitly authorized simulation trials.
 
 ## Historical v1 status
 
@@ -42,7 +73,7 @@ This target was not achieved; it is not a benchmark result or an additional v2 m
 
 Project instructions now live in [AGENTS.md](AGENTS.md): one demo at a time, inline bounded changes, failure-driven guards and review triage before fixes. [OMP guidance](docs/OMP.md) is a short compatibility guide, not a mandatory skill pipeline.
 
-This is harness preparation only. The v1 code, evidence, roadmap and PR history remain unchanged; archive/reset, M0–M5 migration and simulator operations are separate work. No v2 milestone has passed.
+The harness change preserved v1 code, evidence and native roadmap. M0 has now passed the read-only smoke above; archive/reset, native roadmap migration and M1 flight remain separate work.
 
 ## Historical v1 references
 
