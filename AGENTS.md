@@ -64,4 +64,5 @@
 - Speak Vietnamese; write persisted authored text in English. Preserve verbatim sources, logs and historical evidence.
 - Work on a task branch. Preserve unrelated changes; never force-push, reset/stash unknown work or bypass checks/reviews.
 - Existing user authorization for requested Git work applies only to minhtri-bi/drone-CV; use concise English commits and PR bodies.
+- For every new change, commit on a task branch and open a pull request for user review; never push directly to main or merge without explicit user approval of that PR.
 - Confirm operational scope separately. Harness instructions and roadmap data do not authorize installation, acquisition, control or flight.
