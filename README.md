@@ -21,6 +21,12 @@ The approved [simulation repair plan](docs/SIM_REPAIR_PLAN.md) has [code/offline
 Core target: reach the goal in ≥45/50 frozen navigation worlds, with zero unsafe events and navigation clearance ≥0.5 m under the phase contract.
 This target has not been achieved; it is not a benchmark result.
 
+## Current harness work
+
+Project instructions now live in [AGENTS.md](AGENTS.md): one demo at a time, inline bounded changes, failure-driven guards and review triage before fixes. [OMP guidance](docs/OMP.md) is a short compatibility guide, not a mandatory skill pipeline.
+
+This is harness preparation only. The v1 code, evidence, roadmap and PR history remain unchanged; archive/reset, M0–M5 migration and simulator operations are separate work. No v2 milestone has passed.
+
 ## Reading order
 
 1. [Revised implementation plan](docs/PLAN.md): scope, architecture, contracts and gates G0–G5.
@@ -28,8 +34,8 @@ This target has not been achieved; it is not a benchmark result.
 3. [Design review and official sources](docs/REVIEW.md): risks in the original plan and subsequent contract corrections.
 4. [65 scenarios and their oracles](docs/SCENARIOS.md): G0 geometry fixtures exist; flight scenarios have not been run.
 5. [Development and evaluation harness](docs/HARNESS.md): agent workflow, runner/evaluator contract and Git gates.
-6. [OMP skills and roadmap](docs/OMP.md): 10 trigger-loaded skills, without installing another bundle.
-7. [Repository agent instructions](.omp/AGENTS.md): invariants and automation scope.
+6. [OMP harness compatibility](docs/OMP.md): short workflow, existing commands and unchanged v1 roadmap.
+7. [Repository agent instructions](AGENTS.md): canonical project policy and operational scope.
 8. [Offline seen-free spike](spike/freespace/README.md): synthetic perception liveness, near-hazard retention and sampled-coverage limits; not flight acceptance.
 9. [Unarmed sensor replay results](docs/SENSOR_REPLAY_RESULTS.md): immutable bags, capture-time adapter, independent geometry, fault outcomes and replay commands.
 
